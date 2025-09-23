@@ -1,0 +1,23 @@
+﻿# dependencies
+node_modules/
+
+# builds
+dist/
+.next/
+.expo/
+build/
+out/
+
+# logs
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# env (do not commit secrets)
+.env
+.env.*
+
+# misc
+.DS_Store
+Thumbs.db
