@@ -69,13 +69,24 @@
 ### 3.2 السحب
 
 * على المستخدم إضافة **عنوان محفظة السحب** وتحديد **نوع الشبكة** (افتراضي: TRC20/USDT) قبل إنشاء طلب السحب.
-* **عمولة السحب:** 3% في كل مرة.
+
+* **خيارات السحب والعمولة:**
+  * **سحب أسبوعي (Weekly):** عمولة **5%**.
+  * **سحب شهري (Monthly):** عمولة **3%**.
+
 * **شروط السحب:**
-  * أول سحب **بعد 45 يومًا** من أول إيداع مقبول.
-  * السحب التالي كل **7 أيام**.
+  * أوّل سحب مسموح **بعد 45 يومًا** من أول إيداع مقبول (ينطبق على الأسبوعي والشهري).
+  * في **السحب الأسبوعي**: يسمح بالسحب التالي كل **7 أيام** من تاريخ آخر سحب مقبول.
+  * في **السحب الشهري**: يسمح بالسحب التالي كل **30 يومًا** من تاريخ آخر سحب مقبول.
   * كل عملية سحب محدودة بـ **35% من الرصيد** بعد خصم العمولة.
   * حدود دنيا/عليا قابلة للتهيئة (افتراضي: حد أدنى 10 USDT).
-* حالة طلب السحب: قيد المراجعة → مقبول (مع TXID) / مرفوض (مع سبب).
+
+* **حاسبة السحب:**
+  * تعرض صافي المبلغ مباشرة حسب الخيار المختار (أسبوعي 5% / شهري 3%) + قيد 35% + القيود الزمنية (7/30 يوم).
+
+* **حالة طلب السحب:**
+  * قيد المراجعة → مقبول (مع TXID) / مرفوض (مع سبب).
+
 
 ### 3.3 الأرباح الشهرية والمكافأة اليومية
 
@@ -175,11 +186,11 @@
 * **User**: id, email (unique), passwordHash, role {USER, ADMIN, SUPPORT, ACCOUNTING}, createdAt, balance, firstDepositAt, lastWithdrawalAt, referralCode (unique), invitedById
 * **Tier**: id, name, monthlyRate (decimal), minInvites, maxInvites
 * **Deposit**: id, userId, amount, txId, proofImageUrl, network (TRC20), toAddress (شركة), status {PENDING, APPROVED, REJECTED}, reviewedBy, reviewedAt, effectiveAt
-* **Withdrawal**: id, userId, amountRequested, feePercent (default 3), amountNet, network (TRC20), toAddress, status {PENDING, APPROVED, REJECTED}, txId, reviewedBy, reviewedAt, effectiveAt
+* *** **Withdrawal**: id, userId, amountRequested, cadence {WEEKLY, MONTHLY}, feePercent (server picks by cadence), amountNet, network (TRC20), toAddress, status {PENDING, APPROVED, REJECTED}, txId, reviewedBy, reviewedAt, effectiveAt
 * **DailyRewardClaim**: id, userId, claimDate (unique per user/date), amount, status
 * **RandomBonus**: id, userId, date, amount (ex: 0.20), ruleId
 * **Referral**: id, inviterId, inviteeId, confirmedAt (بعد أول إيداع)
-* **Policy**: id, key, value (مثل: minWithdrawDaysFirst=45, intervalWithdrawDays=7, maxWithdrawPercent=35, depositFee=2, withdrawFee=3, baseMonthly=25, tier5=30, tier10=35, bonusChance=5, bonusAmount=0.2)
+* *** **Policy**: id, key, value (مثل: minWithdrawDaysFirst=45, intervalWithdrawDaysWeekly=7, intervalWithdrawDaysMonthly=30, maxWithdrawPercent=35, depositFee=2, withdrawFeeWeekly=5, withdrawFeeMonthly=3, baseMonthly=25, tier5=30, tier10=35, bonusChance=5, bonusAmount=0.2)
 * **AuditLog**: id, actorId, entityType, entityId, action, before, after, reason, timestamp
 * **Message**: id, userId (nullable), type {SYSTEM, SUPPORT, ANNOUNCEMENT}, title, body, readAt
 
@@ -224,7 +235,7 @@
 
 * **Deposits:** POST /deposits (amount, txId, proofImage), GET /deposits, GET /deposits/:id
 
-* **Withdrawals:** POST /withdrawals (amount), GET /withdrawals, GET /withdrawals/:id
+* **Withdrawals:** POST /withdrawals (amount, cadence), GET /withdrawals, GET /withdrawals/:id
 
 * **Rewards:** POST /rewards/claim (اليومي), GET /rewards/history
 
