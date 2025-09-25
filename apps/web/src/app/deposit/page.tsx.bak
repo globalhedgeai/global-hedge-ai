@@ -1,0 +1,142 @@
+'use client'
+
+import { useEffect, useRef, useState } from 'react'
+import QRCode from 'qrcode'
+
+const COMPANY_ADDRESS =
+  process.env.NEXT_PUBLIC_COMPANY_ADDRESS ||
+  'TKaAamEouHjG9nZwoTPhgYUerejbBHGMop'
+
+export default function DepositPage() {
+  const [submitting, setSubmitting] = useState(false)
+  const [message, setMessage] = useState<string | null>(null)
+  const [list, setList] = useState<any[]>([])
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  useEffect(() => {
+    if (canvasRef.current) {
+      try {
+        QRCode.toCanvas(canvasRef.current, COMPANY_ADDRESS, { width: 160 })
+      } catch {}
+    }
+    refresh()
+  }, [])
+
+  async function refresh() {
+    const r = await fetch('/api/deposits')
+    const j = await r.json()
+    if (j.ok) setList(j.items)
+  }
+
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setSubmitting(true)
+    setMessage(null)
+
+    // ✅ خذ مرجع للفورم قبل أي await (حتى لا يصبح null لاحقاً)
+    const formEl = e.currentTarget
+    const form = new FormData(formEl)
+
+    try {
+      const r = await fetch('/api/deposits', { method: 'POST', body: form })
+      const j = await r.json()
+      if (!r.ok || !j.ok) throw new Error(j.error || 'Failed')
+      setMessage('✅ تم إرسال الإيداع للمراجعة')
+      formEl.reset()            // ✅ آمنة الآن
+      await refresh()
+    } catch (err: any) {
+      setMessage(`❌ خطأ: ${err.message}`)
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <main style={{ padding: 24, maxWidth: 920, margin: '0 auto', fontFamily: 'system-ui' }}>
+      <h1 style={{ marginBottom: 8 }}>الإيداع</h1>
+      <p style={{ color: '#888', marginBottom: 20 }}>
+        أرسل USDT على شبكة <b>TRC20</b> إلى عنوان الشركة ثم ارفع إثبات الإيداع وأدخل TXID.
+      </p>
+
+      <section style={{ display: 'flex', gap: 24, alignItems: 'flex-start', marginBottom: 24 }}>
+        <div style={{ padding: 16, border: '1px solid #222', borderRadius: 12, background: '#0b1220', color: '#e5e7eb' }}>
+          <div style={{ marginBottom: 8 }}>عنوان المحفظة (TRC20)</div>
+          <code style={{ fontSize: 14, wordBreak: 'break-all' }}>{COMPANY_ADDRESS}</code>
+          <div style={{ marginTop: 12 }}>
+            <canvas ref={canvasRef} />
+          </div>
+          <button
+            style={{ marginTop: 12 }}
+            onClick={() => navigator.clipboard.writeText(COMPANY_ADDRESS)}
+            type="button"
+          >
+            نسخ العنوان
+          </button>
+        </div>
+
+        <form onSubmit={onSubmit} style={{ flex: 1, padding: 16, border: '1px solid #222', borderRadius: 12 }}>
+          <div style={{ display: 'grid', gap: 12 }}>
+            <label>
+              المبلغ (USDT)
+              <input name="amount" type="number" step="0.01" min="0" required style={{ width: '100%' }} />
+            </label>
+
+            <label>
+              TXID
+              <input name="txId" type="text" required style={{ width: '100%' }} />
+            </label>
+
+            <label>
+              الشبكة
+              <select name="network" defaultValue="TRC20" style={{ width: '100%' }}>
+                <option value="TRC20">TRC20 (USDT)</option>
+              </select>
+            </label>
+
+            <label>
+              صورة إثبات الإيداع (jpg/png/webp)
+              <input name="proof" type="file" accept="image/*" required />
+            </label>
+
+            <button type="submit" disabled={submitting}>
+              {submitting ? 'جاري الإرسال…' : 'إرسال الإيداع'}
+            </button>
+
+            {message && <div>{message}</div>}
+          </div>
+        </form>
+      </section>
+
+      <h3 style={{ margin: '24px 0 8px' }}>سجل الإيداعات (آخر 50)</h3>
+      <div style={{ border: '1px solid #222', borderRadius: 12, overflow: 'hidden' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead style={{ background: '#111827', color: '#e5e7eb' }}>
+            <tr>
+              <th style={{ textAlign: 'left', padding: 8 }}>المعرف</th>
+              <th style={{ textAlign: 'left', padding: 8 }}>المبلغ</th>
+              <th style={{ textAlign: 'left', padding: 8 }}>الشبكة</th>
+              <th style={{ textAlign: 'left', padding: 8 }}>الحالة</th>
+              <th style={{ textAlign: 'left', padding: 8 }}>الإثبات</th>
+            </tr>
+          </thead>
+          <tbody>
+            {list.map((d) => (
+              <tr key={d.id} style={{ borderTop: '1px solid #222' }}>
+                <td style={{ padding: 8 }}>{d.id}</td>
+                <td style={{ padding: 8 }}>{d.amount}</td>
+                <td style={{ padding: 8 }}>{d.network}</td>
+                <td style={{ padding: 8 }}>{d.status}</td>
+                <td style={{ padding: 8 }}>
+                  {d.proofImageUrl ? <a href={d.proofImageUrl} target="_blank">عرض</a> : '-'}
+                </td>
+              </tr>
+            ))}
+            {list.length === 0 && (
+              <tr><td colSpan={5} style={{ padding: 8, color: '#888' }}>لا يوجد</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </main>
+  )
+}

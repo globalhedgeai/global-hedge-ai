@@ -4,13 +4,26 @@
   "description": "",
   "main": "index.js",
   "directories": {
-    "doc": "docs"
+    "doc": "docs",
+    "prisma": {
+      "seed": "tsx prisma/seed.ts"
+    }
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "db:seed": "prisma db seed"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "devDependencies": {
+    "@types/node": "^20.19.17",
+    "prisma": "^6.16.2",
+    "tsx": "^4.20.5"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.16.2",
+    "bcryptjs": "^3.0.2"
+  }
 }

@@ -1,0 +1,199 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"        // للانطلاق بسرعة. سنحوّل لـ postgresql لاحقًا.
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+  SUPPORT
+  ACCOUNTING
+}
+
+enum DepositStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum WithdrawalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum MessageType {
+  SYSTEM
+  SUPPORT
+  ANNOUNCEMENT
+}
+
+enum WithdrawalCadence {
+  WEEKLY
+  MONTHLY
+}
+
+model User {
+  id               String   @id @default(cuid())
+  email            String   @unique
+  passwordHash     String
+  role             Role     @default(USER)
+  createdAt        DateTime @default(now())
+  balance          Decimal  @default(0)
+  firstDepositAt   DateTime?
+  lastWithdrawalAt DateTime?
+  referralCode     String   @unique
+  invitedById      String?
+  invitedBy        User?    @relation("Invites", fields: [invitedById], references: [id])
+  invites          User[]   @relation("Invites")
+
+  deposits         Deposit[]
+  withdrawals      Withdrawal[]
+  claims           DailyRewardClaim[]
+  messages         Message[]
+  referralsAsInviter Referral[] @relation("RefRelInviter")
+  referralsAsInvitee Referral[] @relation("RefRelInvitee")
+  randomBonuses RandomBonus[]
+  auditLogs AuditLog[]
+  passwordResetTokens PasswordResetToken[]
+}
+
+model Tier {
+  id          String  @id @default(cuid())
+  name        String
+  monthlyRate Decimal
+  minInvites  Int
+  maxInvites  Int?
+}
+
+model Deposit {
+  id             String        @id @default(cuid())
+  userId         String
+  user           User          @relation(fields: [userId], references: [id])
+  amount         Decimal
+  txId           String
+  proofImageUrl  String
+  network        String        // TRC20
+  toAddress      String        // عنوان الشركة الثابت
+  status         DepositStatus @default(PENDING)
+  reviewedBy     String?
+  reviewedAt     DateTime?
+  effectiveAt    DateTime?     // تاريخ النفاذ عند القبول
+  createdAt      DateTime      @default(now())
+
+  @@index([createdAt])
+}
+
+model Withdrawal {
+  id              String            @id @default(cuid())
+  userId          String
+  user            User              @relation(fields: [userId], references: [id])
+  amountRequested Decimal
+  cadence         WithdrawalCadence
+  feePercent      Decimal           // يُعيَّن بحسب الـ cadence وقت الإنشاء
+  amountNet       Decimal
+  network         String            // TRC20
+  toAddress       String
+  status          WithdrawalStatus  @default(PENDING)
+  txId            String?
+  reviewedBy      String?
+  reviewedAt      DateTime?
+  effectiveAt     DateTime?
+  createdAt       DateTime          @default(now())
+
+  @@index([createdAt])
+}
+
+model DailyRewardClaim {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  claimDate DateTime
+  amount    Decimal
+  status    String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, claimDate])
+}
+
+model RandomBonus {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  date      DateTime
+  amount    Decimal  // مثال 0.20
+  ruleId    String?
+  createdAt DateTime @default(now())
+}
+
+model Referral {
+  id          String   @id @default(cuid())
+  inviterId   String
+  inviteeId   String
+  inviter     User     @relation("RefRelInviter", fields: [inviterId], references: [id])
+  invitee     User     @relation("RefRelInvitee", fields: [inviteeId], references: [id])
+  confirmedAt DateTime?
+  createdAt   DateTime @default(now())
+}
+
+model Policy {
+  id      String @id @default(cuid())
+  key     String @unique
+  value   String
+  createdAt DateTime @default(now())
+  // أمثلة مفاتيح:
+  // minWithdrawDaysFirst=45
+  // intervalWithdrawDaysWeekly=7
+  // intervalWithdrawDaysMonthly=30
+  // maxWithdrawPercent=35
+  // depositFee=2
+  // withdrawFeeWeekly=5
+  // withdrawFeeMonthly=3
+  // baseMonthly=25
+  // tier5=30
+  // tier10=35
+  // bonusChance=5
+  // bonusAmount=0.2
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  actor      User?    @relation(fields: [actorId], references: [id])
+  entityType String
+  entityId   String
+  action     String
+  before     String?
+  after      String?
+  reason     String?
+  timestamp  DateTime @default(now())
+
+  @@index([timestamp])
+}
+
+model Message {
+  id      String      @id @default(cuid())
+  userId  String?
+  user    User?       @relation(fields: [userId], references: [id])
+  type    MessageType
+  title   String
+  body    String
+  readAt  DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([createdAt])
+}
+
+model PasswordResetToken {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  tokenHash  String   @unique
+  expiresAt  DateTime
+  usedAt     DateTime?
+  createdAt  DateTime @default(now())
+}

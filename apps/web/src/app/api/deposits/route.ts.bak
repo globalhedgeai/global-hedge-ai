@@ -1,0 +1,60 @@
+﻿import { NextRequest, NextResponse } from "next/server";
+import { prisma } from '@/lib/prisma';
+import * as path from "node:path";
+import * as fs from "node:fs/promises";
+
+const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
+const DEMO_USER_ID = process.env.DEMO_USER_ID || "demo-user-1";
+
+export async function GET() {
+  const items = await prisma.deposit.findMany({
+    orderBy: { createdAt: "desc" },
+    take: 50,
+  });
+  return NextResponse.json({ ok: true, items });
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const fd = await req.formData();
+    const amount = Number(fd.get("amount") ?? 0);
+    const txId = String(fd.get("txId") ?? "");
+    const network = String(fd.get("network") ?? "TRC20");
+    const file = fd.get("proof") as File | null;
+
+    if (!amount || !txId || !file) {
+      return NextResponse.json({ ok: false, error: "missing fields" }, { status: 400 });
+    }
+
+    await fs.mkdir(UPLOAD_DIR, { recursive: true });
+
+    const origName = file.name || "proof";
+    const safeName = (origName.replace(/[^a-zA-Z0-9.\-_\(\)\s]/g, "").trim()) || "proof";
+    const fileName = `${Date.now()}-${Math.random().toString(16).slice(2)}-${safeName}`;
+    const absPath = path.join(UPLOAD_DIR, fileName);
+
+    const buf = Buffer.from(await file.arrayBuffer());
+    await fs.writeFile(absPath, buf);
+
+    const proofImageUrl = `/uploads/${fileName}`;
+
+    const created = await prisma.deposit.create({
+      data: {
+        amount,
+        txId,
+        network,
+        proofImageUrl,
+        status: "PENDING",
+        toAddress: process.env.NEXT_PUBLIC_COMPANY_ADDRESS || "TKaAamEouHjG9nZwoTPhgYUerejbBHGMop",
+        user: { connect: { id: DEMO_USER_ID } }, // ⬅️ علاقة المستخدم مطلوبة في Prisma
+      },
+    });
+
+    return NextResponse.json({ ok: true, id: created.id, proofImageUrl });
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : "error";
+    return NextResponse.json({ ok: false, error: msg }, { status: 500 });
+  }
+}
+
+
