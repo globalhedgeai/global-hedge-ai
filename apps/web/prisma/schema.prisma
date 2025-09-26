@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"        // للانطلاق بسرعة. سنحوّل لـ postgresql لاحقًا.
+  provider = "sqlite" // للانطلاق بسرعة. سنحوّل لـ postgresql لاحقًا.
   url      = env("DATABASE_URL")
 }
 
@@ -32,33 +32,29 @@ enum MessageType {
   ANNOUNCEMENT
 }
 
-enum WithdrawalCadence {
-  WEEKLY
-  MONTHLY
-}
-
 model User {
-  id               String   @id @default(cuid())
-  email            String   @unique
+  id               String    @id @default(cuid())
+  email            String    @unique
   passwordHash     String
-  role             Role     @default(USER)
-  createdAt        DateTime @default(now())
-  balance          Decimal  @default(0)
+  role             Role      @default(USER)
+  createdAt        DateTime  @default(now())
+  balance          Decimal   @default(0)
   firstDepositAt   DateTime?
   lastWithdrawalAt DateTime?
-  referralCode     String   @unique
+  referralCode     String    @unique
+  walletAddress    String?
   invitedById      String?
-  invitedBy        User?    @relation("Invites", fields: [invitedById], references: [id])
-  invites          User[]   @relation("Invites")
+  invitedBy        User?     @relation("Invites", fields: [invitedById], references: [id])
+  invites          User[]    @relation("Invites")
 
-  deposits         Deposit[]
-  withdrawals      Withdrawal[]
-  claims           DailyRewardClaim[]
-  messages         Message[]
-  referralsAsInviter Referral[] @relation("RefRelInviter")
-  referralsAsInvitee Referral[] @relation("RefRelInvitee")
-  randomBonuses RandomBonus[]
-  auditLogs AuditLog[]
+  deposits            Deposit[]
+  withdrawals         Withdrawal[]
+  claims              DailyRewardClaim[]
+  messages            Message[]
+  referralsAsInviter  Referral[]           @relation("RefRelInviter")
+  referralsAsInvitee  Referral[]           @relation("RefRelInvitee")
+  randomBonuses       RandomBonus[]
+  auditLogs           AuditLog[]
   passwordResetTokens PasswordResetToken[]
 }
 
@@ -71,39 +67,35 @@ model Tier {
 }
 
 model Deposit {
-  id             String        @id @default(cuid())
-  userId         String
-  user           User          @relation(fields: [userId], references: [id])
-  amount         Decimal
-  txId           String
-  proofImageUrl  String
-  network        String        // TRC20
-  toAddress      String        // عنوان الشركة الثابت
-  status         DepositStatus @default(PENDING)
-  reviewedBy     String?
-  reviewedAt     DateTime?
-  effectiveAt    DateTime?     // تاريخ النفاذ عند القبول
-  createdAt      DateTime      @default(now())
+  id            String        @id @default(cuid())
+  userId        String
+  user          User          @relation(fields: [userId], references: [id])
+  amount        Decimal
+  txId          String
+  proofImageUrl String
+  network       String // TRC20
+  toAddress     String // عنوان الشركة الثابت
+  status        DepositStatus @default(PENDING)
+  reviewedBy    String?
+  reviewedAt    DateTime?
+  effectiveAt   DateTime? // تاريخ النفاذ عند القبول
+  createdAt     DateTime      @default(now())
 
   @@index([createdAt])
 }
 
 model Withdrawal {
-  id              String            @id @default(cuid())
-  userId          String
-  user            User              @relation(fields: [userId], references: [id])
-  amountRequested Decimal
-  cadence         WithdrawalCadence
-  feePercent      Decimal           // يُعيَّن بحسب الـ cadence وقت الإنشاء
-  amountNet       Decimal
-  network         String            // TRC20
-  toAddress       String
-  status          WithdrawalStatus  @default(PENDING)
-  txId            String?
-  reviewedBy      String?
-  reviewedAt      DateTime?
-  effectiveAt     DateTime?
-  createdAt       DateTime          @default(now())
+  id          String           @id @default(cuid())
+  userId      String
+  user        User             @relation(fields: [userId], references: [id])
+  amount      Decimal
+  toAddress   String
+  status      WithdrawalStatus @default(PENDING)
+  txId        String?
+  reviewedBy  String?
+  reviewedAt  DateTime?
+  effectiveAt DateTime?
+  createdAt   DateTime         @default(now())
 
   @@index([createdAt])
 }
@@ -125,25 +117,25 @@ model RandomBonus {
   userId    String
   user      User     @relation(fields: [userId], references: [id])
   date      DateTime
-  amount    Decimal  // مثال 0.20
+  amount    Decimal // مثال 0.20
   ruleId    String?
   createdAt DateTime @default(now())
 }
 
 model Referral {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   inviterId   String
   inviteeId   String
-  inviter     User     @relation("RefRelInviter", fields: [inviterId], references: [id])
-  invitee     User     @relation("RefRelInvitee", fields: [inviteeId], references: [id])
+  inviter     User      @relation("RefRelInviter", fields: [inviterId], references: [id])
+  invitee     User      @relation("RefRelInvitee", fields: [inviteeId], references: [id])
   confirmedAt DateTime?
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
 }
 
 model Policy {
-  id      String @id @default(cuid())
-  key     String @unique
-  value   String
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
   createdAt DateTime @default(now())
   // أمثلة مفاتيح:
   // minWithdrawDaysFirst=45
@@ -176,24 +168,24 @@ model AuditLog {
 }
 
 model Message {
-  id      String      @id @default(cuid())
-  userId  String?
-  user    User?       @relation(fields: [userId], references: [id])
-  type    MessageType
-  title   String
-  body    String
-  readAt  DateTime?
-  createdAt DateTime  @default(now())
+  id        String      @id @default(cuid())
+  userId    String?
+  user      User?       @relation(fields: [userId], references: [id])
+  type      MessageType
+  title     String
+  body      String
+  readAt    DateTime?
+  createdAt DateTime    @default(now())
 
   @@index([createdAt])
 }
 
 model PasswordResetToken {
-  id         String   @id @default(cuid())
-  userId     String
-  user       User     @relation(fields: [userId], references: [id])
-  tokenHash  String   @unique
-  expiresAt  DateTime
-  usedAt     DateTime?
-  createdAt  DateTime @default(now())
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
 }

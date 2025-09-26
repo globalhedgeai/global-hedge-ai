@@ -1,34 +1,18 @@
-import { redirect } from "next/navigation";
-import { getSession } from "./session";
-import { NextResponse } from "next/server";
+import { getIronSession } from 'iron-session';
+import { sessionOptions, type IronSession } from './session';
+import type { SessionUser } from './session';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function getSessionUser() {
-  const session = await getSession();
-  return session.user;
+export async function getSessionUser(req: Request): Promise<SessionUser | null> {
+  const session = await getIronSession(req, new Response(), sessionOptions) as IronSession;
+  return session.user || null;
 }
 
-export async function requireUser() {
-  const user = await getSessionUser();
-  if (!user) {
-    redirect("/login");
+export async function requireUserApi(req: NextRequest): Promise<NextResponse> {
+  const res = new NextResponse();
+  const session = await getIronSession(req, res, sessionOptions) as IronSession;
+  if (!session.user) {
+    return NextResponse.json({ ok: false, error: 'unauthorized' }, { status: 401 });
   }
-  return user;
-}
-
-export async function requireUserApi() {
-  const devOpen = process.env.AUTH_DEV_OPEN === '1';
-  
-  if (devOpen) {
-    return { id: 'dev-bypass', email: 'dev@example.com', role: 'USER' };
-  }
-
-  try {
-    const user = await getSessionUser();
-    if (!user) {
-      return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
-    }
-    return user;
-  } catch {
-    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
-  }
+  return res;
 }

@@ -1,45 +1,26 @@
-import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import bcrypt from "bcryptjs";
-import { z } from "zod";
-import { getSession } from "@/lib/session";
-
-const schema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
-});
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { registerSchema } from '@/lib/validators';
+import { hashPassword } from '@/lib/password';
+import { getIronSession } from 'iron-session';
+import { sessionOptions, type IronSession } from '@/lib/session';
 
 export async function POST(req: NextRequest) {
-  try {
-    const body = await req.json();
-    const { email, password } = schema.parse(body);
+  const body = await req.json().catch(() => ({}));
+  const parsed = registerSchema.safeParse(body);
+  if (!parsed.success) return NextResponse.json({ ok: false, error: 'invalid' }, { status: 400 });
 
-    const exist = await prisma.user.findUnique({ where: { email } });
-    if (exist) {
-      return NextResponse.json({ ok: false, error: "Email already exists" }, { status: 400 });
-    }
+  const { email, password } = parsed.data;
+  const exists = await prisma.user.findUnique({ where: { email } });
+  if (exists) return NextResponse.json({ ok: false, error: 'email_taken' }, { status: 400 });
 
-    const hash = await bcrypt.hash(password, 10);
-    const user = await prisma.user.create({
-      data: {
-        email,
-        passwordHash: hash,
-        role: "USER",
-        referralCode: crypto.randomUUID().slice(0, 8).toUpperCase(),
-      },
-    });
+  const user = await prisma.user.create({
+    data: { email, passwordHash: await hashPassword(password), role: 'USER', referralCode: 'SELF' },
+  });
 
-    const session = await getSession();
-    session.user = {
-      id: user.id,
-      email: user.email,
-      role: "USER",
-    };
-    await session.save();
-
-    return NextResponse.json({ ok: true, id: user.id });
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : "Registration failed";
-    return NextResponse.json({ ok: false, error: msg }, { status: 400 });
-  }
+  const res = NextResponse.json({ ok: true });
+  const session = await getIronSession(req, res, sessionOptions) as IronSession;
+  session.user = { id: user.id, email: user.email, role: user.role };
+  await session.save();
+  return res;
 }

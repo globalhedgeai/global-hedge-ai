@@ -1,29 +1,37 @@
 'use client';
+import { useEffect, useState } from 'react';
+import type { SessionUser } from '@/lib/session';
 
-import { useRouter } from "next/navigation";
-import type { SessionData } from "@/lib/session";
-
-export function AuthHeader({ user }: { user?: SessionData["user"] }) {
-  const router = useRouter();
-
-  async function logout() {
-    await fetch("/api/auth/logout", { method: "POST" });
-    router.push("/login");
-    router.refresh();
-  }
+export default function AuthHeader() {
+  const [user, setUser] = useState<SessionUser | null>(null);
+  useEffect(() => {
+    fetch('/api/me').then(r => r.json()).then(d => {
+      if (d?.user) setUser(d.user);
+    });
+  }, []);
 
   return (
-    <header style={{ padding: "12px 24px", borderBottom: "1px solid #eee", display: "flex", justifyContent: "flex-end", gap: 12 }}>
+    <header className="p-4 bg-gray-100">
       {user ? (
-        <>
-          <span>Hello, {user.email}</span>
-          <button onClick={logout}>Logout</button>
-        </>
+        <div className="flex justify-between items-center">
+          <div>{user.email}</div>
+          <button
+            onClick={() => {
+              fetch('/api/auth/logout', { method: 'POST' }).then(() => {
+                setUser(null);
+                window.location.href = '/login';
+              });
+            }}
+            className="bg-black text-white px-4 py-2 rounded"
+          >
+            تسجيل خروج
+          </button>
+        </div>
       ) : (
-        <>
-          <a href="/login">Login</a>
-          <a href="/register">Register</a>
-        </>
+        <div className="flex gap-4">
+          <a href="/login" className="bg-black text-white px-4 py-2 rounded">تسجيل دخول</a>
+          <a href="/register" className="bg-white text-black border border-black px-4 py-2 rounded">تسجيل جديد</a>
+        </div>
       )}
     </header>
   );

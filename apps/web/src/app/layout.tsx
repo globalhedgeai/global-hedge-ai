@@ -1,24 +1,25 @@
-﻿import type { Metadata } from "next";
-import { getSessionUser } from "@/lib/auth";
-import { AuthHeader } from "@/components/AuthHeader";
-import "./globals.css";
+﻿import './globals.css';
+import { headers } from 'next/headers';
+import AuthHeader from "@/components/AuthHeader";
+import { getSessionUser } from '@/lib/auth';
 
-export const metadata: Metadata = {
-  title: "Global Hedge",
-  description: "Global Hedge Platform",
+export const metadata = {
+  title: 'Global Hedge AI',
+  description: 'Your trusted partner in global investments',
 };
 
 export default async function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
-  const user = await getSessionUser();
+}) {
+  const headersList = await headers();
+  await getSessionUser(new Request(headersList.get('x-url') || ''));
 
   return (
-    <html lang="en">
+    <html lang="ar" dir="rtl">
       <body>
-        <AuthHeader user={user} />
+        <AuthHeader />
         {children}
       </body>
     </html>
