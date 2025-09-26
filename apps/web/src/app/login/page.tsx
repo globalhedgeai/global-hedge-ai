@@ -33,7 +33,10 @@ export default function LoginPage() {
         </label>
         <button type="submit">Login</button>
         {msg && <div style={{ color: "red" }}>{msg}</div>}
-        <a href="/register">Create Account</a>
+        <div style={{ display: "flex", gap: 12 }}>
+          <a href="/register">Create Account</a>
+          <a href="/forgot">Forgot Password?</a>
+        </div>
       </form>
     </main>
   );
