@@ -7,6 +7,7 @@ interface MarketToolbarProps {
   onChangeSymbol: (s: string) => void;
   onChangeInterval: (i: string) => void;
   onRefresh?: () => void;
+  isLoading?: boolean;
 }
 
 const SYMBOLS = ["BTCUSDT", "ETHUSDT"] as const;
@@ -17,7 +18,8 @@ export default function MarketToolbar({
   interval,
   onChangeSymbol,
   onChangeInterval,
-  onRefresh
+  onRefresh,
+  isLoading = false
 }: MarketToolbarProps) {
   return (
     <div className="flex flex-wrap items-center gap-4 mb-6 p-4 bg-gray-50 rounded-lg border" dir="rtl">
@@ -29,7 +31,8 @@ export default function MarketToolbar({
           id="symbol-select"
           value={symbol}
           onChange={(e) => onChangeSymbol(e.target.value)}
-          className="border rounded px-3 py-2 bg-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          disabled={isLoading}
+          className="border rounded px-3 py-2 bg-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
           aria-label="اختر رمز التداول"
         >
           {SYMBOLS.map((s) => (
@@ -48,7 +51,8 @@ export default function MarketToolbar({
           id="interval-select"
           value={interval}
           onChange={(e) => onChangeInterval(e.target.value)}
-          className="border rounded px-3 py-2 bg-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          disabled={isLoading}
+          className="border rounded px-3 py-2 bg-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
           aria-label="اختر الفترة الزمنية"
         >
           {INTERVALS.map((i) => (
@@ -62,10 +66,13 @@ export default function MarketToolbar({
       {onRefresh && (
         <button
           onClick={onRefresh}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+          disabled={isLoading}
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
           aria-label="تحديث البيانات"
+          aria-busy={isLoading}
+          aria-disabled={isLoading}
         >
-          تحديث
+          {isLoading ? "جاري التحديث..." : "تحديث"}
         </button>
       )}
     </div>
