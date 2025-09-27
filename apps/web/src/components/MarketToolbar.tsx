@@ -1,49 +1,78 @@
 "use client";
 import React from "react";
 
-const PAIRS = ["BTCUSDT","ETHUSDT","SOLUSDT"] as const;
-const INTERVALS = ["1m","5m","15m","1h","4h","1d"] as const;
-export type Pair = typeof PAIRS[number];
-export type Interval = typeof INTERVALS[number];
+interface MarketToolbarProps {
+  symbol: string;
+  interval: string;
+  onChangeSymbol: (s: string) => void;
+  onChangeInterval: (i: string) => void;
+  onRefresh?: () => void;
+  loading?: boolean;
+}
 
-export function MarketToolbar({
-  symbol, interval, onChangeSymbol, onChangeInterval, onRefresh
-}:{
-  symbol: Pair; interval: Interval;
-  onChangeSymbol:(s:Pair)=>void;
-  onChangeInterval:(i:Interval)=>void;
-  onRefresh:()=>void;
-}) {
+const SYMBOLS = ["BTCUSDT", "ETHUSDT"] as const;
+const INTERVALS = ["1m", "5m", "15m", "1h", "4h", "1d"] as const;
+
+export default function MarketToolbar({
+  symbol,
+  interval,
+  onChangeSymbol,
+  onChangeInterval,
+  onRefresh,
+  loading = false
+}: MarketToolbarProps) {
   return (
-    <div className="flex flex-wrap items-center gap-3 mb-4">
+    <div className="flex flex-wrap items-center gap-4 mb-6 p-4 bg-gray-50 rounded-lg border" dir="rtl">
       <div className="flex items-center gap-2">
-        <label className="text-sm">Pair</label>
+        <label htmlFor="symbol-select" className="text-sm font-medium text-gray-700">
+          الرمز
+        </label>
         <select
-          className="border rounded px-2 py-1"
+          id="symbol-select"
           value={symbol}
-          onChange={(e)=>onChangeSymbol(e.target.value as Pair)}
+          onChange={(e) => onChangeSymbol(e.target.value)}
+          disabled={loading}
+          className="border rounded px-3 py-2 bg-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+          aria-label="اختر رمز التداول"
         >
-          {PAIRS.map(p=> <option key={p} value={p}>{p}</option>)}
+          {SYMBOLS.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
         </select>
       </div>
 
       <div className="flex items-center gap-2">
-        <label className="text-sm">Interval</label>
+        <label htmlFor="interval-select" className="text-sm font-medium text-gray-700">
+          الفترة الزمنية
+        </label>
         <select
-          className="border rounded px-2 py-1"
+          id="interval-select"
           value={interval}
-          onChange={(e)=>onChangeInterval(e.target.value as Interval)}
+          onChange={(e) => onChangeInterval(e.target.value)}
+          disabled={loading}
+          className="border rounded px-3 py-2 bg-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+          aria-label="اختر الفترة الزمنية"
         >
-          {INTERVALS.map(i=> <option key={i} value={i}>{i}</option>)}
+          {INTERVALS.map((i) => (
+            <option key={i} value={i}>
+              {i}
+            </option>
+          ))}
         </select>
       </div>
 
-      <button
-        className="border rounded px-3 py-1 hover:bg-gray-100"
-        onClick={onRefresh}
-      >
-        Refresh
-      </button>
+      {onRefresh && (
+        <button
+          onClick={onRefresh}
+          disabled={loading}
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+          aria-label="تحديث البيانات"
+        >
+          {loading ? "جاري التحديث..." : "تحديث"}
+        </button>
+      )}
     </div>
   );
 }
