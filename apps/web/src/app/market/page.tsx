@@ -109,7 +109,6 @@ export default function MarketPage() {
         onChangeSymbol={setSymbol}
         onChangeInterval={setInterval}
         onRefresh={fetchCandles}
-        loading={loading}
       />
       
       {loading && (
