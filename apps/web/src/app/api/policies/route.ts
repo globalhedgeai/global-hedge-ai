@@ -17,9 +17,9 @@ export async function GET() {
         bonusPct: 2 // نسبة المكافأة
       },
       dailyReward: {
-        enabled: true, // المكافأة اليومية مفعلة افتراضياً
-        amount: 1.0, // مبلغ المكافأة اليومية
-        reset: "utc_midnight" // إعادة تعيين عند منتصف الليل بتوقيت UTC
+        enabled: process.env.DAILY_REWARD_ENABLED ? process.env.DAILY_REWARD_ENABLED === '1' : true,
+        amount: Number(process.env.DAILY_REWARD_AMOUNT ?? 1.0),
+        reset: 'utc_midnight'
       }
     };
 
