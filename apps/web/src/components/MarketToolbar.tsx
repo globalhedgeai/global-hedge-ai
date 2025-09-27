@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { useTranslations } from 'next-intl';
 
 interface MarketToolbarProps {
   symbol: string;
@@ -21,11 +22,13 @@ export default function MarketToolbar({
   onRefresh,
   isLoading = false
 }: MarketToolbarProps) {
+  const t = useTranslations();
+  
   return (
     <div className="flex flex-wrap items-center gap-4 mb-6 p-4 bg-gray-50 rounded-lg border" dir="rtl">
       <div className="flex items-center gap-2">
         <label htmlFor="symbol-select" className="text-sm font-medium text-gray-700">
-          الرمز
+          {t('market.symbol')}
         </label>
         <select
           id="symbol-select"
@@ -33,7 +36,7 @@ export default function MarketToolbar({
           onChange={(e) => onChangeSymbol(e.target.value)}
           disabled={isLoading}
           className="border rounded px-3 py-2 bg-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-          aria-label="اختر رمز التداول"
+          aria-label={t('market.symbol')}
         >
           {SYMBOLS.map((s) => (
             <option key={s} value={s}>
@@ -45,7 +48,7 @@ export default function MarketToolbar({
 
       <div className="flex items-center gap-2">
         <label htmlFor="interval-select" className="text-sm font-medium text-gray-700">
-          الفترة الزمنية
+          {t('market.interval')}
         </label>
         <select
           id="interval-select"
@@ -53,7 +56,7 @@ export default function MarketToolbar({
           onChange={(e) => onChangeInterval(e.target.value)}
           disabled={isLoading}
           className="border rounded px-3 py-2 bg-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-          aria-label="اختر الفترة الزمنية"
+          aria-label={t('market.interval')}
         >
           {INTERVALS.map((i) => (
             <option key={i} value={i}>
@@ -68,11 +71,11 @@ export default function MarketToolbar({
           onClick={onRefresh}
           disabled={isLoading}
           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-          aria-label="تحديث البيانات"
+          aria-label={t('market.refresh')}
           aria-busy={isLoading}
           aria-disabled={isLoading}
         >
-          {isLoading ? "جاري التحديث..." : "تحديث"}
+          {isLoading ? t('market.refreshing') : t('market.refresh')}
         </button>
       )}
     </div>

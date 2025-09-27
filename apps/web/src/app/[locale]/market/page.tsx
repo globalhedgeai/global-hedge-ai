@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState, useRef } from "react"
 import { useRouter, useSearchParams } from "next/navigation";
 import { createChart, type IChartApi, type CandlestickData, type UTCTimestamp } from "lightweight-charts";
 import MarketToolbar from "@/components/MarketToolbar";
+import { useTranslations } from 'next-intl';
 
 type Candle = { time: number; open: number; high: number; low: number; close: number; volume?: number };
 
@@ -16,6 +17,7 @@ const CACHE_TTL = 30000; // 30 seconds
 export default function MarketPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const t = useTranslations();
   
   // Initialize state from URL params with validation
   const [symbol, setSymbol] = useState<string>(() => {
@@ -81,7 +83,7 @@ export default function MarketPage() {
       
       if (response.status === 401) {
         // Handle unauthorized - redirect to login
-        alert("انتهت صلاحية الجلسة. سيتم توجيهك لصفحة تسجيل الدخول.");
+        alert(t('market.sessionExpired'));
         router.push("/login");
         return;
       }
@@ -109,7 +111,7 @@ export default function MarketPage() {
     } finally {
       setLoading(false);
     }
-  }, [queryString, symbol, interval, router]);
+  }, [queryString, symbol, interval, router, t]);
 
   // Handle symbol/interval changes
   const handleSymbolChange = useCallback((newSymbol: string) => {
@@ -180,8 +182,8 @@ export default function MarketPage() {
   }, [fetchCandles]);
 
   return (
-    <main className="p-4 max-w-6xl mx-auto" dir="rtl">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">السوق</h1>
+    <main className="p-4 max-w-6xl mx-auto">
+      <h1 className="text-2xl font-bold mb-6 text-gray-800">{t('market.title')}</h1>
       
       <MarketToolbar
         symbol={symbol}
@@ -194,7 +196,7 @@ export default function MarketPage() {
       
       {loading && (
         <div className="text-sm text-gray-500 mb-4 text-center">
-          جاري تحميل البيانات...
+          {t('market.loadingData')}
         </div>
       )}
       

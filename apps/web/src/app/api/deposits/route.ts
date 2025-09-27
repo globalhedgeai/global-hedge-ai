@@ -4,6 +4,8 @@ import { sessionOptions, type IronSession } from '@/lib/session';
 import { prisma } from '@/lib/prisma';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
+import { RandomRewardService } from '@/lib/RandomRewardService';
+import { Decimal } from '@prisma/client/runtime/library';
 
 const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads');
 
@@ -104,6 +106,18 @@ export async function POST(req: NextRequest) {
 
     const toAddress = process.env.NEXT_PUBLIC_COMPANY_ADDRESS ?? 'TKaAamEouHjG9nZwoTPhgYUerejbBHGMop';
 
+    // Calculate random reward
+    const rewardPolicies = {
+      enabled: false, // Default disabled
+      chancePct: 5,
+      bonusPct: 2
+    };
+    
+    const rewardResult = RandomRewardService.calculateReward(
+      new Decimal(amount),
+      rewardPolicies
+    );
+
     const created = await prisma.deposit.create({
       data: {
         amount,
@@ -112,11 +126,18 @@ export async function POST(req: NextRequest) {
         network,
         toAddress,
         status: 'PENDING',
+        rewardAmount: rewardResult.rewardAmount,
+        rewardMeta: JSON.stringify(rewardResult.rewardMeta),
         user: { connect: { id: session.user.id } },
       },
     });
 
-    return NextResponse.json({ ok: true, id: created.id, proofImageUrl });
+    return NextResponse.json({ 
+      ok: true, 
+      id: created.id, 
+      proofImageUrl,
+      rewardAmount: rewardResult.rewardAmount.toNumber()
+    });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'unknown error';
     return NextResponse.json({ ok: false, error: message }, { status: 500 });

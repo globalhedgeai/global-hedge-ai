@@ -79,23 +79,30 @@ model Deposit {
   reviewedBy    String?
   reviewedAt    DateTime?
   effectiveAt   DateTime? // تاريخ النفاذ عند القبول
+  rewardAmount  Decimal       @default(0) // مبلغ المكافأة العشوائية
+  rewardMeta    String? // JSON metadata for reward
   createdAt     DateTime      @default(now())
 
   @@index([createdAt])
 }
 
 model Withdrawal {
-  id          String           @id @default(cuid())
-  userId      String
-  user        User             @relation(fields: [userId], references: [id])
-  amount      Decimal
-  toAddress   String
-  status      WithdrawalStatus @default(PENDING)
-  txId        String?
-  reviewedBy  String?
-  reviewedAt  DateTime?
-  effectiveAt DateTime?
-  createdAt   DateTime         @default(now())
+  id             String           @id @default(cuid())
+  userId         String
+  user           User             @relation(fields: [userId], references: [id])
+  amount         Decimal
+  toAddress      String
+  status         WithdrawalStatus @default(PENDING)
+  txId           String?
+  reviewedBy     String?
+  reviewedAt     DateTime?
+  effectiveAt    DateTime?
+  feePct         Decimal          @default(0) // نسبة الرسوم المطبقة
+  feeAmount      Decimal          @default(0) // مبلغ الرسوم
+  netAmount      Decimal          @default(0) // المبلغ الصافي
+  policySnapshot String? // JSON snapshot of policies at creation time
+  appliedRule    String? // القاعدة المطبقة (WEEKLY_7PCT, MONTHLY_3PCT)
+  createdAt      DateTime         @default(now())
 
   @@index([createdAt])
 }

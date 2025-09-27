@@ -1,10 +1,32 @@
-﻿export const runtime = 'nodejs'   // ظ…ظ‡ظ… ظ„ظ…ط¹ط§ظ…ظ„ط§طھ ط§ظ„ظ…ظ„ظپ
-import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma' // ظ…ظ† api â†’ app â†’ src â†’ lib
+﻿import { NextResponse } from 'next/server';
 
 export async function GET() {
-  const policies = await prisma.policy.findMany({ orderBy: { key: 'asc' } })
-  return NextResponse.json({ ok: true, count: policies.length, data: policies })
+  try {
+    // Default policies - يمكن تحسينها لاحقاً لتكون قابلة للتكوين من قاعدة البيانات
+    const policies = {
+      depositFeePct: 0, // رسوم الإيداع (افتراضي 0%)
+      withdraw: {
+        firstWithdrawMinDays: 45, // الحد الأدنى لأول سحب
+        weeklyFeePct: 7, // رسوم أسبوعية
+        monthlyFeePct: 3, // رسوم شهرية
+        monthlyThresholdDays: 30 // حد الأيام للرسوم الشهرية
+      },
+      rewards: {
+        enabled: false, // المكافآت العشوائية (معطلة افتراضياً)
+        chancePct: 5, // نسبة الفرصة
+        bonusPct: 2 // نسبة المكافأة
+      }
+    };
+
+    return NextResponse.json({
+      ok: true,
+      policies
+    });
+  } catch (error) {
+    console.error('Error fetching policies:', error);
+    return NextResponse.json(
+      { ok: false, error: 'Failed to fetch policies' },
+      { status: 500 }
+    );
+  }
 }
-
-

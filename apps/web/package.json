@@ -24,6 +24,7 @@
     "lightweight-charts": "^5.0.8",
     "next": "15.5.4",
     "next-auth": "^4.24.11",
+    "next-intl": "^4.3.9",
     "nodemailer": "^7.0.6",
     "qrcode": "1.5.4",
     "react": "19.1.0",
