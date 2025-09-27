@@ -112,6 +112,21 @@
     "chancePct": "Şans (%)",
     "bonusPct": "Bonus (%)"
   },
+  "dailyReward": {
+    "title": "Günlük Ödül",
+    "claimButton": "Günlük ödülü al",
+    "claimSuccess": "Günlük ödül başarıyla alındı!",
+    "alreadyClaimed": "Günlük ödül zaten alındı",
+    "disabled": "Günlük ödül devre dışı",
+    "countdown": "Kalan süre: {time}",
+    "resetAtMidnight": "UTC gece yarısında sıfırlanır",
+    "amount": "+{amount}",
+    "errors": {
+      "disabled": "Günlük ödül şu anda devre dışı",
+      "alreadyClaimedToday": "Günlük ödül bugün zaten alındı",
+      "unauthorized": "Lütfen önce giriş yapın"
+    }
+  },
   "errors": {
     "generic": "Beklenmeyen bir hata oluştu",
     "networkError": "Ağ hatası",

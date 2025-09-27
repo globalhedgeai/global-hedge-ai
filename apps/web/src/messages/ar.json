@@ -112,6 +112,21 @@
     "chancePct": "نسبة الفرصة (%)",
     "bonusPct": "نسبة المكافأة (%)"
   },
+  "dailyReward": {
+    "title": "المكافأة اليومية",
+    "claimButton": "الحصول على المكافأة اليومية",
+    "claimSuccess": "تم الحصول على المكافأة اليومية بنجاح!",
+    "alreadyClaimed": "تم الحصول على مكافأة اليوم",
+    "disabled": "المكافأة اليومية معطلة",
+    "countdown": "المتبقي: {time}",
+    "resetAtMidnight": "تنتهي عند منتصف الليل بتوقيت UTC",
+    "amount": "+{amount}",
+    "errors": {
+      "disabled": "المكافأة اليومية معطلة حالياً",
+      "alreadyClaimedToday": "تم الحصول على المكافأة اليوم مسبقاً",
+      "unauthorized": "يجب تسجيل الدخول أولاً"
+    }
+  },
   "errors": {
     "generic": "حدث خطأ غير متوقع",
     "networkError": "خطأ في الشبكة",

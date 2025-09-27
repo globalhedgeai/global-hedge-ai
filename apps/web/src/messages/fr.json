@@ -112,6 +112,21 @@
     "chancePct": "Chance (%)",
     "bonusPct": "Bonus (%)"
   },
+  "dailyReward": {
+    "title": "Récompense Quotidienne",
+    "claimButton": "Réclamer la récompense quotidienne",
+    "claimSuccess": "Récompense quotidienne réclamée avec succès !",
+    "alreadyClaimed": "Récompense quotidienne déjà réclamée",
+    "disabled": "Récompense quotidienne désactivée",
+    "countdown": "Temps restant : {time}",
+    "resetAtMidnight": "Se remet à zéro à minuit UTC",
+    "amount": "+{amount}",
+    "errors": {
+      "disabled": "Récompense quotidienne actuellement désactivée",
+      "alreadyClaimedToday": "Récompense quotidienne déjà réclamée aujourd'hui",
+      "unauthorized": "Veuillez vous connecter d'abord"
+    }
+  },
   "errors": {
     "generic": "Une erreur inattendue s'est produite",
     "networkError": "Erreur réseau",

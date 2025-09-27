@@ -110,13 +110,13 @@ model Withdrawal {
 model DailyRewardClaim {
   id        String   @id @default(cuid())
   userId    String
+  amount    Decimal  @default(0)
+  claimedAt DateTime @default(now())
+  claimDate DateTime // normalized to UTC date start (00:00:00.000Z)
+  meta      Json?
   user      User     @relation(fields: [userId], references: [id])
-  claimDate DateTime
-  amount    Decimal
-  status    String
-  createdAt DateTime @default(now())
 
-  @@unique([userId, claimDate])
+  @@unique([userId, claimDate]) // one claim per UTC day per user
 }
 
 model RandomBonus {

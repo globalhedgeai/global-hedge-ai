@@ -112,6 +112,21 @@
     "chancePct": "Chance (%)",
     "bonusPct": "Bonus (%)"
   },
+  "dailyReward": {
+    "title": "Daily Reward",
+    "claimButton": "Claim daily reward",
+    "claimSuccess": "Daily reward claimed successfully!",
+    "alreadyClaimed": "Daily reward already claimed",
+    "disabled": "Daily reward is disabled",
+    "countdown": "Time remaining: {time}",
+    "resetAtMidnight": "Resets at midnight UTC",
+    "amount": "+{amount}",
+    "errors": {
+      "disabled": "Daily reward is currently disabled",
+      "alreadyClaimedToday": "Daily reward already claimed today",
+      "unauthorized": "Please log in first"
+    }
+  },
   "errors": {
     "generic": "An unexpected error occurred",
     "networkError": "Network error",

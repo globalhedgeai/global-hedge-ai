@@ -15,6 +15,11 @@ export async function GET() {
         enabled: false, // المكافآت العشوائية (معطلة افتراضياً)
         chancePct: 5, // نسبة الفرصة
         bonusPct: 2 // نسبة المكافأة
+      },
+      dailyReward: {
+        enabled: true, // المكافأة اليومية مفعلة افتراضياً
+        amount: 1.0, // مبلغ المكافأة اليومية
+        reset: "utc_midnight" // إعادة تعيين عند منتصف الليل بتوقيت UTC
       }
     };
 
