@@ -44,8 +44,8 @@ export default function AuthHeader() {
             <Link href="/market" className="text-blue-600 hover:text-blue-800 px-2 py-1 rounded">السوق</Link>
           </nav>
           <div className="flex gap-4">
-            <a href="/login" className="bg-black text-white px-4 py-2 rounded">تسجيل دخول</a>
-            <a href="/register" className="bg-white text-black border border-black px-4 py-2 rounded">تسجيل جديد</a>
+            <Link href="/login" className="bg-black text-white px-4 py-2 rounded">تسجيل دخول</Link>
+            <Link href="/register" className="bg-white text-black border border-black px-4 py-2 rounded">تسجيل جديد</Link>
           </div>
         </div>
       )}

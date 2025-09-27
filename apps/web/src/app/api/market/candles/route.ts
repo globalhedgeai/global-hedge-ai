@@ -86,7 +86,10 @@ function generateMockCandles(symbol: Symbol, interval: Interval, limit: number):
 export async function GET(req: NextRequest) {
   try {
     // Rate limiting
-    const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
+    const ip =
+      req.headers.get('x-forwarded-for') ??
+      req.headers.get('x-real-ip') ??
+      'unknown';
     if (!checkRateLimit(ip)) {
       return NextResponse.json(
         { ok: false, error: 'Rate limit exceeded' },

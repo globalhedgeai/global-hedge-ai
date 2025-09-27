@@ -1,37 +1,128 @@
-import { cookies } from 'next/headers';
+'use client';
+import { useEffect, useRef, useState } from 'react';
+import { createChart, UTCTimestamp } from 'lightweight-charts';
 
-async function loadCandles() {
-  const cookie = cookies().toString();
-  const base = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3001';
-  const url  = `${base}/api/market/candles?symbol=BTCUSDT&interval=1h&limit=50`;
+type Candle = { time: number; open: number; high: number; low: number; close: number };
 
-  const res = await fetch(url, {
-    headers: { Cookie: cookie },
-    cache: 'no-store',
-  });
+export default function MarketPage() {
+  const chartContainerRef = useRef<HTMLDivElement>(null);
+  const chartRef = useRef<unknown>(null);
+  const seriesRef = useRef<unknown>(null);
+  const [candles, setCandles] = useState<Candle[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (res.status === 401) return { ok:false, reason:'unauth' as const };
-  if (!res.ok)          return { ok:false, reason:'bad' as const };
+  const fetchCandles = async () => {
+    try {
+      const res = await fetch('/api/market/candles?symbol=BTCUSDT&interval=1h&limit=50');
+      
+      if (res.status === 401) {
+        setError('الرجاء تسجيل الدخول للوصول إلى السوق.');
+        return;
+      }
+      
+      if (!res.ok) {
+        setError('تعذر تحميل بيانات السوق حالياً.');
+        return;
+      }
 
-  const data = await res.json();
-  return { ok:true, data };
-}
-
-export default async function MarketPage() {
-  const result = await loadCandles();
-
-  if (!result.ok) {
-    if (result.reason === 'unauth') {
-      return <div className="p-6">الرجاء تسجيل الدخول للوصول إلى السوق.</div>;
+      const data = await res.json();
+      if (data.ok && data.candles) {
+        setCandles(data.candles);
+        setError(null);
+      } else {
+        setError('تعذر تحميل بيانات السوق حالياً.');
+      }
+    } catch {
+      setError('تعذر تحميل بيانات السوق حالياً.');
+    } finally {
+      setLoading(false);
     }
-    return <div className="p-6">تعذر تحميل بيانات السوق حالياً.</div>;
+  };
+
+  useEffect(() => {
+    fetchCandles();
+    
+    const id = window.setInterval(fetchCandles, 10000);
+    return () => window.clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    if (!chartContainerRef.current) return;
+
+    // Create chart
+    const chart = createChart(chartContainerRef.current, {
+      width: chartContainerRef.current.clientWidth,
+      height: 400,
+      layout: {
+        background: { color: 'white' },
+        textColor: 'black',
+      },
+      grid: {
+        vertLines: { color: '#f0f0f0' },
+        horzLines: { color: '#f0f0f0' },
+      },
+      timeScale: {
+        timeVisible: true,
+        secondsVisible: false,
+      },
+    });
+
+    // Add candlestick series
+    const candlestickSeries = (chart as unknown as { addCandlestickSeries: (options: unknown) => unknown }).addCandlestickSeries({
+      upColor: '#26a69a',
+      downColor: '#ef5350',
+      borderVisible: false,
+      wickUpColor: '#26a69a',
+      wickDownColor: '#ef5350',
+    });
+
+    chartRef.current = chart;
+    seriesRef.current = candlestickSeries;
+
+    // Handle resize
+    const handleResize = () => {
+      if (chartContainerRef.current && chart) {
+        chart.applyOptions({
+          width: chartContainerRef.current.clientWidth,
+        });
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      chart.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (seriesRef.current && candles.length > 0) {
+      const formattedCandles = candles.map(c => ({
+        time: c.time as UTCTimestamp,
+        open: c.open,
+        high: c.high,
+        low: c.low,
+        close: c.close,
+      }));
+      
+      (seriesRef.current as { setData: (data: unknown) => void }).setData(formattedCandles);
+    }
+  }, [candles]);
+
+  if (loading) {
+    return <div className="p-6">جاري تحميل بيانات السوق...</div>;
   }
 
-  const { data } = result;
-  // TODO: render your candlestick chart with data.candles
+  if (error) {
+    return <div className="p-6">{error}</div>;
+  }
+
   return (
-    <pre className="p-6 text-sm overflow-x-auto">
-      {JSON.stringify(data, null, 2)}
-    </pre>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">سوق العملات الرقمية</h1>
+      <div ref={chartContainerRef} className="w-full" />
+    </div>
   );
 }

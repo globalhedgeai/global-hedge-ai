@@ -14,9 +14,9 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const headersList = await headers();
-  const proto = headersList.get('x-forwarded-proto') || 'http';
-  const host  = headersList.get('host') || `localhost:${process.env.PORT || '3001'}`;
-  const url   = headersList.get('x-url') || `${proto}://${host}/`;
+  const proto = headersList.get('x-forwarded-proto') ?? 'http';
+  const host  = headersList.get('host') ?? `localhost:${process.env.PORT ?? '3001'}`;
+  const url   = headersList.get('x-url') ?? `${proto}://${host}/`;
   await getSessionUser(new Request(url));
 
   return (
