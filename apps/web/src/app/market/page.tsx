@@ -1,128 +1,47 @@
-'use client';
-import { useEffect, useRef, useState } from 'react';
-import { createChart, UTCTimestamp } from 'lightweight-charts';
+"use client";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import CandlesChart from "@/components/CandlesChart";
+import { MarketToolbar, type Interval, type Pair } from "@/components/MarketToolbar";
 
-type Candle = { time: number; open: number; high: number; low: number; close: number };
+type Candle = { time:number; open:number; high:number; low:number; close:number; volume?:number };
 
 export default function MarketPage() {
-  const chartContainerRef = useRef<HTMLDivElement>(null);
-  const chartRef = useRef<unknown>(null);
-  const seriesRef = useRef<unknown>(null);
+  const [symbol, setSymbol] = useState<Pair>("BTCUSDT");
+  const [interval, setInterval] = useState<Interval>("1h");
   const [candles, setCandles] = useState<Candle[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const fetchCandles = async () => {
+  const qs = useMemo(()=> new URLSearchParams({
+    symbol, interval, limit: "200"
+  }).toString(), [symbol, interval]);
+
+  const fetchCandles = useCallback(async ()=>{
+    setLoading(true);
     try {
-      const res = await fetch('/api/market/candles?symbol=BTCUSDT&interval=1h&limit=50');
-      
-      if (res.status === 401) {
-        setError('الرجاء تسجيل الدخول للوصول إلى السوق.');
-        return;
-      }
-      
-      if (!res.ok) {
-        setError('تعذر تحميل بيانات السوق حالياً.');
-        return;
-      }
+      const r = await fetch(`/api/market/candles?${qs}`, { cache:"no-store" });
+      const j = await r.json();
+      if (j?.ok && Array.isArray(j.candles)) setCandles(j.candles);
+    } finally { setLoading(false); }
+  },[qs]);
 
-      const data = await res.json();
-      if (data.ok && data.candles) {
-        setCandles(data.candles);
-        setError(null);
-      } else {
-        setError('تعذر تحميل بيانات السوق حالياً.');
-      }
-    } catch {
-      setError('تعذر تحميل بيانات السوق حالياً.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
+  useEffect(()=>{
     fetchCandles();
-    
     const id = window.setInterval(fetchCandles, 10000);
-    return () => window.clearInterval(id);
-  }, []);
-
-  useEffect(() => {
-    if (!chartContainerRef.current) return;
-
-    // Create chart
-    const chart = createChart(chartContainerRef.current, {
-      width: chartContainerRef.current.clientWidth,
-      height: 400,
-      layout: {
-        background: { color: 'white' },
-        textColor: 'black',
-      },
-      grid: {
-        vertLines: { color: '#f0f0f0' },
-        horzLines: { color: '#f0f0f0' },
-      },
-      timeScale: {
-        timeVisible: true,
-        secondsVisible: false,
-      },
-    });
-
-    // Add candlestick series
-    const candlestickSeries = (chart as unknown as { addCandlestickSeries: (options: unknown) => unknown }).addCandlestickSeries({
-      upColor: '#26a69a',
-      downColor: '#ef5350',
-      borderVisible: false,
-      wickUpColor: '#26a69a',
-      wickDownColor: '#ef5350',
-    });
-
-    chartRef.current = chart;
-    seriesRef.current = candlestickSeries;
-
-    // Handle resize
-    const handleResize = () => {
-      if (chartContainerRef.current && chart) {
-        chart.applyOptions({
-          width: chartContainerRef.current.clientWidth,
-        });
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      chart.remove();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (seriesRef.current && candles.length > 0) {
-      const formattedCandles = candles.map(c => ({
-        time: c.time as UTCTimestamp,
-        open: c.open,
-        high: c.high,
-        low: c.low,
-        close: c.close,
-      }));
-      
-      (seriesRef.current as { setData: (data: unknown) => void }).setData(formattedCandles);
-    }
-  }, [candles]);
-
-  if (loading) {
-    return <div className="p-6">جاري تحميل بيانات السوق...</div>;
-  }
-
-  if (error) {
-    return <div className="p-6">{error}</div>;
-  }
+    return ()=> clearInterval(id);
+  },[fetchCandles]);
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">سوق العملات الرقمية</h1>
-      <div ref={chartContainerRef} className="w-full" />
-    </div>
+    <main className="p-4 max-w-6xl mx-auto">
+      <h1 className="text-xl font-semibold mb-3">Market</h1>
+      <MarketToolbar
+        symbol={symbol}
+        interval={interval}
+        onChangeSymbol={setSymbol}
+        onChangeInterval={setInterval}
+        onRefresh={fetchCandles}
+      />
+      {loading && <div className="text-sm text-gray-500 mb-2">Loading…</div>}
+      <CandlesChart candles={candles} />
+    </main>
   );
 }
