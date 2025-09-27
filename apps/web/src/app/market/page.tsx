@@ -82,14 +82,14 @@ export default function MarketPage() {
   useEffect(() => {
     if (!seriesRef.current || !candles.length) return;
 
-    const formatted: CandlestickData[] = candles.map(c => ({
+    const data: CandlestickData[] = candles.map(c => ({
       time: c.time as UTCTimestamp,
       open: c.open,
       high: c.high,
       low: c.low,
       close: c.close
     }));
-    seriesRef.current.setData(formatted);
+    seriesRef.current.setData(data);
   }, [candles]);
 
   // Fetch data and set up auto-refresh
