@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 
 const COMPANY_ADDRESS =
   process.env.NEXT_PUBLIC_COMPANY_ADDRESS ||
@@ -40,6 +40,8 @@ export default function DepositPage() {
   const [amount, setAmount] = useState<string>("");
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const t = useTranslations();
+  const locale = useLocale();
+  const isRTL = locale === 'ar';
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -113,7 +115,7 @@ export default function DepositPage() {
     <main style={{ padding: 24, maxWidth: 920, margin: "0 auto", fontFamily: "system-ui" }}>
       <h1 style={{ marginBottom: 8 }}>{t('deposit.title')}</h1>
       <p style={{ color: "#888", marginBottom: 20 }}>
-        أرسل USDT على شبكة <b>TRC20</b> إلى عنوان الشركة ثم ارفع إثبات الإيداع وأدخل TXID.
+        {t('deposit.description')}
       </p>
 
       {/* Fee Information */}
@@ -135,7 +137,7 @@ export default function DepositPage() {
 
       <section style={{ display: "flex", gap: 24, alignItems: "flex-start", marginBottom: 24 }}>
         <div style={{ padding: 16, border: "1px solid #222", borderRadius: 12, background: "#0b1220", color: "#e5e7eb" }}>
-          <div style={{ marginBottom: 8 }}>عنوان المحفظة (TRC20)</div>
+          <div style={{ marginBottom: 8 }}>{t('deposit.walletAddress')}</div>
           <code style={{ fontSize: 14, wordBreak: "break-all" }}>{COMPANY_ADDRESS}</code>
           <div style={{ marginTop: 12 }}>
             <canvas ref={canvasRef} />
@@ -145,7 +147,7 @@ export default function DepositPage() {
             onClick={() => navigator.clipboard.writeText(COMPANY_ADDRESS)}
             type="button"
           >
-            نسخ العنوان
+{t('deposit.copyAddress')}
           </button>
         </div>
 
@@ -179,14 +181,14 @@ export default function DepositPage() {
             </label>
 
             <label>
-              الشبكة
+              {t('deposit.network')}
               <select name="network" defaultValue="TRC20" style={{ width: "100%" }}>
                 <option value="TRC20">TRC20 (USDT)</option>
               </select>
             </label>
 
             <label>
-              صورة إثبات الإيداع (jpg/png/webp)
+              {t('deposit.proofImage')}
               <input name="proof" type="file" accept="image/*" required />
             </label>
 
@@ -195,21 +197,34 @@ export default function DepositPage() {
             </button>
 
             {message && <div>{message}</div>}
+            
+            {/* Help Text */}
+            <div style={{ 
+              marginTop: 16, 
+              padding: 12, 
+              background: "#f0f9ff", 
+              border: "1px solid #0ea5e9", 
+              borderRadius: 8,
+              fontSize: 14,
+              color: "#0c4a6e"
+            }}>
+              {t('deposit.helpText')} <a href={`/${locale}/messages`} style={{ color: "#0ea5e9", textDecoration: "underline" }}>{t('deposit.helpLink')}</a>
+            </div>
           </div>
         </form>
       </section>
 
-      <h3 style={{ margin: "24px 0 8px" }}>سجل الإيداعات (آخر 50)</h3>
+      <h3 style={{ margin: "24px 0 8px" }}>{t('deposit.depositHistory')}</h3>
       <div style={{ border: "1px solid #222", borderRadius: 12, overflow: "hidden" }}>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead style={{ background: "#111827", color: "#e5e7eb" }}>
             <tr>
-              <th style={{ textAlign: "left", padding: 8 }}>المعرف</th>
-              <th style={{ textAlign: "left", padding: 8 }}>المبلغ</th>
-              <th style={{ textAlign: "left", padding: 8 }}>الشبكة</th>
-              <th style={{ textAlign: "left", padding: 8 }}>الحالة</th>
-              <th style={{ textAlign: "left", padding: 8 }}>المكافأة</th>
-              <th style={{ textAlign: "left", padding: 8 }}>الإثبات</th>
+              <th style={{ textAlign: isRTL ? "right" : "left", padding: 8 }}>{t('deposit.id')}</th>
+              <th style={{ textAlign: isRTL ? "right" : "left", padding: 8 }}>{t('deposit.amount')}</th>
+              <th style={{ textAlign: isRTL ? "right" : "left", padding: 8 }}>{t('deposit.network')}</th>
+              <th style={{ textAlign: isRTL ? "right" : "left", padding: 8 }}>{t('deposit.status')}</th>
+              <th style={{ textAlign: isRTL ? "right" : "left", padding: 8 }}>{t('deposit.reward')}</th>
+              <th style={{ textAlign: isRTL ? "right" : "left", padding: 8 }}>{t('deposit.proof')}</th>
             </tr>
           </thead>
           <tbody>
@@ -235,7 +250,7 @@ export default function DepositPage() {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      عرض
+                      {t('deposit.view')}
                     </a>
                   ) : (
                     "-"
@@ -244,7 +259,7 @@ export default function DepositPage() {
               </tr>
             ))}
             {list.length === 0 && (
-              <tr><td colSpan={6} style={{ padding: 8, color: "#888" }}>لا يوجد</td></tr>
+              <tr><td colSpan={6} style={{ padding: 8, color: "#888" }}>{t('deposit.noData')}</td></tr>
             )}
           </tbody>
         </table>

@@ -47,7 +47,8 @@
     "account": "الحساب",
     "admin": "الإدارة",
     "policies": "السياسات",
-    "rewards": "المكافآت"
+    "rewards": "المكافآت",
+    "users": "إدارة المستخدمين"
   },
   "market": {
     "title": "السوق",
@@ -70,7 +71,23 @@
     "feeAmount": "مبلغ الرسوم",
     "netAmount": "المبلغ الصافي",
     "rewardAmount": "مبلغ المكافأة",
-    "rewardMessage": "تهانينا! حصلت على مكافأة إضافية"
+    "rewardMessage": "تهانينا! حصلت على مكافأة إضافية",
+    "helpText": "للمساعدة تواصل معنا عبر الرسائل.",
+    "helpLink": "الرسائل",
+    "description": "أرسل USDT على شبكة TRC20 إلى عنوان الشركة ثم ارفع إثبات الإيداع وأدخل TXID.",
+    "walletAddress": "عنوان المحفظة (TRC20)",
+    "copyAddress": "نسخ العنوان",
+    "network": "الشبكة",
+    "proofImage": "صورة إثبات الإيداع (jpg/png/webp)",
+    "depositHistory": "سجل الإيداعات (آخر 50)",
+    "id": "المعرف",
+    "amount": "المبلغ",
+    "network": "الشبكة",
+    "status": "الحالة",
+    "reward": "المكافأة",
+    "proof": "الإثبات",
+    "view": "عرض",
+    "noData": "لا يوجد"
   },
   "withdraw": {
     "title": "سحب الأموال",
@@ -127,6 +144,22 @@
       "unauthorized": "يجب تسجيل الدخول أولاً"
     }
   },
+  "rewards": {
+    "random": {
+      "title": "المكافأة العشوائية",
+      "cta": "احصل على مكافأتك العشوائية (+${amount})",
+      "unavailableToday": "غير متاح اليوم",
+      "alreadyClaimed": "تم الحصول على المكافأة العشوائية اليوم",
+      "disabled": "المكافأة العشوائية معطلة",
+      "resetsIn": "تنتهي خلال {time} بتوقيت UTC",
+      "errors": {
+        "disabled": "المكافأة العشوائية معطلة حالياً",
+        "notEligible": "لست مؤهلاً للمكافأة العشوائية اليوم",
+        "alreadyClaimedToday": "تم الحصول على المكافأة العشوائية اليوم مسبقاً",
+        "unauthorized": "يجب تسجيل الدخول أولاً"
+      }
+    }
+  },
   "errors": {
     "generic": "حدث خطأ غير متوقع",
     "networkError": "خطأ في الشبكة",
@@ -144,8 +177,37 @@
     "switch": "تغيير اللغة",
     "arabic": "العربية",
     "english": "English",
-    "turkish": "Türkçe",
+    "italian": "Italiano",
     "french": "Français",
     "spanish": "Español"
+  },
+  "messages": {
+    "title": "الرسائل",
+    "conversation": "المحادثة",
+    "conversations": "المحادثات",
+    "withSupport": "مع فريق الدعم",
+    "noMessages": "لا توجد رسائل بعد. ابدأ محادثة مع فريق الدعم.",
+    "sendMessage": "إرسال رسالة",
+    "messagePlaceholder": "اكتب رسالتك هنا...",
+    "replyPlaceholder": "اكتب ردك هنا...",
+    "send": "إرسال",
+    "reply": "رد",
+    "received": "مستلمة",
+    "sent": "مرسلة",
+    "selectThread": "اختر محادثة لعرض الرسائل"
+  },
+  "referrals": {
+    "title": "الدعوات",
+    "myCode": "كود الدعوة الخاص بي",
+    "copyCode": "نسخ الكود",
+    "codeCopied": "تم نسخ الكود إلى الحافظة!",
+    "invitedUsers": "المستخدمون المدعوون",
+    "invitedCount": "إجمالي المدعوين",
+    "currentTier": "المستوى الحالي",
+    "tierBenefits": "مزايا المستوى",
+    "noInvites": "لا توجد دعوات بعد",
+    "referralCode": "كود الدعوة",
+    "enterCode": "أدخل كود الدعوة (اختياري)",
+    "invalidCode": "كود الدعوة غير صحيح"
   }
 }

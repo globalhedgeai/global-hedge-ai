@@ -50,12 +50,16 @@ model User {
   deposits            Deposit[]
   withdrawals         Withdrawal[]
   claims              DailyRewardClaim[]
+  randomRewardClaims  RandomRewardClaim[]
   messages            Message[]
+  messageThreads      MessageThread[]
   referralsAsInviter  Referral[]           @relation("RefRelInviter")
   referralsAsInvitee  Referral[]           @relation("RefRelInvitee")
   randomBonuses       RandomBonus[]
   auditLogs           AuditLog[]
   passwordResetTokens PasswordResetToken[]
+  referralStats       ReferralStats?
+  referralCodes       ReferralCode[]
 }
 
 model Tier {
@@ -113,6 +117,18 @@ model DailyRewardClaim {
   amount    Decimal  @default(0)
   claimedAt DateTime @default(now())
   claimDate DateTime // normalized to UTC date start (00:00:00.000Z)
+  meta      Json?
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, claimDate]) // one claim per UTC day per user
+}
+
+model RandomRewardClaim {
+  id        String   @id @default(cuid())
+  userId    String
+  amount    Decimal  // min 0.20, max 2.00
+  claimedAt DateTime @default(now())
+  claimDate String   // YYYY-MM-DD UTC format
   meta      Json?
   user      User     @relation(fields: [userId], references: [id])
 
@@ -195,4 +211,53 @@ model PasswordResetToken {
   expiresAt DateTime
   usedAt    DateTime?
   createdAt DateTime  @default(now())
+}
+
+// User-to-Admin messaging system
+model MessageThread {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+  lastMessageAt  DateTime @default(now())
+  unreadForUser  Int      @default(0)
+  unreadForAdmin Int      @default(0)
+  createdAt      DateTime @default(now())
+  
+  messages       ThreadMessage[]
+
+  @@unique([userId]) // One thread per user
+}
+
+model ThreadMessage {
+  id        String   @id @default(cuid())
+  threadId  String
+  thread    MessageThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  sender    String   // 'USER' | 'ADMIN'
+  body      String
+  createdAt DateTime @default(now())
+
+  @@index([threadId, createdAt])
+}
+
+// Enhanced referral system
+model ReferralCode {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  ownerUserId String
+  owner       User     @relation(fields: [ownerUserId], references: [id])
+  createdAt   DateTime @default(now())
+  isActive    Boolean  @default(true)
+
+  @@index([code])
+}
+
+model ReferralStats {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id])
+  invitedCount Int      @default(0)
+  tier         Int      @default(1)
+  updatedAt    DateTime @default(now())
+
+  @@index([userId])
 }

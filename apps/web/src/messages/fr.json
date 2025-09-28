@@ -47,7 +47,8 @@
     "account": "Compte",
     "admin": "Administration",
     "policies": "Politiques",
-    "rewards": "Récompenses"
+    "rewards": "Récompenses",
+    "users": "Gestion des Utilisateurs"
   },
   "market": {
     "title": "Marché",
@@ -70,7 +71,23 @@
     "feeAmount": "Montant des frais",
     "netAmount": "Montant net",
     "rewardAmount": "Montant de la récompense",
-    "rewardMessage": "Félicitations ! Vous avez reçu une récompense bonus"
+    "rewardMessage": "Félicitations ! Vous avez reçu une récompense bonus",
+    "helpText": "Pour de l'aide, contactez-nous via les messages.",
+    "helpLink": "Messages",
+    "description": "Envoyez USDT sur le réseau TRC20 à l'adresse de l'entreprise puis téléchargez la preuve de dépôt et entrez TXID.",
+    "walletAddress": "Adresse du Portefeuille (TRC20)",
+    "copyAddress": "Copier l'Adresse",
+    "network": "Réseau",
+    "proofImage": "Image de Preuve de Dépôt (jpg/png/webp)",
+    "depositHistory": "Historique des Dépôts (50 derniers)",
+    "id": "ID",
+    "amount": "Montant",
+    "network": "Réseau",
+    "status": "Statut",
+    "reward": "Récompense",
+    "proof": "Preuve",
+    "view": "Voir",
+    "noData": "Aucune donnée"
   },
   "withdraw": {
     "title": "Retrait de fonds",
@@ -127,6 +144,22 @@
       "unauthorized": "Veuillez vous connecter d'abord"
     }
   },
+  "rewards": {
+    "random": {
+      "title": "Récompense Aléatoire",
+      "cta": "Réclamer la récompense aléatoire (+${amount})",
+      "unavailableToday": "Non disponible aujourd'hui",
+      "alreadyClaimed": "Récompense aléatoire déjà réclamée aujourd'hui",
+      "disabled": "Récompense aléatoire désactivée",
+      "resetsIn": "Se remet à zéro dans {time} UTC",
+      "errors": {
+        "disabled": "Récompense aléatoire actuellement désactivée",
+        "notEligible": "Vous n'êtes pas éligible pour la récompense aléatoire aujourd'hui",
+        "alreadyClaimedToday": "Récompense aléatoire déjà réclamée aujourd'hui",
+        "unauthorized": "Veuillez vous connecter d'abord"
+      }
+    }
+  },
   "errors": {
     "generic": "Une erreur inattendue s'est produite",
     "networkError": "Erreur réseau",
@@ -144,8 +177,37 @@
     "switch": "Changer de langue",
     "arabic": "العربية",
     "english": "English",
-    "turkish": "Türkçe",
+    "italian": "Italiano",
     "french": "Français",
     "spanish": "Español"
+  },
+  "messages": {
+    "title": "Messages",
+    "conversation": "Conversation",
+    "conversations": "Conversations",
+    "withSupport": "avec l'Équipe de Support",
+    "noMessages": "Aucun message pour le moment. Commencez une conversation avec notre équipe de support.",
+    "sendMessage": "Envoyer un Message",
+    "messagePlaceholder": "Tapez votre message ici...",
+    "replyPlaceholder": "Tapez votre réponse ici...",
+    "send": "Envoyer",
+    "reply": "Répondre",
+    "received": "Reçu",
+    "sent": "Envoyé",
+    "selectThread": "Sélectionnez une conversation pour voir les messages"
+  },
+  "referrals": {
+    "title": "Parrainages",
+    "myCode": "Mon Code de Parrainage",
+    "copyCode": "Copier le Code",
+    "codeCopied": "Code copié dans le presse-papiers !",
+    "invitedUsers": "Utilisateurs Invités",
+    "invitedCount": "Total Invités",
+    "currentTier": "Niveau Actuel",
+    "tierBenefits": "Avantages du Niveau",
+    "noInvites": "Aucun parrainage pour le moment",
+    "referralCode": "Code de Parrainage",
+    "enterCode": "Entrez le code de parrainage (optionnel)",
+    "invalidCode": "Code de parrainage invalide"
   }
 }

@@ -35,7 +35,7 @@ export default function AdminRewardsPage() {
       } else {
         setError('Failed to fetch rewards');
       }
-    } catch (err) {
+    } catch {
       setError('Network error');
     } finally {
       setLoading(false);

@@ -10,13 +10,49 @@ export async function POST(req: NextRequest) {
   const parsed = registerSchema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ ok: false, error: 'invalid' }, { status: 400 });
 
-  const { email, password } = parsed.data;
+  const { email, password, referralCode } = parsed.data;
   const exists = await prisma.user.findUnique({ where: { email } });
   if (exists) return NextResponse.json({ ok: false, error: 'email_taken' }, { status: 400 });
 
+  let invitedById: string | undefined = undefined;
+
+  // Handle referral code if provided
+  if (referralCode) {
+    const referrerCode = await prisma.referralCode.findUnique({
+      where: { code: referralCode, isActive: true },
+      include: { owner: true }
+    });
+
+    if (referrerCode) {
+      invitedById = referrerCode.ownerUserId;
+    }
+  }
+
   const user = await prisma.user.create({
-    data: { email, passwordHash: await hashPassword(password), role: 'USER', referralCode: 'SELF' },
+    data: { 
+      email, 
+      passwordHash: await hashPassword(password), 
+      role: 'USER', 
+      referralCode: 'SELF',
+      invitedById
+    },
   });
+
+  // Update referral stats if user was invited
+  if (invitedById) {
+    await prisma.referralStats.upsert({
+      where: { userId: invitedById },
+      update: { 
+        invitedCount: { increment: 1 },
+        updatedAt: new Date()
+      },
+      create: {
+        userId: invitedById,
+        invitedCount: 1,
+        tier: 1
+      }
+    });
+  }
 
   const res = NextResponse.json({ ok: true });
   const session = await getIronSession(req, res, sessionOptions) as IronSession;

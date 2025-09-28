@@ -1,5 +1,7 @@
 import { redirect } from 'next/navigation';
 
 export default function Page() {
-  redirect('/ar/account'); // Default locale redirect
+  // Default redirect to Arabic account page
+  // Language detection will be handled by middleware
+  redirect('/ar/account');
 }

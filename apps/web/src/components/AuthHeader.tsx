@@ -7,6 +7,7 @@ import LanguageSwitcher from './LanguageSwitcher';
 
 export default function AuthHeader() {
   const [user, setUser] = useState<SessionUser | null>(null);
+  const [unreadCount, setUnreadCount] = useState(0);
   const t = useTranslations();
   
   useEffect(() => {
@@ -14,6 +15,15 @@ export default function AuthHeader() {
       if (d?.user) setUser(d.user);
     });
   }, []);
+
+  // Fetch unread message count for regular users
+  useEffect(() => {
+    if (user && user.role === 'USER') {
+      fetch('/api/messages').then(r => r.json()).then(d => {
+        if (d?.unreadCount) setUnreadCount(d.unreadCount);
+      });
+    }
+  }, [user]);
 
   return (
     <header className="p-4 bg-gray-100">
@@ -27,8 +37,22 @@ export default function AuthHeader() {
               <Link href="/deposit" className="text-blue-600 hover:text-blue-800 px-2 py-1 rounded">{t('navigation.deposit')}</Link>
               <Link href="/withdraw" className="text-blue-600 hover:text-blue-800 px-2 py-1 rounded">{t('navigation.withdraw')}</Link>
               <Link href="/account" className="text-blue-600 hover:text-blue-800 px-2 py-1 rounded">{t('navigation.account')}</Link>
+              {user.role === 'USER' && (
+                <Link href="/messages" className="text-blue-600 hover:text-blue-800 px-2 py-1 rounded flex items-center gap-1">
+                  {t('messages.title')}
+                  {unreadCount > 0 && (
+                    <span className="bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
+                      {unreadCount}
+                    </span>
+                  )}
+                </Link>
+              )}
               {user.role === 'ADMIN' && (
-                <Link href="/admin" className="text-blue-600 hover:text-blue-800 px-2 py-1 rounded">{t('navigation.admin')}</Link>
+                <>
+                  <Link href="/admin" className="text-blue-600 hover:text-blue-800 px-2 py-1 rounded">{t('navigation.admin')}</Link>
+                  <Link href="/admin/users" className="text-blue-600 hover:text-blue-800 px-2 py-1 rounded">{t('navigation.users')}</Link>
+                  <Link href="/admin/messages" className="text-blue-600 hover:text-blue-800 px-2 py-1 rounded">{t('messages.title')}</Link>
+                </>
               )}
             </nav>
           </div>

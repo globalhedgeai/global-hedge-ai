@@ -38,7 +38,7 @@ export default function AdminPoliciesPage() {
       } else {
         setError('Failed to fetch policies');
       }
-    } catch (err) {
+    } catch {
       setError('Network error');
     } finally {
       setLoading(false);

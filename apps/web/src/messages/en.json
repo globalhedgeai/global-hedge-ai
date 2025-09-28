@@ -47,7 +47,8 @@
     "account": "Account",
     "admin": "Admin",
     "policies": "Policies",
-    "rewards": "Rewards"
+    "rewards": "Rewards",
+    "users": "User Management"
   },
   "market": {
     "title": "Market",
@@ -70,7 +71,23 @@
     "feeAmount": "Fee Amount",
     "netAmount": "Net Amount",
     "rewardAmount": "Reward Amount",
-    "rewardMessage": "Congratulations! You received a bonus reward"
+    "rewardMessage": "Congratulations! You received a bonus reward",
+    "helpText": "For help, contact us through messages.",
+    "helpLink": "Messages",
+    "description": "Send USDT on TRC20 network to the company address then upload proof of deposit and enter TXID.",
+    "walletAddress": "Wallet Address (TRC20)",
+    "copyAddress": "Copy Address",
+    "network": "Network",
+    "proofImage": "Proof of Deposit Image (jpg/png/webp)",
+    "depositHistory": "Deposit History (Last 50)",
+    "id": "ID",
+    "amount": "Amount",
+    "network": "Network",
+    "status": "Status",
+    "reward": "Reward",
+    "proof": "Proof",
+    "view": "View",
+    "noData": "No data"
   },
   "withdraw": {
     "title": "Withdraw Funds",
@@ -127,6 +144,22 @@
       "unauthorized": "Please log in first"
     }
   },
+  "rewards": {
+    "random": {
+      "title": "Random Reward",
+      "cta": "Claim random reward (+${amount})",
+      "unavailableToday": "Not available today",
+      "alreadyClaimed": "Random reward already claimed today",
+      "disabled": "Random reward is disabled",
+      "resetsIn": "Resets in {time} UTC",
+      "errors": {
+        "disabled": "Random reward is currently disabled",
+        "notEligible": "You are not eligible for random reward today",
+        "alreadyClaimedToday": "Random reward already claimed today",
+        "unauthorized": "Please log in first"
+      }
+    }
+  },
   "errors": {
     "generic": "An unexpected error occurred",
     "networkError": "Network error",
@@ -144,8 +177,37 @@
     "switch": "Switch Language",
     "arabic": "العربية",
     "english": "English",
-    "turkish": "Türkçe",
+    "italian": "Italiano",
     "french": "Français",
     "spanish": "Español"
+  },
+  "messages": {
+    "title": "Messages",
+    "conversation": "Conversation",
+    "conversations": "Conversations",
+    "withSupport": "with Support Team",
+    "noMessages": "No messages yet. Start a conversation with our support team.",
+    "sendMessage": "Send Message",
+    "messagePlaceholder": "Type your message here...",
+    "replyPlaceholder": "Type your reply here...",
+    "send": "Send",
+    "reply": "Reply",
+    "received": "Received",
+    "sent": "Sent",
+    "selectThread": "Select a conversation to view messages"
+  },
+  "referrals": {
+    "title": "Referrals",
+    "myCode": "My Referral Code",
+    "copyCode": "Copy Code",
+    "codeCopied": "Code copied to clipboard!",
+    "invitedUsers": "Invited Users",
+    "invitedCount": "Total Invited",
+    "currentTier": "Current Tier",
+    "tierBenefits": "Tier Benefits",
+    "noInvites": "No referrals yet",
+    "referralCode": "Referral Code",
+    "enterCode": "Enter referral code (optional)",
+    "invalidCode": "Invalid referral code"
   }
 }

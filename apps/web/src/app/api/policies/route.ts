@@ -17,9 +17,16 @@ export async function GET() {
         bonusPct: 2 // نسبة المكافأة
       },
       dailyReward: {
-        enabled: process.env.DAILY_REWARD_ENABLED ? process.env.DAILY_REWARD_ENABLED === '1' : true,
+        enabled: true, // Always enabled for now
         amount: Number(process.env.DAILY_REWARD_AMOUNT ?? 1.0),
         reset: 'utc_midnight'
+      },
+      randomReward: {
+        enabled: true, // default true
+        winRate: 0.05, // 5%
+        minAmount: 0.20,
+        maxAmount: 2.00,
+        reset: 'utc_midnight' // same reset semantics as daily
       }
     };
 

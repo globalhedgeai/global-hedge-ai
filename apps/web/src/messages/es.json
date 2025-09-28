@@ -47,7 +47,8 @@
     "account": "Cuenta",
     "admin": "Administración",
     "policies": "Políticas",
-    "rewards": "Recompensas"
+    "rewards": "Recompensas",
+    "users": "Gestión de Usuarios"
   },
   "market": {
     "title": "Mercado",
@@ -70,7 +71,23 @@
     "feeAmount": "Cantidad de comisión",
     "netAmount": "Cantidad neta",
     "rewardAmount": "Cantidad de recompensa",
-    "rewardMessage": "¡Felicidades! Recibiste una recompensa bonus"
+    "rewardMessage": "¡Felicidades! Recibiste una recompensa bonus",
+    "helpText": "Para ayuda, contáctanos a través de mensajes.",
+    "helpLink": "Mensajes",
+    "description": "Envía USDT en la red TRC20 a la dirección de la empresa luego sube la prueba de depósito e ingresa TXID.",
+    "walletAddress": "Dirección de Cartera (TRC20)",
+    "copyAddress": "Copiar Dirección",
+    "network": "Red",
+    "proofImage": "Imagen de Prueba de Depósito (jpg/png/webp)",
+    "depositHistory": "Historial de Depósitos (Últimos 50)",
+    "id": "ID",
+    "amount": "Cantidad",
+    "network": "Red",
+    "status": "Estado",
+    "reward": "Recompensa",
+    "proof": "Prueba",
+    "view": "Ver",
+    "noData": "Sin datos"
   },
   "withdraw": {
     "title": "Retirar fondos",
@@ -127,6 +144,22 @@
       "unauthorized": "Por favor inicia sesión primero"
     }
   },
+  "rewards": {
+    "random": {
+      "title": "Recompensa Aleatoria",
+      "cta": "Reclamar recompensa aleatoria (+${amount})",
+      "unavailableToday": "No disponible hoy",
+      "alreadyClaimed": "Recompensa aleatoria ya reclamada hoy",
+      "disabled": "Recompensa aleatoria deshabilitada",
+      "resetsIn": "Se reinicia en {time} UTC",
+      "errors": {
+        "disabled": "Recompensa aleatoria actualmente deshabilitada",
+        "notEligible": "No eres elegible para recompensa aleatoria hoy",
+        "alreadyClaimedToday": "Recompensa aleatoria ya reclamada hoy",
+        "unauthorized": "Por favor inicia sesión primero"
+      }
+    }
+  },
   "errors": {
     "generic": "Ocurrió un error inesperado",
     "networkError": "Error de red",
@@ -144,8 +177,37 @@
     "switch": "Cambiar idioma",
     "arabic": "العربية",
     "english": "English",
-    "turkish": "Türkçe",
+    "italian": "Italiano",
     "french": "Français",
     "spanish": "Español"
+  },
+  "messages": {
+    "title": "Mensajes",
+    "conversation": "Conversación",
+    "conversations": "Conversaciones",
+    "withSupport": "con el Equipo de Soporte",
+    "noMessages": "Aún no hay mensajes. Inicia una conversación con nuestro equipo de soporte.",
+    "sendMessage": "Enviar Mensaje",
+    "messagePlaceholder": "Escribe tu mensaje aquí...",
+    "replyPlaceholder": "Escribe tu respuesta aquí...",
+    "send": "Enviar",
+    "reply": "Responder",
+    "received": "Recibido",
+    "sent": "Enviado",
+    "selectThread": "Selecciona una conversación para ver los mensajes"
+  },
+  "referrals": {
+    "title": "Referencias",
+    "myCode": "Mi Código de Referencia",
+    "copyCode": "Copiar Código",
+    "codeCopied": "¡Código copiado al portapapeles!",
+    "invitedUsers": "Usuarios Invitados",
+    "invitedCount": "Total Invitados",
+    "currentTier": "Nivel Actual",
+    "tierBenefits": "Beneficios del Nivel",
+    "noInvites": "Aún no hay referencias",
+    "referralCode": "Código de Referencia",
+    "enterCode": "Ingresa código de referencia (opcional)",
+    "invalidCode": "Código de referencia inválido"
   }
 }
