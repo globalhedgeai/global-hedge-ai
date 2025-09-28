@@ -1,52 +1,42 @@
 ﻿import { NextResponse } from 'next/server';
 
 export async function GET() {
-  try {
-    // Default policies - يمكن تحسينها لاحقاً لتكون قابلة للتكوين من قاعدة البيانات
-    const policies = {
-      depositFeePct: 0, // رسوم الإيداع (افتراضي 0%)
-      withdraw: {
-        firstWithdrawMinDays: 45, // الحد الأدنى لأول سحب
-        weeklyFeePct: 7, // رسوم أسبوعية
-        monthlyFeePct: 3, // رسوم شهرية
-        monthlyThresholdDays: 30 // حد الأيام للرسوم الشهرية
-      },
-      rewards: {
-        enabled: false, // المكافآت العشوائية (معطلة افتراضياً)
-        chancePct: 5, // نسبة الفرصة
-        bonusPct: 2 // نسبة المكافأة
-      },
-      dailyReward: {
-        enabled: true, // Always enabled for now
-        amount: Number(process.env.DAILY_REWARD_AMOUNT ?? 1.0),
-        reset: 'utc_midnight'
-      },
-      randomReward: {
-        enabled: true, // default true
-        winRate: 0.05, // 5%
-        minAmount: 0.20,
-        maxAmount: 2.00,
-        reset: 'utc_midnight' // same reset semantics as daily
-      },
-      referrals: {
-        enabled: true,
-        tiers: [
-          { threshold: 5, ratePercent: 0 }, // TODO: set by owner later
-          { threshold: 10, ratePercent: 0 } // TODO: set by owner later
-        ],
-        notes: "Owner to configure actual % later"
-      }
-    };
+  const withdrawals = {
+    firstWithdrawalAfterDays: 45,
+    weeklyFeePct: 7,
+    monthlyFeePct: 3,
+    monthlyThresholdDays: 30,
+  };
 
-    return NextResponse.json({
-      ok: true,
-      policies
-    });
-  } catch (error) {
-    console.error('Error fetching policies:', error);
-    return NextResponse.json(
-      { ok: false, error: 'Failed to fetch policies' },
-      { status: 500 }
-    );
-  }
+  const dailyReward = {
+    enabled: true,
+    amount: 1.0,
+    reset: 'utc_midnight',
+  };
+
+  // Random Reward: 5% win rate daily, between $0.20 and $2.00
+  const randomReward = {
+    enabled: true,
+    winRate: 0.05,
+    minAmount: 0.20,
+    maxAmount: 2.00,
+    reset: 'utc_midnight',
+  };
+
+  // Legacy rewards block (keep disabled if unused)
+  const rewards = {
+    enabled: false,
+    chancePct: 5,
+    bonusPct: 2,
+  };
+
+  return NextResponse.json({
+    ok: true,
+    policies: {
+      withdrawals,
+      rewards,
+      dailyReward,
+      randomReward,
+    }
+  });
 }

@@ -48,6 +48,7 @@ model User {
   lastWithdrawalAt DateTime?
   referralCode     String    @unique
   invitedById      String?
+  walletAddress    String?
   invitedBy        User?     @relation("Invites", fields: [invitedById], references: [id])
   invites          User[]    @relation("Invites")
 
@@ -55,6 +56,7 @@ model User {
   deposits           Deposit[]
   withdrawals        Withdrawal[]
   claims             DailyRewardClaim[]
+  randomRewardClaims RandomRewardClaim[]
   messages           Message[]
   referralsAsInviter Referral[]         @relation("RefRelInviter")
   referralsAsInvitee Referral[]         @relation("RefRelInvitee")
@@ -70,6 +72,7 @@ model Deposit {
   userId        String
   user          User          @relation(fields: [userId], references: [id])
   amount        Decimal
+  rewardAmount  Decimal?
   txId          String
   proofImageUrl String
   network       String // TRC20
@@ -87,10 +90,12 @@ model Withdrawal {
   id              String            @id @default(cuid())
   userId          String
   user            User              @relation(fields: [userId], references: [id])
+  amount          Decimal
   amountRequested Decimal
   cadence         WithdrawalCadence
   feePercent      Decimal // يُعيَّن بحسب الـ cadence وقت الإنشاء
   amountNet       Decimal
+  netAmount       Decimal
   network         String // TRC20
   toAddress       String
   status          WithdrawalStatus  @default(PENDING)
@@ -108,6 +113,20 @@ model DailyRewardClaim {
   userId    String
   user      User     @relation(fields: [userId], references: [id])
   claimDate DateTime
+  claimedAt DateTime
+  amount    Decimal
+  status    String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, claimDate])
+}
+
+model RandomRewardClaim {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  claimDate DateTime
+  claimedAt DateTime
   amount    Decimal
   status    String
   createdAt DateTime @default(now())
@@ -133,6 +152,39 @@ model Referral {
   invitee     User      @relation("RefRelInvitee", fields: [inviteeId], references: [id])
   confirmedAt DateTime?
   createdAt   DateTime  @default(now())
+}
+
+model ReferralCode {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  userId    String
+  createdAt DateTime @default(now())
+}
+
+model ReferralStats {
+  id              String   @id @default(cuid())
+  userId          String
+  totalReferrals  Int      @default(0)
+  confirmedReferrals Int   @default(0)
+  totalEarnings   Decimal  @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model MessageThread {
+  id        String   @id @default(cuid())
+  userId    String
+  subject   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ThreadMessage {
+  id        String   @id @default(cuid())
+  threadId  String
+  userId    String
+  content   String
+  createdAt DateTime @default(now())
 }
 
 model Policy {
