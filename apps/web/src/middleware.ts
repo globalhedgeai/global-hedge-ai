@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server';
 const publicPaths = [
   '/api/health',
   '/api/proofs',
+  '/api/policies',
   '/login',
   '/register',
   '/reset',

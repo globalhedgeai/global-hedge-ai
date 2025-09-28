@@ -3,6 +3,7 @@ import { getIronSession } from 'iron-session';
 import { sessionOptions, type IronSession } from '@/lib/session';
 import { prisma } from '@/lib/prisma';
 import { calculateRandomRewardEligibility, getUTCDateKey } from '@/lib/randomRewardUtils';
+import { getPolicies } from '@/lib/policies';
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,14 +13,13 @@ export async function POST(req: NextRequest) {
     }
 
     // Get policies to check if random reward is enabled
-    const policiesResponse = await fetch(`${req.nextUrl.origin}/api/policies`);
-    const policiesData = await policiesResponse.json();
+    const { randomReward } = getPolicies();
     
-    if (!policiesData.ok || !policiesData.policies.randomReward.enabled) {
+    if (!randomReward.enabled) {
       return NextResponse.json({ ok: false, error: 'disabled' });
     }
 
-    const { winRate, minAmount, maxAmount } = policiesData.policies.randomReward;
+    const { winRate, minAmount, maxAmount } = randomReward;
     
     // Get today's UTC date key
     const now = new Date();
@@ -61,12 +61,7 @@ export async function POST(req: NextRequest) {
           amount,
           claimDate: dateKey,
           claimedAt: now,
-          meta: {
-            winRate,
-            minAmount,
-            maxAmount,
-            dateKey
-          }
+          status: 'claimed'
         }
       });
 

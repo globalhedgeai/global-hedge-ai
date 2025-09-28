@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getIronSession } from 'iron-session';
 import { sessionOptions, type IronSession } from '@/lib/session';
 import { prisma } from '@/lib/prisma';
+import { getPolicies } from '@/lib/policies';
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,14 +12,13 @@ export async function POST(req: NextRequest) {
     }
 
     // Get policies to check if daily reward is enabled
-    const policiesResponse = await fetch(`${req.nextUrl.origin}/api/policies`);
-    const policiesData = await policiesResponse.json();
+    const { dailyReward } = getPolicies();
     
-    if (!policiesData.ok || !policiesData.policies.dailyReward.enabled) {
+    if (!dailyReward.enabled) {
       return NextResponse.json({ ok: false, error: 'disabled' });
     }
 
-    const { amount } = policiesData.policies.dailyReward;
+    const { amount } = dailyReward;
     
     // Get today's UTC date start (00:00:00.000Z)
     const now = new Date();
@@ -46,7 +46,8 @@ export async function POST(req: NextRequest) {
           userId: session.user!.id,
           amount,
           claimDate: todayUTC,
-          claimedAt: now
+          claimedAt: now,
+          status: 'claimed'
         }
       });
 
