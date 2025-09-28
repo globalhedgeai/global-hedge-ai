@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -34,8 +35,8 @@ export default function LoginPage() {
         <button type="submit">Login</button>
         {msg && <div style={{ color: "red" }}>{msg}</div>}
         <div style={{ display: "flex", gap: 12 }}>
-          <a href="/register">Create Account</a>
-          <a href="/forgot">Forgot Password?</a>
+          <Link href="/register">Create Account</Link>
+          <Link href="/forgot">Forgot Password?</Link>
         </div>
       </form>
     </main>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function ForgotPage() {
   const [email, setEmail] = useState("");
@@ -62,8 +63,8 @@ export default function ForgotPage() {
           </div>
         )}
         <div style={{ display: "flex", gap: 12 }}>
-          <a href="/login">Back to Login</a>
-          <a href="/register">Create Account</a>
+          <Link href="/login">Back to Login</Link>
+          <Link href="/register">Create Account</Link>
         </div>
       </form>
     </main>

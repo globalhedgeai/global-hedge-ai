@@ -7,9 +7,9 @@ import { useTranslations } from 'next-intl';
 const locales = [
   { code: 'ar', name: 'العربية', flag: '🇸🇦' },
   { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'es', name: 'Español', flag: '🇪🇸' },
+  { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
   { code: 'fr', name: 'Français', flag: '🇫🇷' },
-  { code: 'it', name: 'Italiano', flag: '🇮🇹' }
+  { code: 'es', name: 'Español', flag: '🇪🇸' }
 ];
 
 export default function LanguageSwitcher() {

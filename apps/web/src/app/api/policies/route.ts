@@ -27,6 +27,14 @@ export async function GET() {
         minAmount: 0.20,
         maxAmount: 2.00,
         reset: 'utc_midnight' // same reset semantics as daily
+      },
+      referrals: {
+        enabled: true,
+        tiers: [
+          { threshold: 5, ratePercent: 0 }, // TODO: set by owner later
+          { threshold: 10, ratePercent: 0 } // TODO: set by owner later
+        ],
+        notes: "Owner to configure actual % later"
       }
     };
 

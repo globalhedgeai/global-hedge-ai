@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 export default function ResetPage() {
   const [email, setEmail] = useState("");
@@ -95,8 +96,8 @@ export default function ResetPage() {
           </div>
         )}
         <div style={{ display: "flex", gap: 12 }}>
-          <a href="/login">Back to Login</a>
-          <a href="/forgot">Request New Reset Link</a>
+          <Link href="/login">Back to Login</Link>
+          <Link href="/forgot">Request New Reset Link</Link>
         </div>
       </form>
     </main>

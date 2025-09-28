@@ -2,15 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getIronSession } from 'iron-session';
 import { sessionOptions, type IronSession } from '@/lib/session';
 import { prisma } from '@/lib/prisma';
-import { ReferralTierService } from '@/lib/referralTierService';
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: Promise<{ depositId: string }> }
+  { params }: { params: Promise<{ withdrawalId: string }> }
 ) {
   try {
     const session = await getIronSession(req, new NextResponse(), sessionOptions) as IronSession;
-    const { depositId } = await params;
+    const { withdrawalId } = await params;
     const { status, reviewedBy, effectiveAt } = await req.json();
     
     // Check if user is admin
@@ -23,14 +22,14 @@ export async function PUT(
       return NextResponse.json({ ok: false, error: 'Invalid status' }, { status: 400 });
     }
 
-    // Get current deposit to check if status is changing
-    const currentDeposit = await prisma.deposit.findUnique({
-      where: { id: depositId },
-      select: { status: true, userId: true }
+    // Get current withdrawal to check if status is changing
+    const currentWithdrawal = await prisma.withdrawal.findUnique({
+      where: { id: withdrawalId },
+      select: { status: true, userId: true, amount: true, netAmount: true }
     });
 
-    if (!currentDeposit) {
-      return NextResponse.json({ ok: false, error: 'Deposit not found' }, { status: 404 });
+    if (!currentWithdrawal) {
+      return NextResponse.json({ ok: false, error: 'Withdrawal not found' }, { status: 404 });
     }
 
     // Prepare update data
@@ -55,29 +54,21 @@ export async function PUT(
       updateData.effectiveAt = null;
     }
 
-    // Update deposit status
-    const updatedDeposit = await prisma.deposit.update({
-      where: { id: depositId },
-      data: updateData,
-      include: {
-        user: {
-          select: { id: true, email: true, firstDepositAt: true }
-        }
-      }
+    // Update withdrawal status
+    const updatedWithdrawal = await prisma.withdrawal.update({
+      where: { id: withdrawalId },
+      data: updateData
     });
 
-    // If deposit was approved and this is a status change, handle referral tier update
-    if (status === 'APPROVED' && currentDeposit.status !== 'APPROVED') {
-      await ReferralTierService.handleDepositApproval(depositId);
-      
-      // Update user balance if deposit was approved
+    // If withdrawal was approved and this is a status change, update user balance
+    if (status === 'APPROVED' && currentWithdrawal.status !== 'APPROVED') {
       await prisma.user.update({
-        where: { id: currentDeposit.userId },
+        where: { id: currentWithdrawal.userId },
         data: {
           balance: {
-            increment: updatedDeposit.amount
+            decrement: currentWithdrawal.netAmount
           },
-          firstDepositAt: updatedDeposit.user.firstDepositAt || new Date()
+          lastWithdrawalAt: updateData.effectiveAt
         }
       });
     }
@@ -86,30 +77,30 @@ export async function PUT(
     await prisma.auditLog.create({
       data: {
         actorId: session.user.id,
-        entityType: 'Deposit',
-        entityId: depositId,
+        entityType: 'Withdrawal',
+        entityId: withdrawalId,
         action: 'STATUS_CHANGE',
-        before: JSON.stringify({ status: currentDeposit.status }),
+        before: JSON.stringify({ status: currentWithdrawal.status }),
         after: JSON.stringify({ status, effectiveAt: updateData.effectiveAt }),
-        reason: `Admin ${status.toLowerCase()} deposit${effectiveAt ? ' with custom date' : ''}`
+        reason: `Admin ${status.toLowerCase()} withdrawal${effectiveAt ? ' with custom date' : ''}`
       }
     });
 
     return NextResponse.json({
       ok: true,
-      deposit: {
-        id: updatedDeposit.id,
-        status: updatedDeposit.status,
-        reviewedBy: updatedDeposit.reviewedBy,
-        reviewedAt: updatedDeposit.reviewedAt,
-        effectiveAt: updatedDeposit.effectiveAt
+      withdrawal: {
+        id: updatedWithdrawal.id,
+        status: updatedWithdrawal.status,
+        reviewedBy: updatedWithdrawal.reviewedBy,
+        reviewedAt: updatedWithdrawal.reviewedAt,
+        effectiveAt: updatedWithdrawal.effectiveAt
       }
     });
 
   } catch (error) {
-    console.error('Error updating deposit status:', error);
+    console.error('Error updating withdrawal status:', error);
     return NextResponse.json(
-      { ok: false, error: 'Failed to update deposit status' },
+      { ok: false, error: 'Failed to update withdrawal status' },
       { status: 500 }
     );
   }
