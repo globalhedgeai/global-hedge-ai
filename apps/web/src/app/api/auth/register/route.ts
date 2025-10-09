@@ -33,67 +33,84 @@ async function generateUniqueReferralCode(): Promise<string> {
 }
 
 export async function POST(req: NextRequest) {
-  let body;
   try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ ok: false, error: 'invalid_json' }, { status: 400 });
-  }
-  
-  const parsed = registerSchema.safeParse(body);
-  if (!parsed.success) return NextResponse.json({ ok: false, error: 'invalid' }, { status: 400 });
+    let body;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ ok: false, error: 'invalid_json' }, { status: 400 });
+    }
+    
+    const parsed = registerSchema.safeParse(body);
+    if (!parsed.success) {
+      console.error('Validation error:', parsed.error);
+      return NextResponse.json({ ok: false, error: 'invalid' }, { status: 400 });
+    }
 
-  const { email, password, referralCode } = parsed.data;
-  const exists = await prisma.user.findUnique({ where: { email } });
-  if (exists) return NextResponse.json({ ok: false, error: 'email_taken' }, { status: 400 });
+    const { email, password, referralCode } = parsed.data;
+    
+    // Check if user already exists
+    const exists = await prisma.user.findUnique({ where: { email } });
+    if (exists) return NextResponse.json({ ok: false, error: 'email_taken' }, { status: 400 });
 
-  let invitedById: string | undefined = undefined;
+    let invitedById: string | undefined = undefined;
 
-  // Handle referral code if provided
-  if (referralCode) {
-    const referrer = await prisma.user.findFirst({
-      where: { referralCode: referralCode }
+    // Handle referral code if provided
+    if (referralCode) {
+      const referrer = await prisma.user.findFirst({
+        where: { referralCode: referralCode }
+      });
+
+      if (referrer) {
+        invitedById = referrer.id;
+      }
+    }
+
+    // Create user
+    const user = await prisma.user.create({
+      data: { 
+        email, 
+        passwordHash: await hashPassword(password), 
+        role: 'USER', 
+        referralCode: await generateUniqueReferralCode(),
+        invitedById
+      },
     });
 
-    if (referrer) {
-      invitedById = referrer.id;
+    // Update referral stats if user was invited
+    if (invitedById) {
+      try {
+        await prisma.referralStats.upsert({
+          where: { userId: invitedById },
+          update: { 
+            invitedCount: { increment: 1 },
+            updatedAt: new Date()
+          },
+          create: {
+            userId: invitedById,
+            invitedCount: 1,
+            tier: 1
+          }
+        });
+      } catch (error) {
+        console.error('Error updating referral stats:', error);
+        // Continue without failing the registration
+      }
     }
+
+    // Create session
+    const res = NextResponse.json({ ok: true });
+    const session = await getIronSession(req, res, sessionOptions) as IronSession;
+    session.user = { id: user.id, email: user.email, role: user.role };
+    await session.save();
+    return res;
+    
+  } catch (error) {
+    console.error('Registration error:', error);
+    return NextResponse.json({ 
+      ok: false, 
+      error: 'An unexpected error occurred',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    }, { status: 500 });
   }
-
-  const user = await prisma.user.create({
-    data: { 
-      email, 
-      passwordHash: await hashPassword(password), 
-      role: 'USER', 
-      referralCode: await generateUniqueReferralCode(),
-      invitedById
-    },
-  });
-
-  // Update referral stats if user was invited
-  if (invitedById) {
-    try {
-      await prisma.referralStats.upsert({
-        where: { userId: invitedById },
-        update: { 
-          invitedCount: { increment: 1 },
-          updatedAt: new Date()
-        },
-        create: {
-          userId: invitedById,
-          invitedCount: 1,
-          tier: 1
-        }
-      });
-    } catch (error) {
-      console.error('Error updating referral stats:', error);
-      // Continue without failing the registration
-    }
-  }
-
-  const res = NextResponse.json({ ok: true });
-  const session = await getIronSession(req, res, sessionOptions) as IronSession;
-  session.user = { id: user.id, email: user.email, role: user.role };
-  await session.save();
-  return res;
 }

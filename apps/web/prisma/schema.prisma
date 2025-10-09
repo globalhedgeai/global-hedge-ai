@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 enum Role {
@@ -142,7 +142,7 @@ model DailyRewardClaim {
   userId    String
   amount    Decimal  @default(0)
   claimedAt DateTime @default(now())
-  claimDate DateTime // normalized to UTC date start (00:00:00.000Z)
+  claimDate DateTime @db.Date // PostgreSQL Date type
   meta      Json?
   user      User     @relation(fields: [userId], references: [id])
 

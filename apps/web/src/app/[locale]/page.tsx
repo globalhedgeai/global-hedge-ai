@@ -31,19 +31,19 @@ export default function HomePage() {
   useEffect(() => {
     // تحسين الأداء بإضافة debounce
     const timeoutId = setTimeout(() => {
-      // Check authentication status
-      checkAuthentication();
-      
-      // Load platform stats
-      fetchPlatformStats();
+    // Check authentication status
+    checkAuthentication();
+    
+    // Load platform stats
+    fetchPlatformStats();
 
-      // Load user balance only if authenticated
-      if (isAuthenticated) {
-        fetchUserBalance();
-      }
+    // Load user balance only if authenticated
+    if (isAuthenticated) {
+      fetchUserBalance();
+    }
 
-      // Initialize widgets based on authentication status
-      initializeWidgets();
+    // Initialize widgets based on authentication status
+    initializeWidgets();
     }, 100);
 
     // Listen for auth state changes
