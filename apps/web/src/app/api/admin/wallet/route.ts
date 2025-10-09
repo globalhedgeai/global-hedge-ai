@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
   try {
     const session = await getIronSession(req, new NextResponse(), sessionOptions);
     
-    if (!session.user || !['ADMIN', 'ACCOUNTING'].includes(session.user.role)) {
+    if (!(session as any).user || !['ADMIN', 'ACCOUNTING'].includes((session as any).user.role)) {
       return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -34,7 +34,7 @@ export async function PUT(req: NextRequest) {
   try {
     const session = await getIronSession(req, new NextResponse(), sessionOptions);
     
-    if (!session.user || !['ADMIN', 'ACCOUNTING'].includes(session.user.role)) {
+    if (!(session as any).user || !['ADMIN', 'ACCOUNTING'].includes((session as any).user.role)) {
       return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -70,7 +70,7 @@ export async function PUT(req: NextRequest) {
     // Log the change in audit log
     await prisma.auditLog.create({
       data: {
-        actorId: session.user.id,
+        actorId: (session as any).user.id,
         entityType: 'WALLET_ADDRESS',
         entityId: key,
         action: oldPolicy ? 'UPDATE' : 'CREATE',
