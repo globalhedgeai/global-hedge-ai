@@ -41,7 +41,6 @@ export default function AdminUsersPage() {
   const [newBalance, setNewBalance] = useState('');
   const [isUpdatingBalance, setIsUpdatingBalance] = useState(false);
   const [isUpdatingDate, setIsUpdatingDate] = useState(false);
-  const { t } = useTranslation();
 
   useEffect(() => {
     fetchUsers();
