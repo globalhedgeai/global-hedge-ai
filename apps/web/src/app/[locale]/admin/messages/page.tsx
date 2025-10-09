@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState, useCallback } from 'react';
-import { useTranslations, useLocale } from 'next-intl';
+import { useTranslation, useLanguage } from '@/lib/translations';
 
 interface ThreadMessage {
   id: string;
@@ -25,8 +25,8 @@ interface AdminMessagesData {
 }
 
 export default function AdminMessagesPage() {
-  const t = useTranslations();
-  const locale = useLocale();
+  const { t } = useTranslation();
+  const { locale } = useLanguage();
   const [messagesData, setMessagesData] = useState<AdminMessagesData | null>(null);
   const [selectedThread, setSelectedThread] = useState<MessageThread | null>(null);
   const [newMessage, setNewMessage] = useState('');

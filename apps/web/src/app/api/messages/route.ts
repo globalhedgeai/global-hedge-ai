@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
 
 const messageSchema = z.object({
-  body: z.string().min(1).max(2000)
+  content: z.string().min(1).max(2000)
 });
 
 export async function GET(req: NextRequest) {
@@ -30,29 +30,27 @@ export async function GET(req: NextRequest) {
     if (!thread) {
       return NextResponse.json({ 
         ok: true, 
-        threads: [],
-        unreadCount: 0 
+        messages: []
       });
     }
 
-    const lastMessage = thread.messages[0] || null;
+    // Get all messages for the thread
+    const messages = await prisma.threadMessage.findMany({
+      where: { threadId: thread.id },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    const formattedMessages = messages.map(msg => ({
+      id: msg.id,
+      content: msg.body,
+      createdAt: msg.createdAt.toISOString(),
+      isRead: msg.sender === 'ADMIN' ? true : false,
+      type: msg.sender === 'ADMIN' ? 'system' : 'support'
+    }));
 
     return NextResponse.json({
       ok: true,
-      threads: [{
-        id: thread.id,
-        userId: thread.userId,
-        userEmail: thread.user.email,
-        lastMessageAt: thread.lastMessageAt,
-        unreadForUser: thread.unreadForUser,
-        lastMessage: lastMessage ? {
-          id: lastMessage.id,
-          sender: lastMessage.sender,
-          body: lastMessage.body,
-          createdAt: lastMessage.createdAt
-        } : null
-      }],
-      unreadCount: thread.unreadForUser
+      messages: formattedMessages
     });
   } catch (error) {
     console.error('Error fetching messages:', error);
@@ -100,7 +98,7 @@ export async function POST(req: NextRequest) {
       data: {
         threadId: thread.id,
         sender: 'USER',
-        body: parsed.data.body
+        body: parsed.data.content
       }
     });
 
@@ -108,9 +106,10 @@ export async function POST(req: NextRequest) {
       ok: true,
       message: {
         id: message.id,
-        sender: message.sender,
-        body: message.body,
-        createdAt: message.createdAt
+        content: message.body,
+        createdAt: message.createdAt.toISOString(),
+        isRead: false,
+        type: 'support'
       }
     });
   } catch (error) {

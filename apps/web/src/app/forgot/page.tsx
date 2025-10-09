@@ -1,12 +1,15 @@
 'use client';
 
 import { useState } from "react";
+import { useTranslation, useLanguage } from '@/lib/translations';
 import Link from "next/link";
 
 export default function ForgotPage() {
   const [email, setEmail] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { t } = useTranslation();
+  const { locale } = useLanguage();
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -22,15 +25,15 @@ export default function ForgotPage() {
       const j = await r.json();
       
       if (j.ok) {
-        setMsg("If an account with that email exists, we've sent a password reset link.");
+        setMsg(t('auth.resetPasswordSent'));
         if (j.devToken) {
-          setMsg(`Dev mode: Reset link is http://localhost:3001/reset?token=${j.devToken}&email=${encodeURIComponent(email)}`);
+          setMsg(`${t('auth.emailSent')}: http://localhost:3001/reset?token=${j.devToken}&email=${encodeURIComponent(email)}`);
         }
       } else {
-        setMsg("An error occurred. Please try again.");
+        setMsg(t('auth.resetError'));
       }
     } catch {
-      setMsg("An error occurred. Please try again.");
+      setMsg(t('auth.resetError'));
     } finally {
       setIsLoading(false);
     }
@@ -38,9 +41,9 @@ export default function ForgotPage() {
 
   return (
     <main style={{ padding: 24, maxWidth: 420, margin: "0 auto", fontFamily: "system-ui" }}>
-      <h1 style={{ marginBottom: 12 }}>Forgot Password</h1>
+      <h1 style={{ marginBottom: 12 }}>{t('auth.forgotPassword')}</h1>
       <form onSubmit={onSubmit} style={{ display: "grid", gap: 12 }}>
-        <label>Email
+        <label>{t('auth.email')}
           <input 
             type="email" 
             value={email} 
@@ -50,11 +53,11 @@ export default function ForgotPage() {
           />
         </label>
         <button type="submit" disabled={isLoading}>
-          {isLoading ? "Sending..." : "Send Reset Link"}
+          {isLoading ? t('auth.sending') : t('auth.sendReset')}
         </button>
         {msg && (
           <div style={{ 
-            color: msg.includes("Dev mode") ? "blue" : "green", 
+            color: msg.includes("http") ? "blue" : "green", 
             padding: 12, 
             backgroundColor: "#f0f0f0",
             borderRadius: 4 
@@ -63,8 +66,8 @@ export default function ForgotPage() {
           </div>
         )}
         <div style={{ display: "flex", gap: 12 }}>
-          <Link href="/login">Back to Login</Link>
-          <Link href="/register">Create Account</Link>
+          <Link href={`/${locale}/login`}>{t('auth.backToLogin')}</Link>
+          <Link href={`/${locale}/register`}>{t('auth.register')}</Link>
         </div>
       </form>
     </main>

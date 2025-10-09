@@ -3,6 +3,7 @@ import { getIronSession } from 'iron-session';
 import { sessionOptions, type IronSession } from '@/lib/session';
 import { prisma } from '@/lib/prisma';
 import { getPolicies } from '@/lib/policies';
+import { DailyRewardCalculator } from '@/lib/dailyRewardCalculator';
 
 export async function POST(req: NextRequest) {
   try {
@@ -18,36 +19,41 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: 'disabled' });
     }
 
-    const { amount } = dailyReward;
+    // التحقق من إمكانية المطالبة وحساب المكافأة
+    const eligibility = await DailyRewardCalculator.checkClaimEligibility(session.user.id);
     
+    if (!eligibility.canClaim) {
+      return NextResponse.json({ 
+        ok: false, 
+        error: eligibility.reason || 'cannot_claim',
+        details: {
+          monthlyRate: eligibility.monthlyRate,
+          tier: eligibility.tier,
+          baseBalance: eligibility.baseBalance.toNumber(),
+          lastClaimDate: eligibility.lastClaimDate?.toISOString()
+        }
+      });
+    }
+
     // Get today's UTC date start (00:00:00.000Z)
     const now = new Date();
     const todayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
     
-    // Check if user has already claimed today
-    const existingClaim = await prisma.dailyRewardClaim.findUnique({
-      where: {
-        userId_claimDate: {
-          userId: session.user.id,
-          claimDate: todayUTC
-        }
-      }
-    });
-
-    if (existingClaim) {
-      return NextResponse.json({ ok: false, error: 'already_claimed_today' });
-    }
-
     // Create the claim and update user balance in a transaction
     const result = await prisma.$transaction(async (tx) => {
       // Create the daily reward claim
       const claim = await tx.dailyRewardClaim.create({
         data: {
           userId: session.user!.id,
-          amount,
+          amount: eligibility.amount,
           claimDate: todayUTC,
           claimedAt: now,
-          status: 'claimed'
+          meta: {
+            monthlyRate: eligibility.monthlyRate,
+            tier: eligibility.tier,
+            baseBalance: eligibility.baseBalance.toNumber(),
+            calculatedAt: now.toISOString()
+          }
         }
       });
 
@@ -56,7 +62,7 @@ export async function POST(req: NextRequest) {
         where: { id: session.user!.id },
         data: {
           balance: {
-            increment: amount
+            increment: eligibility.amount
           }
         }
       });
@@ -70,9 +76,15 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       ok: true,
-      amount: result.amount,
+      amount: result.amount.toNumber(),
       claimedAt: result.claimedAt.toISOString(),
-      resetAt: nextReset.toISOString()
+      resetAt: nextReset.toISOString(),
+      details: {
+        monthlyRate: eligibility.monthlyRate,
+        tier: eligibility.tier,
+        baseBalance: eligibility.baseBalance.toNumber(),
+        dailyRate: (eligibility.monthlyRate / 30).toFixed(4) + '%'
+      }
     });
 
   } catch (error) {

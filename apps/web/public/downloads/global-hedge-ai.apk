@@ -1,0 +1,10 @@
+# Global Hedge AI Mobile App APK
+# This is a placeholder file for the actual APK
+# In production, this would be replaced with the actual built APK file
+
+# To build the actual APK:
+# 1. Navigate to apps/mobile directory
+# 2. Run: npx expo build:android
+# 3. Replace this file with the generated APK
+
+# For now, this serves as a placeholder for testing the download functionality

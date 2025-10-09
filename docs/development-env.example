@@ -1,0 +1,53 @@
+# ===========================================
+# Global Hedge AI - Development Environment
+# ===========================================
+
+# Database Configuration (SQLite for development)
+DATABASE_URL="file:./dev.db"
+
+# Next.js Configuration
+NODE_ENV=development
+NEXTAUTH_SECRET="development-secret-key-minimum-32-characters-long"
+NEXTAUTH_URL="http://localhost:3000"
+
+# Cloudflare R2 Storage (Optional for development)
+CLOUDFLARE_R2_ACCESS_KEY_ID="your-access-key-id"
+CLOUDFLARE_R2_SECRET_ACCESS_KEY="your-secret-access-key"
+CLOUDFLARE_R2_ENDPOINT="https://your-account-id.r2.cloudflarestorage.com"
+CLOUDFLARE_R2_BUCKET_NAME="global-hedge-ai-storage-dev"
+
+# Cryptocurrency Addresses (Test addresses)
+NEXT_PUBLIC_USDT_TRC20_ADDRESS="TKaAamEouHjG9nZwoTPhgYUerejbBHGMop"
+NEXT_PUBLIC_USDT_ERC20_ADDRESS="0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6"
+NEXT_PUBLIC_BTC_ADDRESS="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
+NEXT_PUBLIC_ETH_ADDRESS="0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6"
+NEXT_PUBLIC_BNB_ADDRESS="bnb1..."
+NEXT_PUBLIC_ADA_ADDRESS="addr1..."
+NEXT_PUBLIC_SOL_ADDRESS="So11111111111111111111111111111111111111112"
+NEXT_PUBLIC_MATIC_ADDRESS="0x..."
+NEXT_PUBLIC_AVAX_ADDRESS="0x..."
+NEXT_PUBLIC_DOT_ADDRESS="1..."
+
+# Security (Relaxed for development)
+CORS_ORIGIN="http://localhost:3000"
+RATE_LIMIT_MAX=1000
+RATE_LIMIT_WINDOW=900000
+
+# Backup Configuration (Disabled for development)
+BACKUP_ENABLED=false
+BACKUP_FREQUENCY=daily
+BACKUP_RETENTION_DAYS=7
+BACKUP_ENCRYPTION=false
+
+# Email Configuration (Optional)
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT=587
+SMTP_USER="your-email@gmail.com"
+SMTP_PASS="your-app-password"
+
+# Monitoring (Optional)
+SENTRY_DSN=""
+ANALYTICS_ID=""
+
+# Redis (Optional for caching)
+REDIS_URL="redis://localhost:6379"

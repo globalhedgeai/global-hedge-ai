@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslation } from '@/lib/translations';
 
 type Policies = {
   depositFeePct: number;
@@ -21,7 +21,7 @@ export default function AdminPoliciesPage() {
   const [policies, setPolicies] = useState<Policies | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const t = useTranslations();
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchPolicies();

@@ -1,0 +1,18 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" rx="80" fill="#0b0e11"/>
+  
+  <!-- Gradient circle -->
+  <circle cx="256" cy="256" r="200" fill="url(#gradient)"/>
+  
+  <!-- Letter G -->
+  <path d="M256 120C185.3 120 128 177.3 128 248C128 318.7 185.3 376 256 376C326.7 376 384 318.7 384 248C384 177.3 326.7 120 256 120ZM256 160C304.2 160 344 199.8 344 248C344 296.2 304.2 336 256 336C207.8 336 168 296.2 168 248C168 199.8 207.8 160 256 160ZM256 200C241.6 200 230 211.6 230 226V248C230 262.4 241.6 274 256 274C270.4 274 282 262.4 282 248V226C282 211.6 270.4 200 256 200Z" fill="white"/>
+  
+  <!-- Gradient definition -->
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0b90b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f7d94c;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>

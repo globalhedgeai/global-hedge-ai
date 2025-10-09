@@ -4,14 +4,26 @@ export class ReferralTierService {
   /**
    * Calculate tier based on confirmed invite count
    * Default tiers from spec:
-   * - Base: 25% monthly
-   * - Tier 1: 30% after 5 confirmed invites
-   * - Tier 2: 35% after 10 confirmed invites
+   * - Base: 5% commission
+   * - Tier 1: 7% after 5 confirmed invites
+   * - Tier 2: 10% after 10 confirmed invites
    */
   static calculateTier(confirmedInviteCount: number): number {
-    if (confirmedInviteCount >= 10) return 3; // 35%
-    if (confirmedInviteCount >= 5) return 2;  // 30%
-    return 1; // 25% base
+    if (confirmedInviteCount >= 10) return 3; // 10%
+    if (confirmedInviteCount >= 5) return 2;  // 7%
+    return 1; // 5% base
+  }
+
+  /**
+   * Get commission rate based on tier
+   */
+  static getCommissionRate(tier: number): number {
+    switch (tier) {
+      case 3: return 0.10; // 10%
+      case 2: return 0.07;  // 7%
+      case 1: return 0.05;  // 5%
+      default: return 0.05; // 5% base
+    }
   }
 
   /**
@@ -76,8 +88,32 @@ export class ReferralTierService {
     }) === 0;
 
     if (isFirstApprovedDeposit) {
-      // This is the first approved deposit, so update the referrer's tier
+      // This is the first approved deposit, so update the referrer's tier and stats
       await this.updateUserTier(deposit.user.invitedById);
+      
+      // Update referral stats with commission
+      const commissionRate = this.getCommissionRate(1); // Base tier commission
+      const commissionAmount = deposit.amount.toNumber() * commissionRate;
+      
+      await prisma.referralStats.upsert({
+        where: { userId: deposit.user.invitedById },
+        update: {
+          updatedAt: new Date()
+        },
+        create: {
+          userId: deposit.user.invitedById,
+          invitedCount: 0,
+          tier: 1
+        }
+      });
+
+      // Add commission to referrer's balance
+      await prisma.user.update({
+        where: { id: deposit.user.invitedById },
+        data: {
+          balance: { increment: commissionAmount }
+        }
+      });
     }
   }
 }

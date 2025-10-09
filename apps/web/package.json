@@ -18,8 +18,10 @@
   "dependencies": {
     "@aws-sdk/client-s3": "3.895.0",
     "@aws-sdk/s3-request-presigner": "3.895.0",
+    "@heroicons/react": "^2.2.0",
     "@types/nodemailer": "^7.0.1",
     "bcryptjs": "^3.0.2",
+    "ioredis": "^5.8.0",
     "iron-session": "^8.0.4",
     "lightweight-charts": "^5.0.8",
     "next": "15.5.4",
@@ -35,6 +37,7 @@
     "@eslint/eslintrc": "3.3.1",
     "@tailwindcss/postcss": "4.1.13",
     "@types/bcryptjs": "^3.0.0",
+    "@types/ioredis": "^5.0.0",
     "@types/node": "20.19.17",
     "@types/qrcode": "^1.5.5",
     "@types/react": "19.1.13",

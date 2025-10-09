@@ -60,8 +60,7 @@ export async function POST(req: NextRequest) {
           userId: session.user!.id,
           amount,
           claimDate: dateKey,
-          claimedAt: now,
-          status: 'claimed'
+          claimedAt: now
         }
       });
 

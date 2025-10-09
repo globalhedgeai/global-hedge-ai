@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from 'next-intl';
+import { useTranslation, useLanguage } from '@/lib/translations';
 import Link from "next/link";
 
 export default function RegisterPage() {
@@ -11,7 +11,8 @@ export default function RegisterPage() {
   const [referralCode, setReferralCode] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
   const router = useRouter();
-  const t = useTranslations();
+  const { t } = useTranslation();
+  const { locale } = useLanguage();
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -26,7 +27,7 @@ export default function RegisterPage() {
       }),
     });
     const j = await r.json();
-    if (j.ok) router.push("/"); else setMsg(j.error || "Registration failed");
+    if (j.ok) router.push(`/${locale}`); else setMsg(j.error || t('auth.registerError'));
   }
 
   return (
@@ -44,12 +45,12 @@ export default function RegisterPage() {
             type="text" 
             value={referralCode} 
             onChange={e => setReferralCode(e.target.value)} 
-            placeholder="Optional referral code"
+            placeholder={t('referrals.codePlaceholder')}
           />
         </label>
         <button type="submit">{t('auth.register')}</button>
         {msg && <div style={{ color: "red" }}>{msg}</div>}
-        <Link href="/login">{t('auth.login')}</Link>
+        <Link href={`/${locale}/login`}>{t('auth.login')}</Link>
       </form>
     </main>
   );

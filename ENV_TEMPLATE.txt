@@ -1,0 +1,37 @@
+# ====================================
+# Global Hedge AI - Environment Variables Template
+# ====================================
+# انسخ هذا الملف إلى apps/web/.env
+
+# Database (PostgreSQL)
+# للإنتاج: استخدم Supabase أو Railway
+# مثال: postgresql://user:password@host:5432/database
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/globalehedge"
+
+# Base URL (رابط الموقع)
+# للتطوير: http://localhost:3000
+# للإنتاج: https://your-domain.com
+NEXT_PUBLIC_BASE_URL="http://localhost:3000"
+
+# Session Secret (مفتاح التشفير)
+# ⚠️ غيّره للإنتاج! استخدم مفتاح عشوائي قوي
+# أنشئ واحد: openssl rand -base64 32
+SESSION_SECRET="change-this-to-a-random-secret-key-in-production"
+
+# Company Wallet Address (عنوان محفظة الشركة)
+# ⚠️ غيّره لعنوان محفظتك الحقيقي (USDT TRC20)
+COMPANY_WALLET_ADDRESS="TYourCompanyWalletAddressHere"
+
+# Node Environment
+NODE_ENV="development"
+
+# ====================================
+# للإنتاج على Vercel:
+# ====================================
+# أضف هذه المتغيرات في Vercel Dashboard:
+# 1. DATABASE_URL (من Supabase)
+# 2. SESSION_SECRET (مفتاح قوي جديد)
+# 3. COMPANY_WALLET_ADDRESS (عنوان محفظتك)
+# 4. NEXT_PUBLIC_BASE_URL (رابط موقعك)
+# 5. NODE_ENV=production
+

@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite" // للانطلاق بسرعة. سنحوّل لـ postgresql لاحقًا.
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 enum Role {
@@ -30,6 +30,19 @@ enum MessageType {
   SYSTEM
   SUPPORT
   ANNOUNCEMENT
+}
+
+enum Cryptocurrency {
+  USDT_TRC20
+  USDT_ERC20
+  BTC
+  ETH
+  BNB
+  ADA
+  SOL
+  MATIC
+  AVAX
+  DOT
 }
 
 model User {
@@ -60,6 +73,10 @@ model User {
   passwordResetTokens PasswordResetToken[]
   referralStats       ReferralStats?
   referralCodes       ReferralCode[]
+
+  @@index([email])
+  @@index([createdAt])
+  @@index([invitedById])
 }
 
 model Tier {
@@ -68,6 +85,8 @@ model Tier {
   monthlyRate Decimal
   minInvites  Int
   maxInvites  Int?
+
+  @@index([minInvites])
 }
 
 model Deposit {
@@ -77,7 +96,7 @@ model Deposit {
   amount        Decimal
   txId          String
   proofImageUrl String
-  network       String // TRC20
+  cryptocurrency Cryptocurrency @default(USDT_TRC20)
   toAddress     String // عنوان الشركة الثابت
   status        DepositStatus @default(PENDING)
   reviewedBy    String?
@@ -87,7 +106,10 @@ model Deposit {
   rewardMeta    String? // JSON metadata for reward
   createdAt     DateTime      @default(now())
 
+  @@index([userId])
+  @@index([status])
   @@index([createdAt])
+  @@index([effectiveAt])
 }
 
 model Withdrawal {
@@ -95,6 +117,7 @@ model Withdrawal {
   userId         String
   user           User             @relation(fields: [userId], references: [id])
   amount         Decimal
+  cryptocurrency Cryptocurrency  @default(USDT_TRC20)
   toAddress      String
   status         WithdrawalStatus @default(PENDING)
   txId           String?
@@ -108,7 +131,10 @@ model Withdrawal {
   appliedRule    String? // القاعدة المطبقة (WEEKLY_7PCT, MONTHLY_3PCT)
   createdAt      DateTime         @default(now())
 
+  @@index([userId])
+  @@index([status])
   @@index([createdAt])
+  @@index([effectiveAt])
 }
 
 model DailyRewardClaim {
@@ -121,6 +147,8 @@ model DailyRewardClaim {
   user      User     @relation(fields: [userId], references: [id])
 
   @@unique([userId, claimDate]) // one claim per UTC day per user
+  @@index([userId])
+  @@index([claimDate])
 }
 
 model RandomRewardClaim {
@@ -133,6 +161,8 @@ model RandomRewardClaim {
   user      User     @relation(fields: [userId], references: [id])
 
   @@unique([userId, claimDate]) // one claim per UTC day per user
+  @@index([userId])
+  @@index([claimDate])
 }
 
 model RandomBonus {
@@ -143,6 +173,9 @@ model RandomBonus {
   amount    Decimal // مثال 0.20
   ruleId    String?
   createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([date])
 }
 
 model Referral {
@@ -153,6 +186,10 @@ model Referral {
   invitee     User      @relation("RefRelInvitee", fields: [inviteeId], references: [id])
   confirmedAt DateTime?
   createdAt   DateTime  @default(now())
+
+  @@index([inviterId])
+  @@index([inviteeId])
+  @@index([createdAt])
 }
 
 model Policy {
@@ -173,6 +210,8 @@ model Policy {
   // tier10=35
   // bonusChance=5
   // bonusAmount=0.2
+
+  @@index([key])
 }
 
 model AuditLog {
@@ -188,6 +227,8 @@ model AuditLog {
   timestamp  DateTime @default(now())
 
   @@index([timestamp])
+  @@index([entityType])
+  @@index([actorId])
 }
 
 model Message {
@@ -201,6 +242,8 @@ model Message {
   createdAt DateTime    @default(now())
 
   @@index([createdAt])
+  @@index([userId])
+  @@index([type])
 }
 
 model PasswordResetToken {
@@ -211,6 +254,9 @@ model PasswordResetToken {
   expiresAt DateTime
   usedAt    DateTime?
   createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
 }
 
 // User-to-Admin messaging system
@@ -226,6 +272,7 @@ model MessageThread {
   messages       ThreadMessage[]
 
   @@unique([userId]) // One thread per user
+  @@index([lastMessageAt])
 }
 
 model ThreadMessage {
@@ -237,6 +284,7 @@ model ThreadMessage {
   createdAt DateTime @default(now())
 
   @@index([threadId, createdAt])
+  @@index([sender])
 }
 
 // Enhanced referral system
@@ -249,6 +297,7 @@ model ReferralCode {
   isActive    Boolean  @default(true)
 
   @@index([code])
+  @@index([ownerUserId])
 }
 
 model ReferralStats {
@@ -260,4 +309,18 @@ model ReferralStats {
   updatedAt    DateTime @default(now())
 
   @@index([userId])
+  @@index([tier])
+}
+
+model PlatformStats {
+  id          String   @id @default(cuid())
+  totalUsers  Int      @default(0)
+  totalVolume Float    @default(0)
+  activeTrades Int     @default(0)
+  totalDeposits Float  @default(0)
+  totalWithdrawals Float @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([createdAt])
 }

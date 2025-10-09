@@ -9,7 +9,14 @@ export async function GET(req: NextRequest) {
   try {
     const session = await getIronSession(req, new NextResponse(), sessionOptions) as IronSession;
     if (!session.user) {
-      return NextResponse.json({ ok: false, error: 'unauthorized' }, { status: 401 });
+      return NextResponse.json({ 
+        ok: true, 
+        eligible: false, 
+        amount: 0, 
+        secondsToReset: 0, 
+        resetAt: '', 
+        meta: { reason: 'not_authenticated' } 
+      });
     }
 
     // Get policies to check if random reward is enabled

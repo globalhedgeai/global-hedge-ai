@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslation, useLanguage } from '@/lib/translations';
+import { formatCurrency } from '@/lib/numberFormat';
 
 interface User {
   id: string;
@@ -38,7 +39,7 @@ export default function AdminUsersPage() {
   const [newBalance, setNewBalance] = useState('');
   const [isUpdatingBalance, setIsUpdatingBalance] = useState(false);
   const [isUpdatingDate, setIsUpdatingDate] = useState(false);
-  const t = useTranslations();
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchUsers();
@@ -189,7 +190,7 @@ export default function AdminUsersPage() {
               >
                 <div className="font-medium">{user.email}</div>
                 <div className="text-sm text-gray-600">
-                  Balance: {user.balance.toFixed(2)} USDT
+                  {t('admin.balance')}: {formatCurrency(user.balance, locale)} USDT
                 </div>
                 <div className="text-sm text-gray-500">
                   Role: {user.role} | Joined: {new Date(user.createdAt).toLocaleDateString()}
@@ -202,7 +203,7 @@ export default function AdminUsersPage() {
         {/* User Details */}
         {selectedUser && (
           <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <h2 className="text-lg font-semibold mb-4">User Details</h2>
+            <h2 className="text-lg font-semibold mb-4">{t('admin.userDetails')}</h2>
             
             <div className="space-y-4">
               <div>
@@ -216,16 +217,16 @@ export default function AdminUsersPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Current Balance
+                  {t('admin.currentBalance')}
                 </label>
                 <div className="p-2 bg-gray-50 border rounded">
-                  {selectedUser.balance.toFixed(2)} USDT
+                  {formatCurrency(selectedUser.balance, locale)} USDT
                 </div>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Update Balance
+                  {t('admin.updateBalance')}
                 </label>
                 <div className="flex gap-2">
                   <input
@@ -241,7 +242,7 @@ export default function AdminUsersPage() {
                     disabled={isUpdatingBalance || !newBalance}
                     className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:bg-gray-400"
                   >
-                    {isUpdatingBalance ? 'Updating...' : 'Update'}
+                    {isUpdatingBalance ? t('admin.updating') : t('admin.update')}
                   </button>
                 </div>
               </div>

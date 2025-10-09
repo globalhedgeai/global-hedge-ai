@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslation, useLanguage } from '@/lib/translations';
 import Link from "next/link";
 
 export default function ResetPage() {
@@ -12,6 +13,8 @@ export default function ResetPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { t } = useTranslation();
+  const { locale } = useLanguage();
 
   useEffect(() => {
     // Pre-fill from URL params if available
@@ -35,15 +38,15 @@ export default function ResetPage() {
       const j = await r.json();
       
       if (j.ok) {
-        setMsg("Password reset successfully! You can now login with your new password.");
+        setMsg(t('auth.resetSuccess'));
         setTimeout(() => {
-          router.push("/login");
+          router.push(`/${locale}/login`);
         }, 2000);
       } else {
-        setMsg("Invalid or expired reset token. Please request a new reset link.");
+        setMsg(t('auth.resetTokenInvalid'));
       }
     } catch {
-      setMsg("An error occurred. Please try again.");
+      setMsg(t('auth.resetError'));
     } finally {
       setIsLoading(false);
     }
@@ -51,9 +54,9 @@ export default function ResetPage() {
 
   return (
     <main style={{ padding: 24, maxWidth: 420, margin: "0 auto", fontFamily: "system-ui" }}>
-      <h1 style={{ marginBottom: 12 }}>Reset Password</h1>
+      <h1 style={{ marginBottom: 12 }}>{t('auth.resetPassword')}</h1>
       <form onSubmit={onSubmit} style={{ display: "grid", gap: 12 }}>
-        <label>Email
+        <label>{t('auth.email')}
           <input 
             type="email" 
             value={email} 
@@ -62,17 +65,17 @@ export default function ResetPage() {
             disabled={isLoading}
           />
         </label>
-        <label>Reset Token
+        <label>{t('auth.resetToken')}
           <input 
             type="text" 
             value={token} 
             onChange={e => setToken(e.target.value)} 
             required 
             disabled={isLoading}
-            placeholder="Enter the token from your email"
+            placeholder={t('auth.tokenPlaceholder')}
           />
         </label>
-        <label>New Password
+        <label>{t('auth.newPassword')}
           <input 
             type="password" 
             value={newPassword} 
@@ -83,11 +86,11 @@ export default function ResetPage() {
           />
         </label>
         <button type="submit" disabled={isLoading}>
-          {isLoading ? "Resetting..." : "Reset Password"}
+          {isLoading ? t('auth.resetting') : t('auth.resetPassword')}
         </button>
         {msg && (
           <div style={{ 
-            color: msg.includes("successfully") ? "green" : "red", 
+            color: msg.includes(t('auth.resetSuccess')) ? "green" : "red", 
             padding: 12, 
             backgroundColor: "#f0f0f0",
             borderRadius: 4 
@@ -96,8 +99,8 @@ export default function ResetPage() {
           </div>
         )}
         <div style={{ display: "flex", gap: 12 }}>
-          <Link href="/login">Back to Login</Link>
-          <Link href="/forgot">Request New Reset Link</Link>
+          <Link href={`/${locale}/login`}>{t('auth.backToLogin')}</Link>
+          <Link href={`/${locale}/forgot`}>{t('auth.requestNewReset')}</Link>
         </div>
       </form>
     </main>

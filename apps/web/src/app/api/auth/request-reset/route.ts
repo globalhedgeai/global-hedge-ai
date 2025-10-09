@@ -6,7 +6,14 @@ import nodemailer from 'nodemailer';
 
 
 export async function POST(req: NextRequest) {
-  const { email } = await req.json().catch(() => ({}));
+  let body;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ ok: false, error: 'invalid_json' }, { status: 400 });
+  }
+  
+  const { email } = body;
   if (!email) return NextResponse.json({ ok: true }); // Don't reveal if email exists
   
   const user = await prisma.user.findUnique({ where: { email } });
@@ -28,7 +35,11 @@ export async function POST(req: NextRequest) {
       jsonTransport: true
     });
     
-    const resetUrl = `http://localhost:3001/reset?token=${token}&email=${encodeURIComponent(email)}`;
+    // Get the base URL from environment or request headers
+    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+    const host = req.headers.get('host') || 'localhost:3001';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `${protocol}://${host}`;
+    const resetUrl = `${baseUrl}/reset?token=${token}&email=${encodeURIComponent(email)}`;
     
     const mailOptions = {
       from: 'noreply@global-hedge-ai.com',
@@ -47,8 +58,8 @@ export async function POST(req: NextRequest) {
     try {
       const info = await transporter.sendMail(mailOptions);
       console.log('Email sent:', info.message);
-    } catch (error) {
-      console.error('Email error:', error);
+    } catch {
+      console.error('Email error');
     }
     
     // If process.env.NODE_ENV !== 'production' then include { devToken: token } in the JSON

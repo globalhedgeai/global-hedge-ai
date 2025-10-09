@@ -22,7 +22,8 @@ export async function GET(req: NextRequest) {
       referralCode = await prisma.referralCode.create({
         data: {
           code: userCode,
-          ownerUserId: session.user.id
+          ownerUserId: session.user.id,
+          isActive: true
         }
       });
     }

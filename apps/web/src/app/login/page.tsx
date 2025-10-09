@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslation, useLanguage } from '@/lib/translations';
 import Link from "next/link";
 
 export default function LoginPage() {
@@ -9,6 +10,8 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
   const router = useRouter();
+  const { t } = useTranslation();
+  const { locale } = useLanguage();
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -19,24 +22,24 @@ export default function LoginPage() {
       body: JSON.stringify({ email, password }),
     });
     const j = await r.json();
-    if (j.ok) router.push("/"); else setMsg(j.error || "Login failed");
+    if (j.ok) router.push(`/${locale}`); else setMsg(j.error || t('auth.loginError'));
   }
 
   return (
     <main style={{ padding: 24, maxWidth: 420, margin: "0 auto", fontFamily: "system-ui" }}>
-      <h1 style={{ marginBottom: 12 }}>Login</h1>
+      <h1 style={{ marginBottom: 12 }}>{t('auth.login')}</h1>
       <form onSubmit={onSubmit} style={{ display: "grid", gap: 12 }}>
-        <label>Email
+        <label>{t('auth.email')}
           <input type="email" value={email} onChange={e => setEmail(e.target.value)} required />
         </label>
-        <label>Password
+        <label>{t('auth.password')}
           <input type="password" value={password} onChange={e => setPassword(e.target.value)} required />
         </label>
-        <button type="submit">Login</button>
+        <button type="submit">{t('auth.login')}</button>
         {msg && <div style={{ color: "red" }}>{msg}</div>}
         <div style={{ display: "flex", gap: 12 }}>
-          <Link href="/register">Create Account</Link>
-          <Link href="/forgot">Forgot Password?</Link>
+          <Link href={`/${locale}/register`}>{t('auth.register')}</Link>
+          <Link href={`/${locale}/forgot`}>{t('auth.forgotPassword')}</Link>
         </div>
       </form>
     </main>

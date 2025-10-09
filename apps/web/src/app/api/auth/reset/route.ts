@@ -6,7 +6,12 @@ import { hashPassword } from '@/lib/password';
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json().catch(() => ({}));
+    let body;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ ok: false, error: 'invalid_json' }, { status: 400 });
+    }
     
     // Parse JSON body and accept any of the specified formats
     const token = body.token || body.devToken || body.resetToken;

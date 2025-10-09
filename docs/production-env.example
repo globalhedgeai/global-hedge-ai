@@ -1,0 +1,62 @@
+# ===========================================
+# Global Hedge AI - Production Environment
+# ===========================================
+
+# Database Configuration
+DATABASE_URL="postgresql://postgres:YOUR_SECURE_PASSWORD@postgres:5432/global_hedge_ai?schema=public"
+POSTGRES_PASSWORD="YOUR_SECURE_DB_PASSWORD"
+
+# Next.js Configuration
+NODE_ENV=production
+NEXTAUTH_SECRET="YOUR_SUPER_SECRET_KEY_HERE_MINIMUM_32_CHARACTERS"
+NEXTAUTH_URL="https://yourdomain.com"
+
+# Cloudflare R2 Storage
+CLOUDFLARE_R2_ACCESS_KEY_ID="your-access-key-id"
+CLOUDFLARE_R2_SECRET_ACCESS_KEY="your-secret-access-key"
+CLOUDFLARE_R2_ENDPOINT="https://your-account-id.r2.cloudflarestorage.com"
+CLOUDFLARE_R2_BUCKET_NAME="global-hedge-ai-storage"
+
+# Cryptocurrency Addresses (Replace with your actual addresses)
+NEXT_PUBLIC_USDT_TRC20_ADDRESS="TKaAamEouHjG9nZwoTPhgYUerejbBHGMop"
+NEXT_PUBLIC_USDT_ERC20_ADDRESS="0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6"
+NEXT_PUBLIC_BTC_ADDRESS="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
+NEXT_PUBLIC_ETH_ADDRESS="0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6"
+NEXT_PUBLIC_BNB_ADDRESS="bnb1..."
+NEXT_PUBLIC_ADA_ADDRESS="addr1..."
+NEXT_PUBLIC_SOL_ADDRESS="So11111111111111111111111111111111111111112"
+NEXT_PUBLIC_MATIC_ADDRESS="0x..."
+NEXT_PUBLIC_AVAX_ADDRESS="0x..."
+NEXT_PUBLIC_DOT_ADDRESS="1..."
+
+# Database Performance
+DATABASE_POOL_MIN=2
+DATABASE_POOL_MAX=10
+DATABASE_POOL_IDLE_TIMEOUT=30000
+DATABASE_POOL_CONNECTION_TIMEOUT=60000
+DATABASE_SSL=true
+DATABASE_SSL_REJECT_UNAUTHORIZED=false
+
+# Security
+CORS_ORIGIN="https://yourdomain.com"
+RATE_LIMIT_MAX=100
+RATE_LIMIT_WINDOW=900000
+
+# Backup Configuration
+BACKUP_ENABLED=true
+BACKUP_FREQUENCY=daily
+BACKUP_RETENTION_DAYS=30
+BACKUP_ENCRYPTION=true
+
+# Email Configuration (Optional)
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT=587
+SMTP_USER="your-email@gmail.com"
+SMTP_PASS="your-app-password"
+
+# Monitoring (Optional)
+SENTRY_DSN="your-sentry-dsn"
+ANALYTICS_ID="your-analytics-id"
+
+# Redis (Optional for caching)
+REDIS_URL="redis://localhost:6379"

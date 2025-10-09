@@ -2,12 +2,8 @@
 import { getIronSession } from 'iron-session';
 import { sessionOptions, type IronSession } from '@/lib/session';
 import { prisma } from '@/lib/prisma';
-import * as fs from 'node:fs/promises';
-import * as path from 'node:path';
 import { RandomRewardService } from '@/lib/RandomRewardService';
 import { Decimal } from '@prisma/client/runtime/library';
-
-const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads');
 
 export async function GET(req: NextRequest) {
   const session = await getIronSession(req, new NextResponse(), sessionOptions) as IronSession;
@@ -30,7 +26,7 @@ export async function POST(req: NextRequest) {
     
     let amount: number;
     let txId: string;
-    let network: string;
+    let cryptocurrency: string;
     let proofImageUrl: string | undefined;
 
     // Try multipart first, fallback to JSON on failure or when content-type is application/json
@@ -40,10 +36,10 @@ export async function POST(req: NextRequest) {
         const formData = await req.formData();
         const amountStr = formData.get('amount')?.toString();
         const txIdStr = formData.get('txId')?.toString();
-        const networkStr = formData.get('network')?.toString();
-        const file = formData.get('proof') as File | null;
+        const cryptocurrencyStr = formData.get('cryptocurrency')?.toString();
+        const proofImageUrlStr = formData.get('proofImageUrl')?.toString();
 
-        if (!amountStr || !txIdStr || !file) {
+        if (!amountStr || !txIdStr) {
           return NextResponse.json({ ok: false, error: 'missing fields' }, { status: 400 });
         }
 
@@ -53,20 +49,8 @@ export async function POST(req: NextRequest) {
         }
 
         txId = txIdStr;
-        network = networkStr || 'TRC20';
-
-        // Save file
-        await fs.mkdir(UPLOAD_DIR, { recursive: true });
-        
-        const origName = file.name || 'proof';
-        const safeName = origName.replace(/[^\w.\-()\s]/g, '').trim() || 'proof';
-        const fileName = `${Date.now()}-${Math.random().toString(16).slice(2)}-${safeName}`;
-        const absPath = path.join(UPLOAD_DIR, fileName);
-
-        const buf = Buffer.from(await file.arrayBuffer());
-        await fs.writeFile(absPath, buf);
-
-        proofImageUrl = `/uploads/${fileName}`;
+        cryptocurrency = cryptocurrencyStr || 'USDT_TRC20';
+        proofImageUrl = proofImageUrlStr || undefined;
       } else {
         throw new Error('Content-type is application/json, use JSON path');
       }
@@ -83,63 +67,102 @@ export async function POST(req: NextRequest) {
       }
 
       txId = json.txId;
-      network = json.network || 'TRC20';
-
-      // Handle optional proofBase64
-      if (json.proofBase64) {
-        try {
-          await fs.mkdir(UPLOAD_DIR, { recursive: true });
-          
-          const fileName = `${Date.now()}-${Math.random().toString(16).slice(2)}-proof.png`;
-          const absPath = path.join(UPLOAD_DIR, fileName);
-          
-          const buf = Buffer.from(json.proofBase64, 'base64');
-          await fs.writeFile(absPath, buf);
-          
-          proofImageUrl = `/uploads/${fileName}`;
-        } catch (fileError) {
-          // Continue without proofImageUrl if file save fails
-          console.warn('Failed to save proofBase64:', fileError);
-        }
-      }
+      cryptocurrency = json.cryptocurrency || 'USDT_TRC20';
+      proofImageUrl = json.proofImageUrl || undefined;
     }
 
-    const toAddress = process.env.NEXT_PUBLIC_COMPANY_ADDRESS ?? 'TKaAamEouHjG9nZwoTPhgYUerejbBHGMop';
+    // Get company address for the selected cryptocurrency
+    const companyAddress = process.env.NEXT_PUBLIC_COMPANY_ADDRESS || "TKaAamEouHjG9nZwoTPhgYUerejbBHGMop";
 
-    // Calculate random reward
-    const rewardPolicies = {
-      enabled: false, // Default disabled
-      chancePct: 5,
-      bonusPct: 2
-    };
-    
-    const rewardResult = RandomRewardService.calculateReward(
-      new Decimal(amount),
-      rewardPolicies
-    );
-
-    const created = await prisma.deposit.create({
+    // Create deposit record
+    const deposit = await prisma.deposit.create({
       data: {
-        amount,
+        userId: session.user.id,
+        amount: new Decimal(amount),
         txId,
+        cryptocurrency: cryptocurrency as any,
+        toAddress: companyAddress,
         proofImageUrl: proofImageUrl || '',
-        network,
-        toAddress,
-        status: 'PENDING',
-        rewardAmount: rewardResult.rewardAmount,
-        rewardMeta: JSON.stringify(rewardResult.rewardMeta),
-        user: { connect: { id: session.user.id } },
-      },
+        status: 'PENDING'
+      }
     });
+
+    // Check for random reward
+    let rewardAmount = 0;
+    try {
+      const randomRewardService = new RandomRewardService();
+      const rewardResult = await randomRewardService.processDepositReward(deposit.id, amount);
+      if (rewardResult.success && rewardResult.rewardAmount > 0) {
+        rewardAmount = rewardResult.rewardAmount;
+        
+        // Update deposit with reward
+        await prisma.deposit.update({
+          where: { id: deposit.id },
+          data: {
+            rewardAmount: new Decimal(rewardAmount),
+            rewardMeta: JSON.stringify(rewardResult.metadata)
+          }
+        });
+      }
+    } catch (rewardError) {
+      console.error('Random reward processing failed:', rewardError);
+      // Don't fail the deposit if reward processing fails
+    }
+
+    // Check if this is user's first successful deposit and update referral stats
+    try {
+      const userDeposits = await prisma.deposit.count({
+        where: { 
+          userId: session.user.id,
+          status: 'APPROVED'
+        }
+      });
+
+      // If this is the first approved deposit, update referrer's stats
+      if (userDeposits === 1) {
+        const user = await prisma.user.findUnique({
+          where: { id: session.user.id },
+          select: { invitedById: true }
+        });
+
+        if (user?.invitedById) {
+          await prisma.referralStats.upsert({
+            where: { userId: user.invitedById },
+            update: {
+              invitedCount: { increment: 1 },
+              updatedAt: new Date()
+            },
+            create: {
+              userId: user.invitedById,
+              invitedCount: 1,
+              tier: 1
+            }
+          });
+
+          // Add commission to referrer's balance
+          await prisma.user.update({
+            where: { id: user.invitedById },
+            data: {
+              balance: { increment: amount * 0.05 }
+            }
+          });
+        }
+      }
+    } catch (referralError) {
+      console.error('Referral stats update failed:', referralError);
+      // Don't fail the deposit if referral update fails
+    }
 
     return NextResponse.json({ 
       ok: true, 
-      id: created.id, 
-      proofImageUrl,
-      rewardAmount: rewardResult.rewardAmount.toNumber()
+      depositId: deposit.id,
+      rewardAmount 
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'unknown error';
-    return NextResponse.json({ ok: false, error: message }, { status: 500 });
+    console.error('Deposit creation failed:', error);
+    return NextResponse.json(
+      { ok: false, error: 'Failed to create deposit' },
+      { status: 500 }
+    );
   }
 }

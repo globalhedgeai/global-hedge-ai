@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getIronSession } from 'iron-session';
 import { sessionOptions, type IronSession } from '@/lib/session';
-import { prisma } from '@/lib/prisma';
 import { getPolicies } from '@/lib/policies';
+import { DailyRewardCalculator } from '@/lib/dailyRewardCalculator';
 
 export async function GET(req: NextRequest) {
   try {
@@ -25,22 +25,13 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    const { amount } = dailyReward;
+    // التحقق من إمكانية المطالبة وحساب المكافأة
+    const eligibility = await DailyRewardCalculator.checkClaimEligibility(session.user.id);
     
     // Get today's UTC date start (00:00:00.000Z)
     const now = new Date();
     const todayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
     
-    // Check if user has already claimed today
-    const existingClaim = await prisma.dailyRewardClaim.findUnique({
-      where: {
-        userId_claimDate: {
-          userId: session.user.id,
-          claimDate: todayUTC
-        }
-      }
-    });
-
     // Calculate next reset time (next UTC midnight)
     const nextReset = new Date(todayUTC);
     nextReset.setUTCDate(nextReset.getUTCDate() + 1);
@@ -49,11 +40,18 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       ok: true,
-      canClaim: !existingClaim,
-      amount,
-      lastClaimAt: existingClaim?.claimedAt.toISOString(),
+      canClaim: eligibility.canClaim,
+      amount: eligibility.amount.toNumber(),
+      lastClaimAt: eligibility.lastClaimDate?.toISOString(),
       secondsToReset,
-      resetAt: nextReset.toISOString()
+      resetAt: nextReset.toISOString(),
+      details: {
+        monthlyRate: eligibility.monthlyRate,
+        tier: eligibility.tier,
+        baseBalance: eligibility.baseBalance.toNumber(),
+        dailyRate: (eligibility.monthlyRate / 30).toFixed(4) + '%',
+        reason: eligibility.reason
+      }
     });
 
   } catch (error) {

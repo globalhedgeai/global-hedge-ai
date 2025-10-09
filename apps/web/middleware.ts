@@ -9,10 +9,18 @@ export default createMiddleware({
   defaultLocale: defaultLocale,
   
   // Always show the locale in the URL
-  localePrefix: 'always'
+  localePrefix: 'always',
+  
+  // Handle locale detection from cookies
+  localeDetection: true
 });
 
 export const config = {
   // Match only internationalized pathnames
-  matcher: ['/', '/(ar|en|tr|fr|es)/:path*']
+  matcher: [
+    // Match all pathnames except for
+    // - … if they start with `/api`, `/_next` or `/_vercel`
+    // - … the ones containing a dot (e.g. `favicon.ico`)
+    '/((?!api|_next|_vercel|.*\\..*).*)'
+  ]
 };

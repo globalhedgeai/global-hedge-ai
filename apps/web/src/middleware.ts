@@ -5,6 +5,7 @@ const publicPaths = [
   '/api/health',
   '/api/proofs',
   '/api/policies',
+  '/api/market/candles',
   '/login',
   '/register',
   '/reset',

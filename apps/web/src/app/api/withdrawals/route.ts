@@ -19,7 +19,13 @@ export async function POST(req: NextRequest) {
   const session = await getIronSession(req, new NextResponse(), sessionOptions) as IronSession;
   if (!session.user) return NextResponse.json({ ok: false }, { status: 401 });
 
-  const json = await req.json().catch(() => ({}));
+  let json;
+  try {
+    json = await req.json();
+  } catch {
+    return NextResponse.json({ ok: false, error: 'invalid_json' }, { status: 400 });
+  }
+  
   const parsed = withdrawSchema.safeParse({ ...json });
   if (!parsed.success) return NextResponse.json({ ok: false, error: 'invalid' }, { status: 400 });
 
@@ -109,7 +115,7 @@ export async function POST(req: NextRequest) {
   const created = await prisma.withdrawal.create({
     data: {
       amount,
-      toAddress: parsed.data.address,
+      toAddress: parsed.data.toAddress,
       status: 'PENDING',
       feePct,
       feeAmount,
