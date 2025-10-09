@@ -44,6 +44,7 @@ interface SystemAlert {
 
 export default function PerformanceMonitoringPage() {
   const { t } = useTranslation();
+  const { locale } = useLanguage();
   const [metrics, setMetrics] = useState<PerformanceMetrics | null>(null);
   const [trends, setTrends] = useState<TrendData | null>(null);
   const [performers, setPerformers] = useState<TopPerformers | null>(null);
