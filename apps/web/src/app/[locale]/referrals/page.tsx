@@ -218,7 +218,7 @@ export default function ReferralsPage() {
                     <h3 className="text-xl font-bold text-foreground">{t('referrals.nextTier')}</h3>
                   </div>
                   <p className="text-muted-foreground mb-4">
-                    {t('referrals.inviteMore', { count: nextTier.needed, rate: nextTier.nextRate })}
+                    {t('referrals.inviteMore').replace('{count}', nextTier.needed.toString()).replace('{rate}', nextTier.nextRate.toString())}
                   </p>
                   <div className="relative h-3 bg-accent/30 rounded-full overflow-hidden mb-2">
                     <div 
