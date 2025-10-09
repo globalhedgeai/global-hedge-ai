@@ -30,6 +30,8 @@ interface Withdrawal {
 }
 
 export default function AdminUsersPage() {
+  const { t } = useTranslation();
+  const { locale } = useLanguage();
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [deposits, setDeposits] = useState<Deposit[]>([]);
