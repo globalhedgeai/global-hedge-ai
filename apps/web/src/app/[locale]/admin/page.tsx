@@ -33,6 +33,13 @@ export default function AdminDashboardPage() {
       color: 'bg-red-500'
     },
     {
+      title: 'التقارير المالية',
+      description: 'تقارير شاملة عن الأداء المالي',
+      icon: ChartPieIcon,
+      href: '/admin/reports',
+      color: 'bg-purple-500'
+    },
+    {
       title: 'إدارة المحافظ',
       description: 'إدارة محافظ العملات المشفرة',
       icon: WalletIcon,

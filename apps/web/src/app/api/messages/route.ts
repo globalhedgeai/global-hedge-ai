@@ -1,119 +1,153 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getIronSession } from 'iron-session';
-import { sessionOptions, type IronSession } from '@/lib/session';
-import { prisma } from '@/lib/prisma';
-import { z } from 'zod';
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "@/lib/session";
+import { prisma } from "@/lib/prisma";
+import { z } from "zod";
 
-const messageSchema = z.object({
-  content: z.string().min(1).max(2000)
+const SendMessageSchema = z.object({
+  body: z.string().min(1).max(2000)
 });
 
 export async function GET(req: NextRequest) {
-  const session = await getIronSession(req, new NextResponse(), sessionOptions) as IronSession;
-  if (!session.user) return NextResponse.json({ ok: false, error: 'unauthorized' }, { status: 401 });
-
   try {
-    // Get user's message thread with latest message
-    const thread = await prisma.messageThread.findUnique({
+    const session = await getServerSession(req);
+    
+    if (!session?.user) {
+      return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    }
+    
+    // Get or create message thread for user
+    let thread = await prisma.messageThread.findFirst({
       where: { userId: session.user.id },
       include: {
         messages: {
           orderBy: { createdAt: 'desc' },
-          take: 1
-        },
-        user: {
-          select: { id: true, email: true }
+          take: 50 // Get last 50 messages
         }
       }
     });
-
-    if (!thread) {
-      return NextResponse.json({ 
-        ok: true, 
-        messages: []
-      });
-    }
-
-    // Get all messages for the thread
-    const messages = await prisma.threadMessage.findMany({
-      where: { threadId: thread.id },
-      orderBy: { createdAt: 'desc' }
-    });
-
-    const formattedMessages = messages.map(msg => ({
-      id: msg.id,
-      content: msg.body,
-      createdAt: msg.createdAt.toISOString(),
-      isRead: msg.sender === 'ADMIN' ? true : false,
-      type: msg.sender === 'ADMIN' ? 'system' : 'support'
-    }));
-
-    return NextResponse.json({
-      ok: true,
-      messages: formattedMessages
-    });
-  } catch (error) {
-    console.error('Error fetching messages:', error);
-    return NextResponse.json({ ok: false, error: 'server_error' }, { status: 500 });
-  }
-}
-
-export async function POST(req: NextRequest) {
-  const session = await getIronSession(req, new NextResponse(), sessionOptions) as IronSession;
-  if (!session.user) return NextResponse.json({ ok: false, error: 'unauthorized' }, { status: 401 });
-
-  try {
-    const body = await req.json();
-    const parsed = messageSchema.safeParse(body);
     
-    if (!parsed.success) {
-      return NextResponse.json({ ok: false, error: 'invalid_message' }, { status: 400 });
-    }
-
-    // Find or create message thread for user
-    let thread = await prisma.messageThread.findUnique({
-      where: { userId: session.user.id }
-    });
-
+    // If no thread exists, create one
     if (!thread) {
       thread = await prisma.messageThread.create({
         data: {
           userId: session.user.id,
-          unreadForAdmin: 1
-        }
-      });
-    } else {
-      // Increment unread count for admin
-      await prisma.messageThread.update({
-        where: { id: thread.id },
-        data: { 
-          unreadForAdmin: { increment: 1 },
-          lastMessageAt: new Date()
+          lastMessageAt: new Date(),
+          unreadForUser: 0,
+          unreadForAdmin: 0
+        },
+        include: {
+          messages: {
+            orderBy: { createdAt: 'desc' },
+            take: 50
+          }
         }
       });
     }
-
-    // Create the message
-    const message = await prisma.threadMessage.create({
-      data: {
-        threadId: thread.id,
-        sender: 'USER',
-        body: parsed.data.content
+    
+    return NextResponse.json({
+      ok: true,
+      thread: {
+        id: thread.id,
+        userId: thread.userId,
+        lastMessageAt: thread.lastMessageAt,
+        unreadForUser: thread.unreadForUser,
+        unreadForAdmin: thread.unreadForAdmin,
+        messages: thread.messages.map(msg => ({
+          id: msg.id,
+          sender: msg.sender,
+          body: msg.body,
+          createdAt: msg.createdAt
+        }))
       }
     });
+    
+  } catch (error) {
+    console.error('Error fetching messages:', error);
+    return NextResponse.json({
+      ok: false,
+      error: 'Failed to fetch messages'
+    }, { status: 500 });
+  }
+}
 
+export async function POST(req: NextRequest) {
+  try {
+    const session = await getServerSession(req);
+    
+    if (!session?.user) {
+      return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    }
+    
+    const body = await req.json();
+    const parsed = SendMessageSchema.safeParse(body);
+    
+    if (!parsed.success) {
+      return NextResponse.json({ 
+        ok: false, 
+        error: "Invalid message data",
+        details: parsed.error.errors
+      }, { status: 400 });
+    }
+    
+    const { body: messageBody } = parsed.data;
+    
+    // Get or create message thread for user
+    let thread = await prisma.messageThread.findFirst({
+      where: { userId: session.user.id }
+    });
+    
+    if (!thread) {
+      thread = await prisma.messageThread.create({
+        data: {
+          userId: session.user.id,
+          lastMessageAt: new Date(),
+          unreadForUser: 0,
+          unreadForAdmin: 0
+        }
+      });
+    }
+    
+    // Create message and update thread
+    const result = await prisma.$transaction(async (tx) => {
+      // Create the user message
+      const message = await tx.threadMessage.create({
+        data: {
+          threadId: thread.id,
+          sender: 'USER',
+          body: messageBody
+        }
+      });
+      
+      // Update thread with new message info
+      await tx.messageThread.update({
+        where: { id: thread.id },
+        data: {
+          lastMessageAt: new Date(),
+          unreadForUser: 0, // User just sent, so no unread for user
+          unreadForAdmin: { increment: 1 } // Admin has new unread message
+        }
+      });
+      
+      return message;
+    });
+    
+    console.log(`User ${session.user.email} sent message: ${messageBody}`);
+    
     return NextResponse.json({
       ok: true,
       message: {
-        id: message.id,
-        content: message.body,
-        createdAt: message.createdAt.toISOString(),
-        isRead: false,
-        type: 'support'
+        id: result.id,
+        sender: result.sender,
+        body: result.body,
+        createdAt: result.createdAt
       }
     });
+    
   } catch (error) {
-    console.error('Error creating message:', error);
-    return NextResponse.json({ ok: false, error: 'server_error' }, { status: 500 });
+    console.error('Error sending message:', error);
+    return NextResponse.json({
+      ok: false,
+      error: 'Failed to send message'
+    }, { status: 500 });
   }
 }

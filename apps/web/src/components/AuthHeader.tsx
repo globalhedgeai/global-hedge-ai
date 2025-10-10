@@ -86,6 +86,17 @@ export default function AuthHeader() {
                 >
                   👤 {t('navigation.account')}
                 </Link>
+                <Link 
+                  href={`/${locale}/messages`} 
+                  className="px-3 py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-all duration-200 font-medium text-sm relative"
+                >
+                  💬 {t('navigation.messages')}
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {unreadCount}
+                    </span>
+                  )}
+                </Link>
                 
                 {/* Dropdown Menu for Additional Links */}
                 <div className="relative group">
