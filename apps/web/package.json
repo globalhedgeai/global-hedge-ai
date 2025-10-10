@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start -p 3000",
     "lint": "next lint",
+    "postinstall": "prisma generate",
     "check:types": "tsc -p tsconfig.json --noEmit",
     "check:lint": "next lint --max-warnings=0",
     "check:prisma": "pnpm dlx prisma validate",

@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -142,7 +142,7 @@ model DailyRewardClaim {
   userId    String
   amount    Decimal  @default(0)
   claimedAt DateTime @default(now())
-  claimDate DateTime
+  claimDate DateTime @db.Date
   meta      Json?
   user      User     @relation(fields: [userId], references: [id])
 
