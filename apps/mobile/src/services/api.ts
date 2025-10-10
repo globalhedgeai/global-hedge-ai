@@ -58,7 +58,7 @@ class ApiService {
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
     try {
-      const url = `${this.baseUrl}${endpoint}`;
+      const url = `${this.baseUrl}/api${endpoint}`;
       const headers: HeadersInit = {
         'Content-Type': 'application/json',
         ...options.headers,
@@ -71,6 +71,7 @@ class ApiService {
       const response = await fetch(url, {
         ...options,
         headers,
+        credentials: 'include', // Include cookies for session management
       });
 
       const data = await response.json();
@@ -186,10 +187,88 @@ class ApiService {
     return this.request<Message[]>('/messages');
   }
 
+  async sendMessage(body: string): Promise<ApiResponse<Message>> {
+    return this.request<Message>('/messages', {
+      method: 'POST',
+      body: JSON.stringify({ body }),
+    });
+  }
+
   async markMessageAsRead(messageId: string): Promise<ApiResponse<void>> {
     return this.request<void>(`/messages/${messageId}/read`, {
       method: 'PUT',
     });
+  }
+
+  // Admin APIs
+  async getAdminUsers(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>('/admin/users');
+  }
+
+  async updateUserBalance(userId: string, balance: number): Promise<ApiResponse<any>> {
+    return this.request<any>('/admin/users/balance', {
+      method: 'PUT',
+      body: JSON.stringify({ userId, balance }),
+    });
+  }
+
+  async getAdminDeposits(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>('/admin/deposits');
+  }
+
+  async approveDeposit(depositId: string): Promise<ApiResponse<any>> {
+    return this.request<any>('/admin/deposits/approve', {
+      method: 'PUT',
+      body: JSON.stringify({ depositId }),
+    });
+  }
+
+  async rejectDeposit(depositId: string): Promise<ApiResponse<any>> {
+    return this.request<any>('/admin/deposits/reject', {
+      method: 'PUT',
+      body: JSON.stringify({ depositId }),
+    });
+  }
+
+  async getAdminWithdrawals(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>('/admin/withdrawals');
+  }
+
+  async approveWithdrawal(withdrawalId: string): Promise<ApiResponse<any>> {
+    return this.request<any>('/admin/withdrawals/approve', {
+      method: 'PUT',
+      body: JSON.stringify({ withdrawalId }),
+    });
+  }
+
+  async rejectWithdrawal(withdrawalId: string): Promise<ApiResponse<any>> {
+    return this.request<any>('/admin/withdrawals/reject', {
+      method: 'PUT',
+      body: JSON.stringify({ withdrawalId }),
+    });
+  }
+
+  async getAdminMessages(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>('/admin/messages');
+  }
+
+  async sendAdminReply(threadId: string, body: string): Promise<ApiResponse<any>> {
+    return this.request<any>('/admin/messages', {
+      method: 'POST',
+      body: JSON.stringify({ threadId, body }),
+    });
+  }
+
+  async getAdminReports(): Promise<ApiResponse<any>> {
+    return this.request<any>('/admin/reports/financial');
+  }
+
+  async getUserReports(): Promise<ApiResponse<any[]>> {
+    return this.request<any[]>('/admin/reports/users');
+  }
+
+  async getPlatformStats(): Promise<ApiResponse<any>> {
+    return this.request<any>('/admin/platform-stats');
   }
 
   // Rewards

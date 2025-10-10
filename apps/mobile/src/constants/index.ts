@@ -1,8 +1,8 @@
 // Constants for Global Hedge AI Mobile App
 
 export const API_BASE_URL = __DEV__ 
-  ? 'http://localhost:3000/api' 
-  : process.env.EXPO_PUBLIC_API_URL || 'https://api.global-hedge-ai.com/api';
+  ? 'http://localhost:3000' 
+  : process.env.EXPO_PUBLIC_API_URL || 'https://global-hedge-ai-web-new1-hywg29lo9-global-hedge-ais-projects.vercel.app';
 
 export const COLORS = {
   primary: '#f0b90b',
