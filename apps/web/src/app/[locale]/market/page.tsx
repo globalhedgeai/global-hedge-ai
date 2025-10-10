@@ -35,6 +35,9 @@ export default function MarketPage() {
   const [candles, setCandles] = useState<Candle[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [marketPrices, setMarketPrices] = useState<any[]>([]);
+  const [currentPrice, setCurrentPrice] = useState<number>(0);
+  const [priceChange24h, setPriceChange24h] = useState<number>(0);
   
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -46,6 +49,26 @@ export default function MarketPage() {
     }).toString(), 
     [symbol, interval]
   );
+
+  const fetchMarketPrices = useCallback(async () => {
+    try {
+      const response = await fetch('/api/market/prices');
+      const data = await response.json();
+      
+      if (data.ok) {
+        setMarketPrices(data.prices);
+        
+        // Update current symbol's price info
+        const currentSymbolData = data.prices.find((p: any) => p.symbol === symbol);
+        if (currentSymbolData) {
+          setCurrentPrice(currentSymbolData.price);
+          setPriceChange24h(currentSymbolData.change24hPercent);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching market prices:', error);
+    }
+  }, [symbol]);
 
   const fetchCandles = useCallback(async () => {
     const cacheKey = `${symbol}:${interval}`;
@@ -122,15 +145,20 @@ export default function MarketPage() {
   // Fetch data and set up auto-refresh
   useEffect(() => {
     fetchCandles();
-    const id = window.setInterval(fetchCandles, 10000);
-    return () => clearInterval(id);
-  }, [fetchCandles]);
+    fetchMarketPrices();
+    
+    const candlesInterval = window.setInterval(fetchCandles, 10000);
+    const pricesInterval = window.setInterval(fetchMarketPrices, 5000); // Update prices more frequently
+    
+    return () => {
+      clearInterval(candlesInterval);
+      clearInterval(pricesInterval);
+    };
+  }, [fetchCandles, fetchMarketPrices]);
 
-  // Calculate current price and change
-  const currentPrice = candles.length > 0 ? candles[candles.length - 1].close : 0;
-  const previousPrice = candles.length > 1 ? candles[candles.length - 2].close : currentPrice;
-  const priceChange = currentPrice - previousPrice;
-  const priceChangePercent = previousPrice > 0 ? (priceChange / previousPrice) * 100 : 0;
+  // Calculate current price and change (use real data if available)
+  const displayPrice = currentPrice > 0 ? currentPrice : (candles.length > 0 ? candles[candles.length - 1].close : 0);
+  const displayChange = priceChange24h !== 0 ? priceChange24h : (candles.length > 1 ? ((candles[candles.length - 1].close - candles[candles.length - 2].close) / candles[candles.length - 2].close * 100) : 0);
 
   return (
     <div className="min-h-screen bg-background">
@@ -245,13 +273,13 @@ export default function MarketPage() {
                     <div className="text-right">
                       <p className="text-sm text-muted-foreground">{t('market.currentPrice')}</p>
                       <p className="text-lg font-semibold text-foreground">
-                        {formatCurrency(currentPrice, locale)}
+                        {formatCurrency(displayPrice, locale)}
                       </p>
                     </div>
                     <div className="text-right">
                       <p className="text-sm text-muted-foreground">{t('market.change24h')}</p>
-                      <p className={`text-lg font-semibold ${priceChange >= 0 ? 'text-success' : 'text-error'}`}>
-                        {priceChange >= 0 ? '+' : ''}{formatPercentage(priceChangePercent, locale)}
+                      <p className={`text-lg font-semibold ${displayChange >= 0 ? 'text-success' : 'text-error'}`}>
+                        {displayChange >= 0 ? '+' : ''}{formatPercentage(displayChange, locale)}
                       </p>
                     </div>
                   </div>
