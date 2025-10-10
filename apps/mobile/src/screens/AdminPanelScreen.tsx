@@ -19,6 +19,7 @@ interface AdminPanelScreenProps {
   onNavigateToWithdrawals: () => void;
   onNavigateToMessages: () => void;
   onNavigateToReports: () => void;
+  onNavigateToFullControl: () => void;
 }
 
 const AdminPanelScreen: React.FC<AdminPanelScreenProps> = ({
@@ -29,6 +30,7 @@ const AdminPanelScreen: React.FC<AdminPanelScreenProps> = ({
   onNavigateToWithdrawals,
   onNavigateToMessages,
   onNavigateToReports,
+  onNavigateToFullControl,
 }) => {
   // Check if user is admin
   if (user.role !== 'ADMIN') {
@@ -93,6 +95,14 @@ const AdminPanelScreen: React.FC<AdminPanelScreenProps> = ({
       description: 'View comprehensive financial reports',
       onPress: onNavigateToReports,
       color: '#10B981',
+    },
+    {
+      id: 'fullControl',
+      title: 'Full Admin Control',
+      icon: '🔒',
+      description: 'Complete control over users and transactions',
+      onPress: onNavigateToFullControl,
+      color: '#EF4444',
     },
   ];
 

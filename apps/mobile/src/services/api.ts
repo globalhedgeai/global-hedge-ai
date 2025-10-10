@@ -271,6 +271,28 @@ class ApiService {
     return this.request<any>('/admin/platform-stats');
   }
 
+  // Full Control APIs
+  async updateUserFull(userData: any): Promise<ApiResponse<any>> {
+    return this.request<any>('/admin/users/full-update', {
+      method: 'PUT',
+      body: JSON.stringify(userData),
+    });
+  }
+
+  async updateDepositFull(depositData: any): Promise<ApiResponse<any>> {
+    return this.request<any>('/admin/deposits/full-update', {
+      method: 'PUT',
+      body: JSON.stringify(depositData),
+    });
+  }
+
+  async updateWithdrawalFull(withdrawalData: any): Promise<ApiResponse<any>> {
+    return this.request<any>('/admin/withdrawals/full-update', {
+      method: 'PUT',
+      body: JSON.stringify(withdrawalData),
+    });
+  }
+
   // Rewards
   async getDailyReward(): Promise<ApiResponse<DailyReward>> {
     return this.request<DailyReward>('/rewards/daily/status');

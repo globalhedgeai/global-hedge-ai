@@ -40,6 +40,13 @@ export default function AdminDashboardPage() {
       color: 'bg-purple-500'
     },
     {
+      title: 'التحكم الكامل',
+      description: 'تحكم إداري كامل في المستخدمين والمعاملات',
+      icon: ShieldCheckIcon,
+      href: '/admin/full-control',
+      color: 'bg-red-500'
+    },
+    {
       title: 'إدارة المحافظ',
       description: 'إدارة محافظ العملات المشفرة',
       icon: WalletIcon,
