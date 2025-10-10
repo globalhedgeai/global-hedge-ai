@@ -1,34 +1,53 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getIronSession } from 'iron-session';
-import { sessionOptions, type IronSession } from '@/lib/session';
-import { prisma } from '@/lib/prisma';
-import { walletSchema } from '@/lib/validators';
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "@/lib/session";
+import { prisma } from "@/lib/prisma";
 
 export async function GET(req: NextRequest) {
-  const session = await getIronSession(req, new NextResponse(), sessionOptions) as IronSession;
-  if (!session.user) return NextResponse.json({ ok: false }, { status: 401 });
-  
-  const user = await prisma.user.findUnique({ 
-    where: { id: session.user.id }, 
-    select: { id: true, email: true, role: true, walletAddress: true, balance: true, referralCode: true } 
-  });
-  return NextResponse.json({ ok: true, user });
-}
-
-export async function PUT(req: NextRequest) {
-  const session = await getIronSession(req, new NextResponse(), sessionOptions) as IronSession;
-  if (!session.user) return NextResponse.json({ ok: false }, { status: 401 });
-
-  let body;
   try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ ok: false, error: 'invalid_json' }, { status: 400 });
+    const session = await getServerSession(req);
+    
+    if (!session?.user) {
+      return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    }
+    
+    // Get user details from database
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        balance: true,
+        referralCode: true,
+        walletAddress: true,
+        createdAt: true,
+        updatedAt: true
+      }
+    });
+    
+    if (!user) {
+      return NextResponse.json({ ok: false, error: "User not found" }, { status: 404 });
+    }
+    
+    return NextResponse.json({
+      ok: true,
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        balance: user.balance,
+        referralCode: user.referralCode,
+        walletAddress: user.walletAddress,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt
+      }
+    });
+    
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    return NextResponse.json({
+      ok: false,
+      error: 'Failed to fetch user data'
+    }, { status: 500 });
   }
-  
-  const { walletAddress } = body;
-  const parsed = walletSchema.safeParse(walletAddress);
-  if (!parsed.success) return NextResponse.json({ ok: false, error: 'invalid_wallet' }, { status: 400 });
-  await prisma.user.update({ where: { id: session.user.id }, data: { walletAddress } });
-  return NextResponse.json({ ok: true });
 }
