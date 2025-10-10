@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
     const binanceData = await response.json();
     
     // Convert Binance format to our format
-    const candles = binanceData.map((kline: any[]) => ({
+    const candles = binanceData.map((kline: string[]) => ({
       time: kline[0], // Open time (milliseconds)
       open: parseFloat(kline[1]), // Open price
       high: parseFloat(kline[2]), // High price

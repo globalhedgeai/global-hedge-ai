@@ -3,10 +3,20 @@ import { getIronSession } from 'iron-session';
 import { sessionOptions } from '@/lib/session';
 import CloudStorageService from '@/lib/cloudStorage';
 
+interface SessionUser {
+  id: string;
+  email: string;
+  role: string;
+}
+
+interface Session {
+  user?: SessionUser;
+}
+
 export async function POST(request: NextRequest) {
   try {
     // Check authentication
-    const session = await getIronSession(request, new NextResponse(), sessionOptions) as any;
+    const session = await getIronSession(request, new NextResponse(), sessionOptions) as Session;
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -59,7 +69,7 @@ export async function POST(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     // Check authentication
-    const session = await getIronSession(request, new NextResponse(), sessionOptions) as any;
+    const session = await getIronSession(request, new NextResponse(), sessionOptions) as Session;
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }

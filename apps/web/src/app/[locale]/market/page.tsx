@@ -115,7 +115,7 @@ export default function MarketPage() {
   }, [symbol, router]);
 
   // Handle crypto pair selection
-  const handlePairSelect = useCallback((pair: any) => {
+  const handlePairSelect = useCallback((pair: { symbol: string }) => {
     handleSymbolChange(pair.symbol);
   }, [handleSymbolChange]);
 

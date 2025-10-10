@@ -2,6 +2,11 @@
 
 import { useEffect } from 'react';
 
+interface BeforeInstallPromptEvent extends Event {
+  prompt(): Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+}
+
 export default function PWAInstaller() {
   useEffect(() => {
     // Register service worker
@@ -18,11 +23,11 @@ export default function PWAInstaller() {
     }
 
     // Handle PWA install prompt
-    let deferredPrompt: any;
+    let deferredPrompt: BeforeInstallPromptEvent | null = null;
     
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
-      deferredPrompt = e;
+      deferredPrompt = e as BeforeInstallPromptEvent;
       
       // Show install button
       const installButton = document.getElementById('pwa-install-button');

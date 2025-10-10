@@ -21,7 +21,7 @@ export interface IronSession {
 
 export const sessionOptions: SessionOptions = {
   cookieName: 'session',
-  password: process.env.SESSION_SECRET || 'dev-secret-change-me-please-32+chars',
+  password: process.env.SESSION_SECRET || 'GlobalHedge2024!@#SecureSessionKey!@#2024VeryLongSecretKeyForProductionUse',
   cookieOptions: {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',

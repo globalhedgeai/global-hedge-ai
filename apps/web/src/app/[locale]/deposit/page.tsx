@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useTranslation, useLanguage } from '@/lib/translations';
 import { CryptocurrencyConfig } from '@/lib/cryptocurrencies';
 import AuthGuard from '@/components/AuthGuard';
-import { formatCurrency } from '@/lib/numberFormat';
+// import { formatCurrency } from '@/lib/numberFormat';
 
 type DepositItem = {
   id: string;
@@ -46,7 +46,7 @@ export default function DepositPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { t } = useTranslation();
   const { locale } = useLanguage();
-  const isRTL = locale === 'ar';
+  // const isRTL = locale === 'ar';
 
   const currentCrypto = cryptocurrencies.find(crypto => crypto.id === selectedCrypto);
 

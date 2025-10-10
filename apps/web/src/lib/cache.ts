@@ -50,7 +50,7 @@ class CacheService {
   /**
    * Set a key-value pair with optional expiration
    */
-  async set(key: string, value: any, ttlSeconds?: number): Promise<boolean> {
+  async set(key: string, value: unknown, ttlSeconds?: number): Promise<boolean> {
     if (!this.isConnected()) {
       return false;
     }
@@ -74,7 +74,7 @@ class CacheService {
   /**
    * Get a value by key
    */
-  async get<T = any>(key: string): Promise<T | null> {
+  async get<T = unknown>(key: string): Promise<T | null> {
     if (!this.isConnected()) {
       return null;
     }
@@ -195,7 +195,7 @@ class CacheService {
   /**
    * Get multiple keys at once
    */
-  async mget<T = any>(keys: string[]): Promise<(T | null)[]> {
+  async mget<T = unknown>(keys: string[]): Promise<(T | null)[]> {
     if (!this.isConnected()) {
       return keys.map(() => null);
     }
@@ -212,7 +212,7 @@ class CacheService {
   /**
    * Set multiple key-value pairs at once
    */
-  async mset(keyValuePairs: Record<string, any>): Promise<boolean> {
+  async mset(keyValuePairs: Record<string, unknown>): Promise<boolean> {
     if (!this.isConnected()) {
       return false;
     }

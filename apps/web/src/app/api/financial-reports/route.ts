@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getIronSession } from 'iron-session';
 import { sessionOptions, type IronSession } from '@/lib/session';
 import { prisma } from '@/lib/prisma';
+import { Decimal } from '@prisma/client/runtime/library';
 
 export async function GET(req: NextRequest) {
   const session = await getIronSession(req, new NextResponse(), sessionOptions) as IronSession;
@@ -119,11 +120,28 @@ export async function GET(req: NextRequest) {
   }
 }
 
+interface DepositData {
+  amount: number | Decimal;
+  rewardAmount?: number | Decimal;
+  createdAt: Date;
+}
+
+interface WithdrawalData {
+  amount: number | Decimal;
+  createdAt: Date;
+}
+
+interface RewardData {
+  amount: number | Decimal;
+  createdAt?: Date;
+  claimedAt?: Date;
+}
+
 function generateMonthlyData(
-  deposits: any[],
-  withdrawals: any[],
-  dailyRewards: any[],
-  randomRewards: any[],
+  deposits: DepositData[],
+  withdrawals: WithdrawalData[],
+  dailyRewards: RewardData[],
+  randomRewards: RewardData[],
   startDate: Date
 ) {
   const monthlyMap = new Map<string, {
@@ -151,8 +169,14 @@ function generateMonthlyData(
     const monthKey = deposit.createdAt.toISOString().substring(0, 7);
     const monthData = monthlyMap.get(monthKey);
     if (monthData) {
-      monthData.deposits += deposit.amount;
-      monthData.rewards += deposit.rewardAmount || 0;
+      const amount = typeof deposit.amount === 'object' && deposit.amount !== null && 'toNumber' in deposit.amount
+        ? deposit.amount.toNumber()
+        : Number(deposit.amount);
+      const rewardAmount = typeof deposit.rewardAmount === 'object' && deposit.rewardAmount !== null && 'toNumber' in deposit.rewardAmount
+        ? deposit.rewardAmount.toNumber()
+        : Number(deposit.rewardAmount) || 0;
+      monthData.deposits += amount;
+      monthData.rewards += rewardAmount;
     }
   });
 
@@ -161,7 +185,10 @@ function generateMonthlyData(
     const monthKey = withdrawal.createdAt.toISOString().substring(0, 7);
     const monthData = monthlyMap.get(monthKey);
     if (monthData) {
-      monthData.withdrawals += withdrawal.amount;
+      const amount = typeof withdrawal.amount === 'object' && withdrawal.amount !== null && 'toNumber' in withdrawal.amount
+        ? withdrawal.amount.toNumber()
+        : Number(withdrawal.amount);
+      monthData.withdrawals += amount;
     }
   });
 
@@ -171,7 +198,10 @@ function generateMonthlyData(
       const monthKey = reward.claimedAt.toISOString().substring(0, 7);
       const monthData = monthlyMap.get(monthKey);
       if (monthData) {
-        monthData.rewards += reward.amount;
+        const amount = typeof reward.amount === 'object' && reward.amount !== null && 'toNumber' in reward.amount
+          ? reward.amount.toNumber()
+          : Number(reward.amount);
+        monthData.rewards += amount;
       }
     }
   });
@@ -182,7 +212,10 @@ function generateMonthlyData(
       const monthKey = reward.claimedAt.toISOString().substring(0, 7);
       const monthData = monthlyMap.get(monthKey);
       if (monthData) {
-        monthData.rewards += reward.amount;
+        const amount = typeof reward.amount === 'object' && reward.amount !== null && 'toNumber' in reward.amount
+          ? reward.amount.toNumber()
+          : Number(reward.amount);
+        monthData.rewards += amount;
       }
     }
   });
@@ -199,10 +232,10 @@ function generateMonthlyData(
 }
 
 function generateDailyData(
-  deposits: any[],
-  withdrawals: any[],
-  dailyRewards: any[],
-  randomRewards: any[],
+  deposits: DepositData[],
+  withdrawals: WithdrawalData[],
+  dailyRewards: RewardData[],
+  randomRewards: RewardData[],
   startDate: Date
 ) {
   const dailyMap = new Map<string, {
@@ -230,8 +263,14 @@ function generateDailyData(
     const dayKey = deposit.createdAt.toISOString().substring(0, 10);
     const dayData = dailyMap.get(dayKey);
     if (dayData) {
-      dayData.deposits += deposit.amount;
-      dayData.rewards += deposit.rewardAmount || 0;
+      const amount = typeof deposit.amount === 'object' && deposit.amount !== null && 'toNumber' in deposit.amount
+        ? deposit.amount.toNumber()
+        : Number(deposit.amount);
+      const rewardAmount = typeof deposit.rewardAmount === 'object' && deposit.rewardAmount !== null && 'toNumber' in deposit.rewardAmount
+        ? deposit.rewardAmount.toNumber()
+        : Number(deposit.rewardAmount) || 0;
+      dayData.deposits += amount;
+      dayData.rewards += rewardAmount;
     }
   });
 
@@ -240,7 +279,10 @@ function generateDailyData(
     const dayKey = withdrawal.createdAt.toISOString().substring(0, 10);
     const dayData = dailyMap.get(dayKey);
     if (dayData) {
-      dayData.withdrawals += withdrawal.amount;
+      const amount = typeof withdrawal.amount === 'object' && withdrawal.amount !== null && 'toNumber' in withdrawal.amount
+        ? withdrawal.amount.toNumber()
+        : Number(withdrawal.amount);
+      dayData.withdrawals += amount;
     }
   });
 
@@ -250,7 +292,10 @@ function generateDailyData(
       const dayKey = reward.claimedAt.toISOString().substring(0, 10);
       const dayData = dailyMap.get(dayKey);
       if (dayData) {
-        dayData.rewards += reward.amount;
+        const amount = typeof reward.amount === 'object' && reward.amount !== null && 'toNumber' in reward.amount
+          ? reward.amount.toNumber()
+          : Number(reward.amount);
+        dayData.rewards += amount;
       }
     }
   });
@@ -261,7 +306,10 @@ function generateDailyData(
       const dayKey = reward.claimedAt.toISOString().substring(0, 10);
       const dayData = dailyMap.get(dayKey);
       if (dayData) {
-        dayData.rewards += reward.amount;
+        const amount = typeof reward.amount === 'object' && reward.amount !== null && 'toNumber' in reward.amount
+          ? reward.amount.toNumber()
+          : Number(reward.amount);
+        dayData.rewards += amount;
       }
     }
   });

@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
         userId: session.user.id,
         amount: new Decimal(amount),
         txId,
-        cryptocurrency: cryptocurrency as any,
+        cryptocurrency: cryptocurrency as 'USDT_TRC20' | 'USDT_ERC20' | 'BTC' | 'ETH' | 'BNB' | 'ADA' | 'SOL' | 'MATIC' | 'AVAX' | 'DOT',
         toAddress: companyAddress,
         proofImageUrl: proofImageUrl || '',
         status: 'PENDING'

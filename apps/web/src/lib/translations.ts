@@ -5,51 +5,69 @@ import { useLanguage } from '@/components/AdvancedLanguageSwitcher';
 // إعادة تصدير useLanguage من AdvancedLanguageSwitcher
 export { useLanguage } from '@/components/AdvancedLanguageSwitcher';
 
+// تعريف أنواع البيانات للترجمات
+interface TranslationObject {
+  [key: string]: string | TranslationObject;
+}
+
+interface TranslationsCache {
+  ar: TranslationObject;
+  en: TranslationObject;
+  tr: TranslationObject;
+  fr: TranslationObject;
+  es: TranslationObject;
+}
+
 // استيراد ملفات الترجمة مع معالجة شاملة للأخطاء
-let translationsCache: any = null;
+let translationsCache: TranslationsCache | null = null;
 
 // دالة تحميل الترجمات مع التخزين المؤقت ومعالجة الأخطاء
-function loadTranslations() {
+function loadTranslations(): TranslationsCache {
   if (translationsCache) {
     return translationsCache;
   }
 
-  let arTranslations: any = {};
-  let enTranslations: any = {};
-  let trTranslations: any = {};
-  let frTranslations: any = {};
-  let esTranslations: any = {};
+  let arTranslations: TranslationObject = {};
+  let enTranslations: TranslationObject = {};
+  let trTranslations: TranslationObject = {};
+  let frTranslations: TranslationObject = {};
+  let esTranslations: TranslationObject = {};
 
   try {
-    arTranslations = require('@/messages/ar.json');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    arTranslations = require('@/messages/ar.json') as TranslationObject;
     console.log('✅ Arabic translations loaded successfully');
   } catch (e) {
     console.error('❌ Failed to load Arabic translations:', e);
   }
 
   try {
-    enTranslations = require('@/messages/en.json');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    enTranslations = require('@/messages/en.json') as TranslationObject;
     console.log('✅ English translations loaded successfully');
   } catch (e) {
     console.error('❌ Failed to load English translations:', e);
   }
 
   try {
-    trTranslations = require('@/messages/tr.json');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    trTranslations = require('@/messages/tr.json') as TranslationObject;
     console.log('✅ Turkish translations loaded successfully');
   } catch (e) {
     console.error('❌ Failed to load Turkish translations:', e);
   }
 
   try {
-    frTranslations = require('@/messages/fr.json');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    frTranslations = require('@/messages/fr.json') as TranslationObject;
     console.log('✅ French translations loaded successfully');
   } catch (e) {
     console.error('❌ Failed to load French translations:', e);
   }
 
   try {
-    esTranslations = require('@/messages/es.json');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    esTranslations = require('@/messages/es.json') as TranslationObject;
     console.log('✅ Spanish translations loaded successfully');
   } catch (e) {
     console.error('❌ Failed to load Spanish translations:', e);
@@ -91,7 +109,7 @@ export function useTranslation() {
         
         // دعم المفاتيح المتداخلة مثل 'dashboard.subtitle'
         const keys = key.split('.');
-        let translation: any = localeTranslations;
+        let translation: string | TranslationObject = localeTranslations;
         
         for (const k of keys) {
           if (translation && typeof translation === 'object' && k in translation) {

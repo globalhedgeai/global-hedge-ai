@@ -7,7 +7,7 @@ import {
   WalletIcon, 
   ChartBarIcon,
   CogIcon,
-  ShieldCheckIcon,
+  // ShieldCheckIcon,
   CloudArrowUpIcon,
   BellIcon,
   DocumentTextIcon,
@@ -15,7 +15,7 @@ import {
 } from '@heroicons/react/24/outline';
 
 export default function AdminDashboardPage() {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   const adminSections = [
     {

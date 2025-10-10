@@ -3,11 +3,21 @@ import { getIronSession } from 'iron-session';
 import { sessionOptions } from '@/lib/session';
 import { prisma } from '@/lib/prisma';
 
+interface SessionUser {
+  id: string;
+  email: string;
+  role: string;
+}
+
+interface Session {
+  user?: SessionUser;
+}
+
 export async function GET(req: NextRequest) {
   try {
     const session = await getIronSession(req, new NextResponse(), sessionOptions);
     
-    if (!(session as any).user || !['ADMIN', 'ACCOUNTING'].includes((session as any).user.role)) {
+    if (!(session as Session).user || !['ADMIN', 'ACCOUNTING'].includes((session as Session).user!.role)) {
       return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -34,7 +44,7 @@ export async function PUT(req: NextRequest) {
   try {
     const session = await getIronSession(req, new NextResponse(), sessionOptions);
     
-    if (!(session as any).user || !['ADMIN', 'ACCOUNTING'].includes((session as any).user.role)) {
+    if (!(session as Session).user || !['ADMIN', 'ACCOUNTING'].includes((session as Session).user!.role)) {
       return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -70,7 +80,7 @@ export async function PUT(req: NextRequest) {
     // Log the change in audit log
     await prisma.auditLog.create({
       data: {
-        actorId: (session as any).user.id,
+        actorId: (session as Session).user!.id,
         entityType: 'WALLET_ADDRESS',
         entityId: key,
         action: oldPolicy ? 'UPDATE' : 'CREATE',

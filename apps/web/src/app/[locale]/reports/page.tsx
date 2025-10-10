@@ -35,7 +35,7 @@ export default function FinancialReportsPage() {
   const [report, setReport] = useState<FinancialReport | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedPeriod, setSelectedPeriod] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
+  const [selectedPeriod, setSelectedPeriod] = useState<'1d' | '1w' | '1m' | '3m' | '6m' | '1y'>('1m');
   const isRTL = locale === 'ar';
 
   useEffect(() => {
@@ -161,7 +161,7 @@ export default function FinancialReportsPage() {
                   ].map((period) => (
                     <button
                       key={period.key}
-                      onClick={() => setSelectedPeriod(period.key as any)}
+                      onClick={() => setSelectedPeriod(period.key as '1d' | '1w' | '1m' | '3m' | '6m' | '1y')}
                       className={`px-3 py-1 rounded-lg text-sm font-medium transition-all duration-200 ${
                         selectedPeriod === period.key
                           ? 'bg-primary text-primary-foreground'

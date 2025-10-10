@@ -50,7 +50,7 @@ export default function PerformanceMonitoringPage() {
   const [performers, setPerformers] = useState<TopPerformers | null>(null);
   const [alerts, setAlerts] = useState<SystemAlert[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedPeriod, setSelectedPeriod] = useState<'today' | 'week' | 'month' | 'all'>('all');
+  const [selectedPeriod, setSelectedPeriod] = useState<'today' | 'week' | 'month' | 'year'>('today');
   const [activeTab, setActiveTab] = useState<'overview' | 'trends' | 'performers' | 'alerts'>('overview');
 
   useEffect(() => {
@@ -137,7 +137,7 @@ export default function PerformanceMonitoringPage() {
             <div className="flex items-center gap-4">
               <select
                 value={selectedPeriod}
-                onChange={(e) => setSelectedPeriod(e.target.value as any)}
+                onChange={(e) => setSelectedPeriod(e.target.value as 'today' | 'week' | 'month' | 'year')}
                 className="input"
               >
                 <option value="today">Today</option>
@@ -170,7 +170,7 @@ export default function PerformanceMonitoringPage() {
             ].map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
+                onClick={() => setActiveTab(tab.id as 'overview' | 'trends' | 'performers' | 'alerts')}
                 className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
                   activeTab === tab.id
                     ? 'bg-card text-foreground shadow-sm'
