@@ -26,6 +26,13 @@ export default function AdminDashboardPage() {
       color: 'bg-blue-500'
     },
     {
+      title: 'إدارة الأدوار',
+      description: 'توزيع وإدارة الأدوار الإدارية',
+      icon: UsersIcon,
+      href: '/admin/roles',
+      color: 'bg-red-500'
+    },
+    {
       title: 'إدارة المحافظ',
       description: 'إدارة محافظ العملات المشفرة',
       icon: WalletIcon,

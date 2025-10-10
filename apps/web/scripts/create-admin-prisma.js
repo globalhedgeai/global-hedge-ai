@@ -28,16 +28,7 @@ async function createAdmin() {
         passwordHash: hashedPassword,
         role: 'ADMIN',
         referralCode: 'ADMIN001',
-        isEmailVerified: true,
         balance: 0,
-        totalDeposits: 0,
-        totalWithdrawals: 0,
-        totalRewards: 0,
-        totalReferrals: 0,
-        referralEarnings: 0,
-        lastLoginAt: new Date(),
-        createdAt: new Date(),
-        updatedAt: new Date(),
       }
     });
     
