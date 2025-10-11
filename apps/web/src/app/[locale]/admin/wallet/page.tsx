@@ -5,6 +5,13 @@ export default function AdminWalletPage() {
   const [walletAddresses, setWalletAddresses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState<any>(null);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [editingAddress, setEditingAddress] = useState<any>(null);
+  const [formData, setFormData] = useState({
+    cryptocurrency: 'USDT_TRC20',
+    address: '',
+    network: 'TRC20'
+  });
 
   useEffect(() => {
     checkSession();
@@ -33,13 +40,105 @@ export default function AdminWalletPage() {
       const data = await response.json();
       
       if (data.ok) {
-        setWalletAddresses(data.walletAddresses || []);
+        setWalletAddresses(data.addresses || []);
       }
     } catch (error) {
       console.error('Error fetching wallet addresses:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleAddWallet = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('/api/admin/wallet', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      
+      const data = await response.json();
+      
+      if (data.ok) {
+        setShowAddForm(false);
+        setFormData({ cryptocurrency: 'USDT_TRC20', address: '', network: 'TRC20' });
+        fetchWalletAddresses();
+        alert('Wallet address added successfully!');
+      } else {
+        alert('Error adding wallet address: ' + data.error);
+      }
+    } catch (error) {
+      console.error('Error adding wallet address:', error);
+      alert('Error adding wallet address');
+    }
+  };
+
+  const handleEditWallet = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('/api/admin/wallet', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: editingAddress.id,
+          ...formData
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (data.ok) {
+        setEditingAddress(null);
+        setFormData({ cryptocurrency: 'USDT_TRC20', address: '', network: 'TRC20' });
+        fetchWalletAddresses();
+        alert('Wallet address updated successfully!');
+      } else {
+        alert('Error updating wallet address: ' + data.error);
+      }
+    } catch (error) {
+      console.error('Error updating wallet address:', error);
+      alert('Error updating wallet address');
+    }
+  };
+
+  const handleDeleteWallet = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this wallet address?')) return;
+    
+    try {
+      const response = await fetch('/api/admin/wallet', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id }),
+      });
+      
+      const data = await response.json();
+      
+      if (data.ok) {
+        fetchWalletAddresses();
+        alert('Wallet address deleted successfully!');
+      } else {
+        alert('Error deleting wallet address: ' + data.error);
+      }
+    } catch (error) {
+      console.error('Error deleting wallet address:', error);
+      alert('Error deleting wallet address');
+    }
+  };
+
+  const startEdit = (address: any) => {
+    setEditingAddress(address);
+    setFormData({
+      cryptocurrency: address.cryptocurrency,
+      address: address.address,
+      network: address.network || 'TRC20'
+    });
   };
 
   if (loading) {
@@ -78,9 +177,17 @@ export default function AdminWalletPage() {
         <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-semibold text-white">Wallet Addresses ({walletAddresses.length})</h2>
-            <a href="/en/admin" className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-500 transition-colors">
-              Back to Dashboard
-            </a>
+            <div className="flex gap-2">
+              <button 
+                onClick={() => setShowAddForm(true)}
+                className="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors"
+              >
+                Add Wallet Address
+              </button>
+              <a href="/en/admin" className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-500 transition-colors">
+                Back to Dashboard
+              </a>
+            </div>
           </div>
 
           {walletAddresses.length === 0 ? (
@@ -102,6 +209,7 @@ export default function AdminWalletPage() {
                     <th className="text-left py-3 px-4 font-semibold text-white">Address</th>
                     <th className="text-left py-3 px-4 font-semibold text-white">Network</th>
                     <th className="text-left py-3 px-4 font-semibold text-white">Created</th>
+                    <th className="text-left py-3 px-4 font-semibold text-white">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -121,10 +229,148 @@ export default function AdminWalletPage() {
                           {new Date(address.createdAt).toLocaleDateString()}
                         </p>
                       </td>
+                      <td className="py-4 px-4">
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => startEdit(address)}
+                            className="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-400 transition-colors"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDeleteWallet(address.id)}
+                            className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-400 transition-colors"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+            </div>
+          )}
+
+          {/* Add Wallet Form */}
+          {showAddForm && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-gray-800 p-6 rounded-lg w-full max-w-md">
+                <h3 className="text-xl font-semibold text-white mb-4">Add Wallet Address</h3>
+                <form onSubmit={handleAddWallet}>
+                  <div className="mb-4">
+                    <label className="block text-white text-sm font-medium mb-2">Cryptocurrency</label>
+                    <select
+                      value={formData.cryptocurrency}
+                      onChange={(e) => setFormData({...formData, cryptocurrency: e.target.value})}
+                      className="w-full bg-gray-700 text-white px-3 py-2 rounded-md border border-gray-600"
+                    >
+                      <option value="USDT_TRC20">USDT (TRC20)</option>
+                      <option value="USDT_ERC20">USDT (ERC20)</option>
+                      <option value="BTC">Bitcoin</option>
+                      <option value="ETH">Ethereum</option>
+                    </select>
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-white text-sm font-medium mb-2">Wallet Address</label>
+                    <input
+                      type="text"
+                      value={formData.address}
+                      onChange={(e) => setFormData({...formData, address: e.target.value})}
+                      className="w-full bg-gray-700 text-white px-3 py-2 rounded-md border border-gray-600"
+                      placeholder="Enter wallet address"
+                      required
+                    />
+                  </div>
+                  <div className="mb-6">
+                    <label className="block text-white text-sm font-medium mb-2">Network</label>
+                    <input
+                      type="text"
+                      value={formData.network}
+                      onChange={(e) => setFormData({...formData, network: e.target.value})}
+                      className="w-full bg-gray-700 text-white px-3 py-2 rounded-md border border-gray-600"
+                      placeholder="Enter network"
+                      required
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      type="submit"
+                      className="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors"
+                    >
+                      Add Address
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowAddForm(false)}
+                      className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-500 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* Edit Wallet Form */}
+          {editingAddress && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-gray-800 p-6 rounded-lg w-full max-w-md">
+                <h3 className="text-xl font-semibold text-white mb-4">Edit Wallet Address</h3>
+                <form onSubmit={handleEditWallet}>
+                  <div className="mb-4">
+                    <label className="block text-white text-sm font-medium mb-2">Cryptocurrency</label>
+                    <select
+                      value={formData.cryptocurrency}
+                      onChange={(e) => setFormData({...formData, cryptocurrency: e.target.value})}
+                      className="w-full bg-gray-700 text-white px-3 py-2 rounded-md border border-gray-600"
+                    >
+                      <option value="USDT_TRC20">USDT (TRC20)</option>
+                      <option value="USDT_ERC20">USDT (ERC20)</option>
+                      <option value="BTC">Bitcoin</option>
+                      <option value="ETH">Ethereum</option>
+                    </select>
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-white text-sm font-medium mb-2">Wallet Address</label>
+                    <input
+                      type="text"
+                      value={formData.address}
+                      onChange={(e) => setFormData({...formData, address: e.target.value})}
+                      className="w-full bg-gray-700 text-white px-3 py-2 rounded-md border border-gray-600"
+                      placeholder="Enter wallet address"
+                      required
+                    />
+                  </div>
+                  <div className="mb-6">
+                    <label className="block text-white text-sm font-medium mb-2">Network</label>
+                    <input
+                      type="text"
+                      value={formData.network}
+                      onChange={(e) => setFormData({...formData, network: e.target.value})}
+                      className="w-full bg-gray-700 text-white px-3 py-2 rounded-md border border-gray-600"
+                      placeholder="Enter network"
+                      required
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      type="submit"
+                      className="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors"
+                    >
+                      Update Address
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditingAddress(null)}
+                      className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-500 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
           )}
         </div>

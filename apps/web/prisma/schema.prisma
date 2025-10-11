@@ -7,6 +7,268 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id                  String               @id @default(cuid())
+  email               String               @unique
+  passwordHash        String
+  role                Role                 @default(USER)
+  createdAt           DateTime             @default(now())
+  balance             Decimal              @default(0)
+  firstDepositAt      DateTime?
+  lastWithdrawalAt    DateTime?
+  referralCode        String               @unique
+  walletAddress       String?
+  invitedById         String?
+  auditLogs           AuditLog[]
+  claims              DailyRewardClaim[]
+  deposits            Deposit[]
+  messages            Message[]
+  messageThreads      MessageThread?
+  passwordResetTokens PasswordResetToken[]
+  randomBonuses       RandomBonus[]
+  randomRewardClaims  RandomRewardClaim[]
+  referralsAsInvitee  Referral[]           @relation("RefRelInvitee")
+  referralsAsInviter  Referral[]           @relation("RefRelInviter")
+  referralCodes       ReferralCode[]
+  referralStats       ReferralStats?
+  invitedBy           User?                @relation("Invites", fields: [invitedById], references: [id])
+  invites             User[]               @relation("Invites")
+  withdrawals         Withdrawal[]
+
+  @@index([email])
+  @@index([createdAt])
+  @@index([invitedById])
+}
+
+model Tier {
+  id          String  @id @default(cuid())
+  name        String
+  monthlyRate Decimal
+  minInvites  Int
+  maxInvites  Int?
+
+  @@index([minInvites])
+}
+
+model Deposit {
+  id             String         @id @default(cuid())
+  userId         String
+  amount         Decimal
+  txId           String
+  proofImageUrl  String
+  cryptocurrency Cryptocurrency @default(USDT_TRC20)
+  toAddress      String
+  status         DepositStatus  @default(PENDING)
+  reviewedBy     String?
+  reviewedAt     DateTime?
+  effectiveAt    DateTime?
+  rewardAmount   Decimal        @default(0)
+  rewardMeta     String?
+  createdAt      DateTime       @default(now())
+  user           User           @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([effectiveAt])
+}
+
+model Withdrawal {
+  id             String           @id @default(cuid())
+  userId         String
+  amount         Decimal
+  cryptocurrency Cryptocurrency   @default(USDT_TRC20)
+  toAddress      String
+  status         WithdrawalStatus @default(PENDING)
+  txId           String?
+  reviewedBy     String?
+  reviewedAt     DateTime?
+  effectiveAt    DateTime?
+  feePct         Decimal          @default(0)
+  feeAmount      Decimal          @default(0)
+  netAmount      Decimal          @default(0)
+  policySnapshot String?
+  appliedRule    String?
+  createdAt      DateTime         @default(now())
+  user           User             @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([effectiveAt])
+}
+
+model DailyRewardClaim {
+  id        String   @id @default(cuid())
+  userId    String
+  amount    Decimal  @default(0)
+  claimedAt DateTime @default(now())
+  claimDate DateTime @db.Date
+  meta      Json?
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, claimDate])
+  @@index([userId])
+  @@index([claimDate])
+}
+
+model RandomRewardClaim {
+  id        String   @id @default(cuid())
+  userId    String
+  amount    Decimal
+  claimedAt DateTime @default(now())
+  claimDate String
+  meta      Json?
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, claimDate])
+  @@index([userId])
+  @@index([claimDate])
+}
+
+model RandomBonus {
+  id        String   @id @default(cuid())
+  userId    String
+  date      DateTime
+  amount    Decimal
+  ruleId    String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([date])
+}
+
+model Referral {
+  id          String    @id @default(cuid())
+  inviterId   String
+  inviteeId   String
+  confirmedAt DateTime?
+  createdAt   DateTime  @default(now())
+  invitee     User      @relation("RefRelInvitee", fields: [inviteeId], references: [id])
+  inviter     User      @relation("RefRelInviter", fields: [inviterId], references: [id])
+
+  @@index([inviterId])
+  @@index([inviteeId])
+  @@index([createdAt])
+}
+
+model Policy {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+
+  @@index([key])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  entityType String
+  entityId   String
+  action     String
+  before     String?
+  after      String?
+  reason     String?
+  timestamp  DateTime @default(now())
+  actor      User?    @relation(fields: [actorId], references: [id])
+
+  @@index([timestamp])
+  @@index([entityType])
+  @@index([actorId])
+}
+
+model Message {
+  id        String      @id @default(cuid())
+  userId    String?
+  type      MessageType
+  title     String
+  body      String
+  readAt    DateTime?
+  createdAt DateTime    @default(now())
+  user      User?       @relation(fields: [userId], references: [id])
+
+  @@index([createdAt])
+  @@index([userId])
+  @@index([type])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model MessageThread {
+  id             String          @id @default(cuid())
+  userId         String          @unique
+  lastMessageAt  DateTime        @default(now())
+  unreadForUser  Int             @default(0)
+  unreadForAdmin Int             @default(0)
+  createdAt      DateTime        @default(now())
+  user           User            @relation(fields: [userId], references: [id])
+  messages       ThreadMessage[]
+
+  @@index([lastMessageAt])
+}
+
+model ThreadMessage {
+  id        String        @id @default(cuid())
+  threadId  String
+  sender    String
+  body      String
+  createdAt DateTime      @default(now())
+  thread    MessageThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+
+  @@index([threadId, createdAt])
+  @@index([sender])
+}
+
+model ReferralCode {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  ownerUserId String
+  createdAt   DateTime @default(now())
+  isActive    Boolean  @default(true)
+  owner       User     @relation(fields: [ownerUserId], references: [id])
+
+  @@index([code])
+  @@index([ownerUserId])
+}
+
+model ReferralStats {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  invitedCount Int      @default(0)
+  tier         Int      @default(1)
+  updatedAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([tier])
+}
+
+model PlatformStats {
+  id               String   @id @default(cuid())
+  totalUsers       Int      @default(0)
+  totalVolume      Float    @default(0)
+  activeTrades     Int      @default(0)
+  totalDeposits    Float    @default(0)
+  totalWithdrawals Float    @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([createdAt])
+}
+
 enum Role {
   USER
   ADMIN
@@ -43,284 +305,4 @@ enum Cryptocurrency {
   MATIC
   AVAX
   DOT
-}
-
-model User {
-  id               String    @id @default(cuid())
-  email            String    @unique
-  passwordHash     String
-  role             Role      @default(USER)
-  createdAt        DateTime  @default(now())
-  balance          Decimal   @default(0)
-  firstDepositAt   DateTime?
-  lastWithdrawalAt DateTime?
-  referralCode     String    @unique
-  walletAddress    String?
-  invitedById      String?
-  invitedBy        User?     @relation("Invites", fields: [invitedById], references: [id])
-  invites          User[]    @relation("Invites")
-
-  deposits            Deposit[]
-  withdrawals         Withdrawal[]
-  claims              DailyRewardClaim[]
-  randomRewardClaims  RandomRewardClaim[]
-  messages            Message[]
-  messageThreads      MessageThread[]
-  referralsAsInviter  Referral[]           @relation("RefRelInviter")
-  referralsAsInvitee  Referral[]           @relation("RefRelInvitee")
-  randomBonuses       RandomBonus[]
-  auditLogs           AuditLog[]
-  passwordResetTokens PasswordResetToken[]
-  referralStats       ReferralStats?
-  referralCodes       ReferralCode[]
-
-  @@index([email])
-  @@index([createdAt])
-  @@index([invitedById])
-}
-
-model Tier {
-  id          String  @id @default(cuid())
-  name        String
-  monthlyRate Decimal
-  minInvites  Int
-  maxInvites  Int?
-
-  @@index([minInvites])
-}
-
-model Deposit {
-  id            String        @id @default(cuid())
-  userId        String
-  user          User          @relation(fields: [userId], references: [id])
-  amount        Decimal
-  txId          String
-  proofImageUrl String
-  cryptocurrency Cryptocurrency @default(USDT_TRC20)
-  toAddress     String // عنوان الشركة الثابت
-  status        DepositStatus @default(PENDING)
-  reviewedBy    String?
-  reviewedAt    DateTime?
-  effectiveAt   DateTime? // تاريخ النفاذ عند القبول
-  rewardAmount  Decimal       @default(0) // مبلغ المكافأة العشوائية
-  rewardMeta    String? // JSON metadata for reward
-  createdAt     DateTime      @default(now())
-
-  @@index([userId])
-  @@index([status])
-  @@index([createdAt])
-  @@index([effectiveAt])
-}
-
-model Withdrawal {
-  id             String           @id @default(cuid())
-  userId         String
-  user           User             @relation(fields: [userId], references: [id])
-  amount         Decimal
-  cryptocurrency Cryptocurrency  @default(USDT_TRC20)
-  toAddress      String
-  status         WithdrawalStatus @default(PENDING)
-  txId           String?
-  reviewedBy     String?
-  reviewedAt     DateTime?
-  effectiveAt    DateTime?
-  feePct         Decimal          @default(0) // نسبة الرسوم المطبقة
-  feeAmount      Decimal          @default(0) // مبلغ الرسوم
-  netAmount      Decimal          @default(0) // المبلغ الصافي
-  policySnapshot String? // JSON snapshot of policies at creation time
-  appliedRule    String? // القاعدة المطبقة (WEEKLY_7PCT, MONTHLY_3PCT)
-  createdAt      DateTime         @default(now())
-
-  @@index([userId])
-  @@index([status])
-  @@index([createdAt])
-  @@index([effectiveAt])
-}
-
-model DailyRewardClaim {
-  id        String   @id @default(cuid())
-  userId    String
-  amount    Decimal  @default(0)
-  claimedAt DateTime @default(now())
-  claimDate DateTime @db.Date
-  meta      Json?
-  user      User     @relation(fields: [userId], references: [id])
-
-  @@unique([userId, claimDate]) // one claim per UTC day per user
-  @@index([userId])
-  @@index([claimDate])
-}
-
-model RandomRewardClaim {
-  id        String   @id @default(cuid())
-  userId    String
-  amount    Decimal  // min 0.20, max 2.00
-  claimedAt DateTime @default(now())
-  claimDate String   // YYYY-MM-DD UTC format
-  meta      Json?
-  user      User     @relation(fields: [userId], references: [id])
-
-  @@unique([userId, claimDate]) // one claim per UTC day per user
-  @@index([userId])
-  @@index([claimDate])
-}
-
-model RandomBonus {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  date      DateTime
-  amount    Decimal // مثال 0.20
-  ruleId    String?
-  createdAt DateTime @default(now())
-
-  @@index([userId])
-  @@index([date])
-}
-
-model Referral {
-  id          String    @id @default(cuid())
-  inviterId   String
-  inviteeId   String
-  inviter     User      @relation("RefRelInviter", fields: [inviterId], references: [id])
-  invitee     User      @relation("RefRelInvitee", fields: [inviteeId], references: [id])
-  confirmedAt DateTime?
-  createdAt   DateTime  @default(now())
-
-  @@index([inviterId])
-  @@index([inviteeId])
-  @@index([createdAt])
-}
-
-model Policy {
-  id        String   @id @default(cuid())
-  key       String   @unique
-  value     String
-  createdAt DateTime @default(now())
-  // أمثلة مفاتيح:
-  // minWithdrawDaysFirst=45
-  // intervalWithdrawDaysWeekly=7
-  // intervalWithdrawDaysMonthly=30
-  // maxWithdrawPercent=35
-  // depositFee=2
-  // withdrawFeeWeekly=5
-  // withdrawFeeMonthly=3
-  // baseMonthly=25
-  // tier5=30
-  // tier10=35
-  // bonusChance=5
-  // bonusAmount=0.2
-
-  @@index([key])
-}
-
-model AuditLog {
-  id         String   @id @default(cuid())
-  actorId    String?
-  actor      User?    @relation(fields: [actorId], references: [id])
-  entityType String
-  entityId   String
-  action     String
-  before     String?
-  after      String?
-  reason     String?
-  timestamp  DateTime @default(now())
-
-  @@index([timestamp])
-  @@index([entityType])
-  @@index([actorId])
-}
-
-model Message {
-  id        String      @id @default(cuid())
-  userId    String?
-  user      User?       @relation(fields: [userId], references: [id])
-  type      MessageType
-  title     String
-  body      String
-  readAt    DateTime?
-  createdAt DateTime    @default(now())
-
-  @@index([createdAt])
-  @@index([userId])
-  @@index([type])
-}
-
-model PasswordResetToken {
-  id        String    @id @default(cuid())
-  userId    String
-  user      User      @relation(fields: [userId], references: [id])
-  tokenHash String    @unique
-  expiresAt DateTime
-  usedAt    DateTime?
-  createdAt DateTime  @default(now())
-
-  @@index([userId])
-  @@index([expiresAt])
-}
-
-// User-to-Admin messaging system
-model MessageThread {
-  id             String   @id @default(cuid())
-  userId         String
-  user           User     @relation(fields: [userId], references: [id])
-  lastMessageAt  DateTime @default(now())
-  unreadForUser  Int      @default(0)
-  unreadForAdmin Int      @default(0)
-  createdAt      DateTime @default(now())
-  
-  messages       ThreadMessage[]
-
-  @@unique([userId]) // One thread per user
-  @@index([lastMessageAt])
-}
-
-model ThreadMessage {
-  id        String   @id @default(cuid())
-  threadId  String
-  thread    MessageThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  sender    String   // 'USER' | 'ADMIN'
-  body      String
-  createdAt DateTime @default(now())
-
-  @@index([threadId, createdAt])
-  @@index([sender])
-}
-
-// Enhanced referral system
-model ReferralCode {
-  id          String   @id @default(cuid())
-  code        String   @unique
-  ownerUserId String
-  owner       User     @relation(fields: [ownerUserId], references: [id])
-  createdAt   DateTime @default(now())
-  isActive    Boolean  @default(true)
-
-  @@index([code])
-  @@index([ownerUserId])
-}
-
-model ReferralStats {
-  id           String   @id @default(cuid())
-  userId       String   @unique
-  user         User     @relation(fields: [userId], references: [id])
-  invitedCount Int      @default(0)
-  tier         Int      @default(1)
-  updatedAt    DateTime @default(now())
-
-  @@index([userId])
-  @@index([tier])
-}
-
-model PlatformStats {
-  id          String   @id @default(cuid())
-  totalUsers  Int      @default(0)
-  totalVolume Float    @default(0)
-  activeTrades Int     @default(0)
-  totalDeposits Float  @default(0)
-  totalWithdrawals Float @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@index([createdAt])
 }

@@ -5,6 +5,9 @@ export default function AdminRolesPage() {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState<any>(null);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [showRoleForm, setShowRoleForm] = useState(false);
+  const [newRole, setNewRole] = useState('USER');
 
   useEffect(() => {
     checkSession();
@@ -40,6 +43,42 @@ export default function AdminRolesPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRoleChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('/api/admin/users/role', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: selectedUser.id,
+          role: newRole
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (data.ok) {
+        setShowRoleForm(false);
+        setSelectedUser(null);
+        fetchUsers();
+        alert('Role updated successfully!');
+      } else {
+        alert('Error updating role: ' + data.error);
+      }
+    } catch (error) {
+      console.error('Error updating role:', error);
+      alert('Error updating role');
+    }
+  };
+
+  const startRoleChange = (user: any) => {
+    setSelectedUser(user);
+    setNewRole(user.role);
+    setShowRoleForm(true);
   };
 
   if (loading) {
@@ -116,7 +155,10 @@ export default function AdminRolesPage() {
                       </p>
                     </td>
                     <td className="py-4 px-4">
-                      <button className="text-yellow-500 hover:text-yellow-400 text-sm font-medium">
+                      <button 
+                        onClick={() => startRoleChange(user)}
+                        className="bg-yellow-500 text-black px-3 py-1 rounded text-sm hover:bg-yellow-400 transition-colors"
+                      >
                         Change Role
                       </button>
                     </td>
@@ -126,6 +168,59 @@ export default function AdminRolesPage() {
             </table>
           </div>
         </div>
+
+        {/* Role Change Form */}
+        {showRoleForm && selectedUser && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-gray-800 p-6 rounded-lg w-full max-w-md">
+              <h3 className="text-xl font-semibold text-white mb-4">
+                Change Role: {selectedUser.email}
+              </h3>
+              <form onSubmit={handleRoleChange}>
+                <div className="mb-4">
+                  <label className="block text-white text-sm font-medium mb-2">Current Role</label>
+                  <input
+                    type="text"
+                    value={selectedUser.role}
+                    className="w-full bg-gray-600 text-gray-300 px-3 py-2 rounded-md border border-gray-600"
+                    disabled
+                  />
+                </div>
+                <div className="mb-6">
+                  <label className="block text-white text-sm font-medium mb-2">New Role</label>
+                  <select
+                    value={newRole}
+                    onChange={(e) => setNewRole(e.target.value)}
+                    className="w-full bg-gray-700 text-white px-3 py-2 rounded-md border border-gray-600"
+                  >
+                    <option value="USER">USER</option>
+                    <option value="ADMIN">ADMIN</option>
+                    <option value="SUPPORT">SUPPORT</option>
+                    <option value="ACCOUNTING">ACCOUNTING</option>
+                  </select>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    type="submit"
+                    className="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors"
+                  >
+                    Update Role
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowRoleForm(false);
+                      setSelectedUser(null);
+                    }}
+                    className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-500 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

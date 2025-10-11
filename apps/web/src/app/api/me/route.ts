@@ -20,8 +20,7 @@ export async function GET(req: NextRequest) {
         balance: true,
         referralCode: true,
         walletAddress: true,
-        createdAt: true,
-        updatedAt: true
+        createdAt: true
       }
     });
     
@@ -38,8 +37,7 @@ export async function GET(req: NextRequest) {
         balance: user.balance,
         referralCode: user.referralCode,
         walletAddress: user.walletAddress,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt
+        createdAt: user.createdAt
       }
     });
     

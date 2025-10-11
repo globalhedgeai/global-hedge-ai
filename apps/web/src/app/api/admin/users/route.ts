@@ -23,7 +23,6 @@ export async function GET(req: NextRequest) {
         referralCode: true,
         walletAddress: true,
         createdAt: true,
-        updatedAt: true,
       },
       orderBy: {
         createdAt: 'desc'

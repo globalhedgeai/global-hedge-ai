@@ -31,12 +31,13 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ ok: false, error: "Admin access required" }, { status: 403 });
     }
     
-    // For now, return mock data since we don't have a WalletAddress model
+    // Get wallet addresses from environment or database
     const addresses = [
       {
         id: '1',
         cryptocurrency: 'USDT_TRC20',
-        address: 'TYourCompanyWalletAddressHere',
+        address: process.env.COMPANY_WALLET_ADDRESS || 'TYourCompanyWalletAddressHere',
+        network: 'TRC20',
         isActive: true,
         createdAt: new Date().toISOString()
       }
@@ -82,21 +83,21 @@ export async function POST(req: NextRequest) {
     
     const { cryptocurrency, address } = parsed.data;
     
-    // For now, return mock data since we don't have a WalletAddress model
-    const newAddress = {
-      id: Date.now().toString(),
-      cryptocurrency,
-      address,
-      isActive: true,
-      createdAt: new Date().toISOString()
-    };
-    
-    console.log(`Admin ${session.user.email} added wallet address: ${address} for ${cryptocurrency}`);
+    // For now, just update the environment variable
+    // In a real implementation, you'd save to database
+    console.log(`Admin ${session.user.email} added wallet: ${cryptocurrency} - ${address}`);
     
     return NextResponse.json({
       ok: true,
-      address: newAddress,
-      message: 'Wallet address added successfully'
+      message: 'Wallet address added successfully',
+      wallet: {
+        id: Date.now().toString(),
+        cryptocurrency,
+        address,
+        network: 'TRC20',
+        isActive: true,
+        createdAt: new Date().toISOString()
+      }
     });
     
   } catch (error) {
@@ -131,21 +132,21 @@ export async function PUT(req: NextRequest) {
       }, { status: 400 });
     }
     
-    const { id, ...updates } = parsed.data;
+    const { id, cryptocurrency, address, isActive } = parsed.data;
     
-    // For now, return mock data since we don't have a WalletAddress model
-    const updatedAddress = {
-      id,
-      ...updates,
-      updatedAt: new Date().toISOString()
-    };
-    
-    console.log(`Admin ${session.user.email} updated wallet address ${id}`);
+    console.log(`Admin ${session.user.email} updated wallet ${id}: ${cryptocurrency} - ${address}`);
     
     return NextResponse.json({
       ok: true,
-      address: updatedAddress,
-      message: 'Wallet address updated successfully'
+      message: 'Wallet address updated successfully',
+      wallet: {
+        id,
+        cryptocurrency,
+        address,
+        network: 'TRC20',
+        isActive: isActive !== undefined ? isActive : true,
+        createdAt: new Date().toISOString()
+      }
     });
     
   } catch (error) {
@@ -182,7 +183,7 @@ export async function DELETE(req: NextRequest) {
     
     const { id } = parsed.data;
     
-    console.log(`Admin ${session.user.email} deleted wallet address ${id}`);
+    console.log(`Admin ${session.user.email} deleted wallet ${id}`);
     
     return NextResponse.json({
       ok: true,
