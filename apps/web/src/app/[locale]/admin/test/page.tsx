@@ -92,22 +92,22 @@ export default function AdminTestPage() {
         <div className="card p-6">
           <h2 className="text-xl font-semibold text-foreground mb-4">Admin Links</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <a href="/admin" className="btn-primary text-center">
+            <a href="/en/admin" className="btn-primary text-center">
               Admin Dashboard
             </a>
-            <a href="/admin/users" className="btn-primary text-center">
+            <a href="/en/admin/users" className="btn-primary text-center">
               Users Management
             </a>
-            <a href="/admin/wallet" className="btn-primary text-center">
+            <a href="/en/admin/wallet" className="btn-primary text-center">
               Wallet Management
             </a>
-            <a href="/admin/messages" className="btn-primary text-center">
+            <a href="/en/admin/messages" className="btn-primary text-center">
               Messages
             </a>
-            <a href="/admin/reports" className="btn-primary text-center">
+            <a href="/en/admin/reports" className="btn-primary text-center">
               Reports
             </a>
-            <a href="/admin/full-control" className="btn-primary text-center">
+            <a href="/en/admin/full-control" className="btn-primary text-center">
               Full Control
             </a>
           </div>

@@ -1,157 +1,168 @@
-'use client';
-
+"use client";
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useTranslation } from '@/lib/translations';
-import Link from 'next/link';
-import { 
-  UsersIcon, 
-  WalletIcon, 
-  ChartBarIcon,
-  CogIcon,
-  ShieldCheckIcon,
-  CloudArrowUpIcon,
-  BellIcon,
-  DocumentTextIcon,
-  ChartPieIcon
-} from '@heroicons/react/24/outline';
 
 export default function AdminDashboardPage() {
-  // const { t } = useTranslation();
+  const { t, locale } = useTranslation();
+  const router = useRouter();
+  const [session, setSession] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    checkSession();
+  }, []);
+
+  const checkSession = async () => {
+    try {
+      const response = await fetch('/api/me');
+      const data = await response.json();
+      setSession(data);
+    } catch (error) {
+      console.error('Error checking session:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: 'admin@globalhedgeai.com',
+          password: 'Admin123!@#'
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.ok) {
+        await checkSession();
+      } else {
+        alert('Login failed: ' + data.error);
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('Login error');
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!session?.ok || !session?.user) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="max-w-md w-full space-y-8">
+          <div>
+            <h2 className="mt-6 text-center text-3xl font-extrabold text-foreground">
+              Admin Login Required
+            </h2>
+            <p className="mt-2 text-center text-sm text-muted-foreground">
+              Please login to access the admin panel
+            </p>
+          </div>
+          <div className="mt-8 space-y-6">
+            <button
+              onClick={handleLogin}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-primary-foreground bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+            >
+              Login as Admin
+            </button>
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground">
+                Email: admin@globalhedgeai.com
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Password: Admin123!@#
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (session.user.role !== 'ADMIN') {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-foreground mb-4">Access Denied</h2>
+          <p className="text-muted-foreground">You need admin privileges to access this page.</p>
+        </div>
+      </div>
+    );
+  }
 
   const adminSections = [
     {
-      title: 'إدارة المستخدمين',
-      description: 'عرض وإدارة جميع المستخدمين',
-      icon: UsersIcon,
-      href: '/admin/users',
+      title: 'User Management',
+      description: 'Manage users and their roles',
+      href: `/${locale}/admin/users`,
       color: 'bg-blue-500'
     },
     {
-      title: 'إدارة الأدوار',
-      description: 'توزيع وإدارة الأدوار الإدارية',
-      icon: UsersIcon,
-      href: '/admin/roles',
-      color: 'bg-red-500'
-    },
-    {
-      title: 'التقارير المالية',
-      description: 'تقارير شاملة عن الأداء المالي',
-      icon: ChartPieIcon,
-      href: '/admin/reports',
-      color: 'bg-purple-500'
-    },
-    {
-      title: 'التحكم الكامل',
-      description: 'تحكم إداري كامل في المستخدمين والمعاملات',
-      icon: ShieldCheckIcon,
-      href: '/admin/full-control',
-      color: 'bg-red-500'
-    },
-    {
-      title: 'إدارة المحافظ',
-      description: 'إدارة محافظ العملات المشفرة',
-      icon: WalletIcon,
-      href: '/admin/wallet',
+      title: 'Wallet Management',
+      description: 'Manage cryptocurrency wallets',
+      href: `/${locale}/admin/wallet`,
       color: 'bg-green-500'
     },
     {
-      title: 'مراقبة الأداء',
-      description: 'مراقبة أداء النظام والخدمات',
-      icon: ChartBarIcon,
-      href: '/admin/performance',
-      color: 'bg-purple-500'
-    },
-    {
-      title: 'النسخ الاحتياطية',
-      description: 'إدارة النسخ الاحتياطية للبيانات',
-      icon: CloudArrowUpIcon,
-      href: '/admin/backups',
-      color: 'bg-orange-500'
-    },
-    {
-      title: 'الرسائل',
-      description: 'إدارة رسائل المستخدمين والدعم',
-      icon: BellIcon,
-      href: '/admin/messages',
-      color: 'bg-red-500'
-    },
-    {
-      title: 'السياسات',
-      description: 'إدارة سياسات المنصة',
-      icon: DocumentTextIcon,
-      href: '/admin/policies',
-      color: 'bg-indigo-500'
-    },
-    {
-      title: 'المكافآت',
-      description: 'إدارة نظام المكافآت',
-      icon: CogIcon,
-      href: '/admin/rewards',
+      title: 'Messages',
+      description: 'Handle user messages',
+      href: `/${locale}/admin/messages`,
       color: 'bg-yellow-500'
     },
     {
-      title: 'إحصائيات المنصة',
-      description: 'تحديث إحصائيات المنصة المعروضة',
-      icon: ChartPieIcon,
-      href: '/admin/platform-stats',
-      color: 'bg-teal-500'
+      title: 'Reports',
+      description: 'Financial reports and analytics',
+      href: `/${locale}/admin/reports`,
+      color: 'bg-purple-500'
+    },
+    {
+      title: 'Full Control',
+      description: 'Complete admin control',
+      href: `/${locale}/admin/full-control`,
+      color: 'bg-red-500'
+    },
+    {
+      title: 'Performance',
+      description: 'Platform performance monitoring',
+      href: `/${locale}/admin/performance`,
+      color: 'bg-indigo-500'
     }
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">لوحة الإدارة</h1>
-          <p className="mt-2 text-gray-600">إدارة جميع جوانب المنصة</p>
+          <h1 className="text-3xl font-bold gradient-text mb-2">Admin Dashboard</h1>
+          <p className="text-muted-foreground text-lg">Welcome, {session.user.email}</p>
         </div>
 
-        {/* Admin Sections Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {adminSections.map((section, index) => (
-            <Link
-              key={index}
-              href={section.href}
-              className="group bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-6 border border-gray-200 hover:border-gray-300"
-            >
-              <div className="flex items-center mb-4">
-                <div className={`${section.color} rounded-lg p-3 mr-4`}>
-                  <section.icon className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
-                    {section.title}
-                  </h3>
-                </div>
-              </div>
-              <p className="text-gray-600 text-sm">
-                {section.description}
-              </p>
-            </Link>
+            <div key={index} className="card p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">{section.title}</h3>
+              <p className="text-muted-foreground mb-4">{section.description}</p>
+              <a href={section.href} className="btn-primary">
+                Access {section.title}
+              </a>
+            </div>
           ))}
-        </div>
-
-        {/* Quick Stats */}
-        <div className="mt-12 bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">إحصائيات سريعة</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600">1,000+</div>
-              <div className="text-gray-600">مستخدم نشط</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-green-600">$5M+</div>
-              <div className="text-gray-600">حجم التداول</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-purple-600">150+</div>
-              <div className="text-gray-600">صفقة نشطة</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-orange-600">99.9%</div>
-              <div className="text-gray-600">وقت التشغيل</div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

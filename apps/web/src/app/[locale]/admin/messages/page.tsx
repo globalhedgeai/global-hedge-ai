@@ -1,234 +1,128 @@
-'use client';
-import { useEffect, useState, useCallback } from 'react';
-import { useTranslation, useLanguage } from '@/lib/translations';
-
-interface ThreadMessage {
-  id: string;
-  sender: 'USER' | 'ADMIN';
-  body: string;
-  createdAt: string;
-}
-
-interface MessageThread {
-  id: string;
-  userId: string;
-  userEmail: string;
-  lastMessageAt: string;
-  unreadForUser: number;
-  unreadForAdmin: number;
-  messages: ThreadMessage[];
-}
-
-interface AdminMessagesData {
-  threads: MessageThread[];
-  totalUnread: number;
-}
+"use client";
+import React, { useState, useEffect } from 'react';
 
 export default function AdminMessagesPage() {
-  const { t } = useTranslation();
-  const { locale } = useLanguage();
-  const [messagesData, setMessagesData] = useState<AdminMessagesData | null>(null);
-  const [selectedThread, setSelectedThread] = useState<MessageThread | null>(null);
-  const [newMessage, setNewMessage] = useState('');
-  const [isSending, setIsSending] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
-  const isRTL = locale === 'ar';
+  const [messages, setMessages] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [session, setSession] = useState<any>(null);
 
-  const fetchAdminMessages = useCallback(async () => {
+  useEffect(() => {
+    checkSession();
+  }, []);
+
+  const checkSession = async () => {
+    try {
+      const response = await fetch('/api/me');
+      const data = await response.json();
+      setSession(data);
+      
+      if (data.ok && data.user.role === 'ADMIN') {
+        fetchMessages();
+      } else {
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error('Error checking session:', error);
+      setLoading(false);
+    }
+  };
+
+  const fetchMessages = async () => {
     try {
       const response = await fetch('/api/admin/messages');
       const data = await response.json();
       
       if (data.ok) {
-        setMessagesData(data);
-        if (data.threads.length > 0 && !selectedThread) {
-          setSelectedThread(data.threads[0]);
-        }
-      } else {
-        setError(t('errors.generic'));
+        setMessages(data);
       }
-    } catch {
-      setError(t('errors.networkError'));
+    } catch (error) {
+      console.error('Error fetching messages:', error);
     } finally {
-      setIsLoading(false);
-    }
-  }, [t, selectedThread]);
-
-  useEffect(() => {
-    fetchAdminMessages();
-  }, [fetchAdminMessages]);
-
-  const handleSendReply = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedThread || !newMessage.trim()) return;
-
-    setIsSending(true);
-    try {
-      const response = await fetch('/api/admin/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          threadId: selectedThread.id,
-          body: newMessage.trim()
-        })
-      });
-
-      const data = await response.json();
-      
-      if (data.ok) {
-        setNewMessage('');
-        await fetchAdminMessages(); // Refresh messages
-      } else {
-        setError(t('errors.generic'));
-      }
-    } catch {
-      setError(t('errors.networkError'));
-    } finally {
-      setIsSending(false);
+      setLoading(false);
     }
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleString(locale === 'ar' ? 'ar-SA' : 'en-US');
-  };
-
-  if (isLoading) {
+  if (loading) {
     return (
-      <main className="p-6">
-        <div className="flex justify-center items-center h-64">
-          <div className="text-lg">{t('common.loading')}</div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
         </div>
-      </main>
+      </div>
+    );
+  }
+
+  if (!session?.ok || session?.user?.role !== 'ADMIN') {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-foreground mb-4">Access Denied</h2>
+          <p className="text-muted-foreground">You need admin privileges to access this page.</p>
+          <a href="/en/admin" className="btn-primary mt-4">
+            Go to Admin Dashboard
+          </a>
+        </div>
+      </div>
     );
   }
 
   return (
-    <main className={`p-6 space-y-6 ${isRTL ? 'rtl' : 'ltr'}`}>
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">{t('messages.title')} - {t('navigation.admin')}</h1>
-        {messagesData && messagesData.totalUnread > 0 && (
-          <span className="bg-red-500 text-white px-2 py-1 rounded-full text-sm">
-            {messagesData.totalUnread}
-          </span>
-        )}
-      </div>
-
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          {error}
-        </div>
-      )}
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Threads List */}
-        <div className="bg-white border border-gray-200 rounded-lg">
-          <div className="p-4 border-b border-gray-200">
-            <h2 className="text-lg font-semibold">{t('messages.conversations')}</h2>
-          </div>
-          
-          <div className="max-h-96 overflow-y-auto">
-            {messagesData && messagesData.threads.length > 0 ? (
-              <div className="space-y-1">
-                {messagesData.threads.map((thread) => (
-                  <button
-                    key={thread.id}
-                    onClick={() => setSelectedThread(thread)}
-                    className={`w-full text-left p-3 hover:bg-gray-50 border-b border-gray-100 ${
-                      selectedThread?.id === thread.id ? 'bg-blue-50 border-blue-200' : ''
-                    }`}
-                  >
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium text-sm truncate">
-                          {thread.userEmail}
-                        </div>
-                        <div className="text-xs text-gray-500">
-                          {formatDate(thread.lastMessageAt)}
-                        </div>
-                      </div>
-                      {thread.unreadForAdmin > 0 && (
-                        <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                          {thread.unreadForAdmin}
-                        </span>
-                      )}
-                    </div>
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <div className="p-4 text-center text-gray-500">
-                {t('messages.noMessages')}
-              </div>
-            )}
-          </div>
+    <div className="min-h-screen bg-background">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold gradient-text mb-2">Messages</h1>
+          <p className="text-muted-foreground text-lg">Handle user messages and support requests</p>
         </div>
 
-        {/* Messages View */}
-        <div className="lg:col-span-2 space-y-4">
-          {selectedThread ? (
-            <>
-              {/* Messages */}
-              <div className="bg-white border border-gray-200 rounded-lg">
-                <div className="p-4 border-b border-gray-200">
-                  <h2 className="text-lg font-semibold">{t('messages.conversation')}</h2>
-                  <p className="text-sm text-gray-600">{selectedThread.userEmail}</p>
-                </div>
-                
-                <div className="p-4 space-y-4 max-h-96 overflow-y-auto">
-                  {selectedThread.messages.map((message) => (
-                    <div key={message.id} className={`flex ${message.sender === 'ADMIN' ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                        message.sender === 'ADMIN' 
-                          ? 'bg-blue-500 text-white' 
-                          : 'bg-gray-200 text-gray-800'
-                      }`}>
-                        <p className="text-sm">{message.body}</p>
-                        <p className={`text-xs mt-1 ${
-                          message.sender === 'ADMIN' 
-                            ? 'text-blue-100' 
-                            : 'text-gray-500'
-                        }`}>
-                          {formatDate(message.createdAt)}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+        <div className="card p-6">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-semibold text-foreground">
+              Message Threads {messages?.totalUnread ? `(${messages.totalUnread} unread)` : ''}
+            </h2>
+            <a href="/en/admin" className="btn-secondary">
+              Back to Dashboard
+            </a>
+          </div>
 
-              {/* Reply Form */}
-              <div className="bg-white border border-gray-200 rounded-lg p-4">
-                <h2 className="text-lg font-semibold mb-3">{t('messages.reply')}</h2>
-                <form onSubmit={handleSendReply} className="space-y-3">
-                  <div>
-                    <textarea
-                      value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
-                      className="w-full border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
-                      rows={4}
-                      placeholder={t('messages.replyPlaceholder')}
-                      disabled={isSending}
-                    />
+          {messages?.threads?.length > 0 ? (
+            <div className="space-y-4">
+              {messages.threads.map((thread: any) => (
+                <div key={thread.id} className="border border-border rounded-lg p-4">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <p className="font-medium text-foreground">{thread.userEmail}</p>
+                      <p className="text-sm text-muted-foreground">
+                        Last message: {new Date(thread.lastMessageAt).toLocaleString()}
+                      </p>
+                    </div>
+                    {thread.unreadForAdmin > 0 && (
+                      <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+                        {thread.unreadForAdmin}
+                      </span>
+                    )}
                   </div>
-                  <button
-                    type="submit"
-                    disabled={isSending || !newMessage.trim()}
-                    className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-                  >
-                    {isSending ? t('common.loading') : t('messages.reply')}
-                  </button>
-                </form>
-              </div>
-            </>
+                  <div className="text-sm text-muted-foreground">
+                    {thread.messages?.length > 0 && (
+                      <p>Latest: {thread.messages[0].body}</p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : (
-            <div className="bg-white border border-gray-200 rounded-lg p-8 text-center">
-              <p className="text-gray-600">{t('messages.selectThread')}</p>
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-muted rounded-lg flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </div>
+              <p className="text-xl font-semibold text-muted-foreground">No messages found</p>
+              <p className="text-sm text-muted-foreground">No user messages to display</p>
             </div>
           )}
         </div>
       </div>
-    </main>
+    </div>
   );
 }

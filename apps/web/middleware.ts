@@ -1,27 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  // Handle admin routes
-  if (request.nextUrl.pathname.startsWith('/admin')) {
-    // Allow admin routes to pass through
-    return NextResponse.next();
-  }
-
-  // Handle API routes
-  if (request.nextUrl.pathname.startsWith('/api')) {
-    return NextResponse.next();
-  }
-
-  // Handle static files
-  if (request.nextUrl.pathname.startsWith('/_next') || 
-      request.nextUrl.pathname.startsWith('/icons') ||
-      request.nextUrl.pathname.startsWith('/uploads') ||
-      request.nextUrl.pathname.includes('.')) {
-    return NextResponse.next();
-  }
-
-  // Handle locale routes
   const pathname = request.nextUrl.pathname;
+  
+  // Redirect /admin to /en/admin
+  if (pathname.startsWith('/admin')) {
+    return NextResponse.redirect(
+      new URL(`/en${pathname}`, request.url)
+    );
+  }
+
+  // Allow API routes to pass through
+  if (pathname.startsWith('/api')) {
+    return NextResponse.next();
+  }
+
+  // Allow static files to pass through
+  if (pathname.startsWith('/_next') || 
+      pathname.startsWith('/icons') ||
+      pathname.startsWith('/uploads') ||
+      pathname.includes('.')) {
+    return NextResponse.next();
+  }
+
+  // For all other routes, redirect to English locale if no locale is present
   const pathnameIsMissingLocale = ['ar', 'en', 'tr', 'fr', 'es'].every(
     (locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
   );
