@@ -2,7 +2,7 @@
 
 export const API_BASE_URL = __DEV__ 
   ? 'http://localhost:3000' 
-  : process.env.EXPO_PUBLIC_API_URL || 'https://global-hedge-ai-web-new1-hywg29lo9-global-hedge-ais-projects.vercel.app';
+  : 'https://global-hedge-ai-web-new1.vercel.app'; // ✅ تحديث الرابط
 
 export const COLORS = {
   primary: '#f0b90b',

@@ -64,14 +64,11 @@ class ApiService {
         ...options.headers,
       };
 
-      if (this.token) {
-        headers.Authorization = `Bearer ${this.token}`;
-      }
-
+      // ✅ إزالة Bearer token واستخدام sessions فقط
       const response = await fetch(url, {
         ...options,
         headers,
-        credentials: 'include', // Include cookies for session management
+        credentials: 'include', // ✅ استخدام sessions
       });
 
       const data = await response.json();

@@ -33,7 +33,7 @@ export const sessionOptions: SessionOptions = {
 
 export async function getServerSession(req: NextRequest): Promise<IronSession | null> {
   try {
-    const res = new NextResponse();
+    const res = NextResponse.next();
     const session = await getIronSession(req, res, sessionOptions);
     return session;
   } catch (error) {
