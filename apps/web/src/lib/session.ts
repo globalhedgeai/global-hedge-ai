@@ -1,10 +1,12 @@
-import { SessionOptions } from 'iron-session';
+import { SessionOptions, getIronSession } from 'iron-session';
 import type { Role } from '@prisma/client';
+import { NextRequest, NextResponse } from 'next/server';
 
 export interface SessionUser {
   id: string;
   email: string;
   role: Role;
+  balance?: number;
 }
 
 declare module 'iron-session' {
@@ -28,3 +30,13 @@ export const sessionOptions: SessionOptions = {
     sameSite: 'lax',
   },
 };
+
+export async function getServerSession(req: NextRequest): Promise<IronSession | null> {
+  try {
+    const session = await getIronSession(req, new NextResponse(), sessionOptions);
+    return session;
+  } catch (error) {
+    console.error('Error getting session:', error);
+    return null;
+  }
+}

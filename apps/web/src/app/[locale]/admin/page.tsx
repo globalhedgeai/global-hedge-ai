@@ -7,7 +7,7 @@ import {
   WalletIcon, 
   ChartBarIcon,
   CogIcon,
-  // ShieldCheckIcon,
+  ShieldCheckIcon,
   CloudArrowUpIcon,
   BellIcon,
   DocumentTextIcon,

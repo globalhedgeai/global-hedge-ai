@@ -1,34 +1,42 @@
-import type { NextRequest } from 'next/server';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-const publicPaths = [
-  '/api/health',
-  '/api/proofs',
-  '/api/policies',
-  '/api/market/candles',
-  '/login',
-  '/register',
-  '/reset',
-  '/api/auth/login',
-  '/api/auth/register',
-  '/api/auth/logout',
-  '/api/auth/request-reset',
-  '/api/auth/reset',
-];
-
-export function middleware(req: NextRequest) {
-  const p = req.nextUrl.pathname;
-
-  // Dev bypass (off by default; only if AUTH_DEV_OPEN=1)
-  if (process.env.AUTH_DEV_OPEN === '1') return NextResponse.next();
-
-  const isPublic = publicPaths.some((x) => p.startsWith(x)) || p.startsWith('/_next') || p === '/' || p.startsWith('/favicon');
-  if (isPublic) return NextResponse.next();
-
-  // Require session cookie presence; frontend/API will check server-side anyway
-  const hasSession = req.cookies.get('session');
-  if (!hasSession && (p.startsWith('/api/'))) {
-    return NextResponse.json({ ok: false, error: 'unauthorized' }, { status: 401 });
+export function middleware(request: NextRequest) {
+  // Handle admin routes
+  if (request.nextUrl.pathname.startsWith('/admin')) {
+    // Allow admin routes to pass through
+    return NextResponse.next();
   }
+
+  // Handle API routes
+  if (request.nextUrl.pathname.startsWith('/api')) {
+    return NextResponse.next();
+  }
+
+  // Handle static files
+  if (request.nextUrl.pathname.startsWith('/_next') || 
+      request.nextUrl.pathname.startsWith('/icons') ||
+      request.nextUrl.pathname.startsWith('/uploads') ||
+      request.nextUrl.pathname.includes('.')) {
+    return NextResponse.next();
+  }
+
+  // Handle locale routes
+  const pathname = request.nextUrl.pathname;
+  const pathnameIsMissingLocale = ['ar', 'en', 'tr', 'fr', 'es'].every(
+    (locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
+  );
+
+  if (pathnameIsMissingLocale) {
+    return NextResponse.redirect(
+      new URL(`/en${pathname.startsWith('/') ? '' : '/'}${pathname}`, request.url)
+    );
+  }
+
   return NextResponse.next();
 }
+
+export const config = {
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|sw.js|manifest.json).*)',
+  ],
+};
