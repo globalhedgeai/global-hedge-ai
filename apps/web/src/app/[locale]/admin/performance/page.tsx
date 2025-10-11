@@ -44,10 +44,10 @@ export default function AdminPerformancePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
+          <p className="text-gray-300">Loading...</p>
         </div>
       </div>
     );
@@ -55,11 +55,11 @@ export default function AdminPerformancePage() {
 
   if (!session?.ok || session?.user?.role !== 'ADMIN') {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-foreground mb-4">Access Denied</h2>
-          <p className="text-muted-foreground">You need admin privileges to access this page.</p>
-          <a href="/en/admin" className="btn-primary mt-4">
+          <h2 className="text-2xl font-bold text-white mb-4">Access Denied</h2>
+          <p className="text-gray-300">You need admin privileges to access this page.</p>
+          <a href="/en/admin" className="inline-block bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors mt-4">
             Go to Admin Dashboard
           </a>
         </div>
@@ -68,28 +68,28 @@ export default function AdminPerformancePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold gradient-text mb-2">Performance Monitoring</h1>
-          <p className="text-muted-foreground text-lg">Platform statistics and performance metrics</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Performance Monitoring</h1>
+          <p className="text-gray-300 text-lg">Platform statistics and performance metrics</p>
         </div>
 
-        <div className="card p-6">
+        <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold text-foreground">Platform Statistics</h2>
-            <a href="/en/admin" className="btn-secondary">
+            <h2 className="text-xl font-semibold text-white">Platform Statistics</h2>
+            <a href="/en/admin" className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-500 transition-colors">
               Back to Dashboard
             </a>
           </div>
 
           {stats ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-muted p-6 rounded-lg">
+              <div className="bg-gray-700 p-6 rounded-lg">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground mb-1">Total Users</p>
-                    <p className="text-2xl font-bold text-foreground">{stats.totalUsers || 0}</p>
+                    <p className="text-sm text-gray-400 mb-1">Total Users</p>
+                    <p className="text-2xl font-bold text-white">{stats.totalUsers || 0}</p>
                   </div>
                   <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
                     <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -99,11 +99,11 @@ export default function AdminPerformancePage() {
                 </div>
               </div>
 
-              <div className="bg-muted p-6 rounded-lg">
+              <div className="bg-gray-700 p-6 rounded-lg">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground mb-1">Total Deposits</p>
-                    <p className="text-2xl font-bold text-green-600">
+                    <p className="text-sm text-gray-400 mb-1">Total Deposits</p>
+                    <p className="text-2xl font-bold text-green-400">
                       ${stats.totalDepositsAmount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                     </p>
                   </div>
@@ -115,11 +115,11 @@ export default function AdminPerformancePage() {
                 </div>
               </div>
 
-              <div className="bg-muted p-6 rounded-lg">
+              <div className="bg-gray-700 p-6 rounded-lg">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground mb-1">Total Withdrawals</p>
-                    <p className="text-2xl font-bold text-red-600">
+                    <p className="text-sm text-gray-400 mb-1">Total Withdrawals</p>
+                    <p className="text-2xl font-bold text-red-400">
                       ${stats.totalWithdrawalsAmount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                     </p>
                   </div>
@@ -131,11 +131,11 @@ export default function AdminPerformancePage() {
                 </div>
               </div>
 
-              <div className="bg-muted p-6 rounded-lg">
+              <div className="bg-gray-700 p-6 rounded-lg">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground mb-1">Pending Requests</p>
-                    <p className="text-2xl font-bold text-yellow-600">
+                    <p className="text-sm text-gray-400 mb-1">Pending Requests</p>
+                    <p className="text-2xl font-bold text-yellow-400">
                       {(stats.pendingDepositsCount || 0) + (stats.pendingWithdrawalsCount || 0)}
                     </p>
                   </div>
@@ -149,7 +149,7 @@ export default function AdminPerformancePage() {
             </div>
           ) : (
             <div className="text-center py-8">
-              <p className="text-muted-foreground">No statistics available</p>
+              <p className="text-gray-400">No statistics available</p>
             </div>
           )}
         </div>

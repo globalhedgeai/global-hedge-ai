@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 export default function AdminDashboardPage() {
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [loginLoading, setLoginLoading] = useState(false);
 
   useEffect(() => {
     checkSession();
@@ -13,6 +14,7 @@ export default function AdminDashboardPage() {
     try {
       const response = await fetch('/api/me');
       const data = await response.json();
+      console.log('Session check result:', data);
       setSession(data);
     } catch (error) {
       console.error('Error checking session:', error);
@@ -22,6 +24,7 @@ export default function AdminDashboardPage() {
   };
 
   const handleLogin = async () => {
+    setLoginLoading(true);
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
@@ -35,6 +38,7 @@ export default function AdminDashboardPage() {
       });
 
       const data = await response.json();
+      console.log('Login result:', data);
       
       if (data.ok) {
         await checkSession();
@@ -43,16 +47,18 @@ export default function AdminDashboardPage() {
       }
     } catch (error) {
       console.error('Login error:', error);
-      alert('Login error');
+      alert('Login error: ' + error);
+    } finally {
+      setLoginLoading(false);
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
+          <p className="text-gray-300">Loading...</p>
         </div>
       </div>
     );
@@ -60,28 +66,29 @@ export default function AdminDashboardPage() {
 
   if (!session?.ok || !session?.user) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="max-w-md w-full space-y-8">
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="max-w-md w-full space-y-8 p-8">
           <div>
-            <h2 className="mt-6 text-center text-3xl font-extrabold text-foreground">
+            <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
               Admin Login Required
             </h2>
-            <p className="mt-2 text-center text-sm text-muted-foreground">
+            <p className="mt-2 text-center text-sm text-gray-300">
               Please login to access the admin panel
             </p>
           </div>
           <div className="mt-8 space-y-6">
             <button
               onClick={handleLogin}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-primary-foreground bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+              disabled={loginLoading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-black bg-yellow-500 hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 disabled:opacity-50"
             >
-              Login as Admin
+              {loginLoading ? 'Signing in...' : 'Login as Admin'}
             </button>
             <div className="text-center">
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-gray-300">
                 Email: admin@globalhedgeai.com
               </p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-gray-300">
                 Password: Admin123!@#
               </p>
             </div>
@@ -93,10 +100,10 @@ export default function AdminDashboardPage() {
 
   if (session.user.role !== 'ADMIN') {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-foreground mb-4">Access Denied</h2>
-          <p className="text-muted-foreground">You need admin privileges to access this page.</p>
+          <h2 className="text-2xl font-bold text-white mb-4">Access Denied</h2>
+          <p className="text-gray-300">You need admin privileges to access this page.</p>
         </div>
       </div>
     );
@@ -142,19 +149,22 @@ export default function AdminDashboardPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold gradient-text mb-2">Admin Dashboard</h1>
-          <p className="text-muted-foreground text-lg">Welcome, {session.user.email}</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Admin Dashboard</h1>
+          <p className="text-gray-300 text-lg">Welcome, {session.user.email}</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {adminSections.map((section, index) => (
-            <div key={index} className="card p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">{section.title}</h3>
-              <p className="text-muted-foreground mb-4">{section.description}</p>
-              <a href={section.href} className="btn-primary">
+            <div key={index} className="bg-gray-800 p-6 rounded-lg border border-gray-700">
+              <h3 className="text-lg font-semibold text-white mb-4">{section.title}</h3>
+              <p className="text-gray-300 mb-4">{section.description}</p>
+              <a 
+                href={section.href} 
+                className="inline-block bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors"
+              >
                 Access {section.title}
               </a>
             </div>

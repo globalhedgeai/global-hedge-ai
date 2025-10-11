@@ -13,6 +13,7 @@ export default function AdminTestPage() {
     try {
       const response = await fetch('/api/me');
       const data = await response.json();
+      console.log('Session check result:', data);
       setSession(data);
     } catch (error) {
       console.error('Error checking session:', error);
@@ -47,67 +48,67 @@ export default function AdminTestPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
+          <p className="text-gray-300">Loading...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-900">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold gradient-text mb-2">Admin Test Page</h1>
-          <p className="text-muted-foreground text-lg">Testing admin functionality</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Admin Test Page</h1>
+          <p className="text-gray-300 text-lg">Testing admin functionality</p>
         </div>
 
-        <div className="card p-6 mb-6">
-          <h2 className="text-xl font-semibold text-foreground mb-4">Session Status</h2>
-          <pre className="bg-muted p-4 rounded-lg overflow-auto text-sm">
+        <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 mb-6">
+          <h2 className="text-xl font-semibold text-white mb-4">Session Status</h2>
+          <pre className="bg-gray-700 p-4 rounded-lg overflow-auto text-sm text-gray-300">
             {JSON.stringify(session, null, 2)}
           </pre>
         </div>
 
-        <div className="card p-6 mb-6">
-          <h2 className="text-xl font-semibold text-foreground mb-4">Actions</h2>
+        <div className="bg-gray-800 p-6 rounded-lg border border-gray-700 mb-6">
+          <h2 className="text-xl font-semibold text-white mb-4">Actions</h2>
           <div className="space-y-4">
             <button
               onClick={testLogin}
-              className="btn-primary"
+              className="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors"
             >
               Test Login
             </button>
             <button
               onClick={checkSession}
-              className="btn-secondary"
+              className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-500 transition-colors ml-4"
             >
               Check Session
             </button>
           </div>
         </div>
 
-        <div className="card p-6">
-          <h2 className="text-xl font-semibold text-foreground mb-4">Admin Links</h2>
+        <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
+          <h2 className="text-xl font-semibold text-white mb-4">Admin Links</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <a href="/en/admin" className="btn-primary text-center">
+            <a href="/en/admin" className="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors text-center">
               Admin Dashboard
             </a>
-            <a href="/en/admin/users" className="btn-primary text-center">
+            <a href="/en/admin/users" className="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors text-center">
               Users Management
             </a>
-            <a href="/en/admin/wallet" className="btn-primary text-center">
+            <a href="/en/admin/wallet" className="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors text-center">
               Wallet Management
             </a>
-            <a href="/en/admin/messages" className="btn-primary text-center">
+            <a href="/en/admin/messages" className="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors text-center">
               Messages
             </a>
-            <a href="/en/admin/reports" className="btn-primary text-center">
+            <a href="/en/admin/reports" className="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors text-center">
               Reports
             </a>
-            <a href="/en/admin/full-control" className="btn-primary text-center">
+            <a href="/en/admin/full-control" className="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors text-center">
               Full Control
             </a>
           </div>

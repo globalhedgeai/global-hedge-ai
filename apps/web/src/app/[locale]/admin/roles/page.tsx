@@ -44,10 +44,10 @@ export default function AdminRolesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
+          <p className="text-gray-300">Loading...</p>
         </div>
       </div>
     );
@@ -55,11 +55,11 @@ export default function AdminRolesPage() {
 
   if (!session?.ok || session?.user?.role !== 'ADMIN') {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-foreground mb-4">Access Denied</h2>
-          <p className="text-muted-foreground">You need admin privileges to access this page.</p>
-          <a href="/en/admin" className="btn-primary mt-4">
+          <h2 className="text-2xl font-bold text-white mb-4">Access Denied</h2>
+          <p className="text-gray-300">You need admin privileges to access this page.</p>
+          <a href="/en/admin" className="inline-block bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors mt-4">
             Go to Admin Dashboard
           </a>
         </div>
@@ -68,17 +68,17 @@ export default function AdminRolesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold gradient-text mb-2">Role Management</h1>
-          <p className="text-muted-foreground text-lg">Manage user roles and permissions</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Role Management</h1>
+          <p className="text-gray-300 text-lg">Manage user roles and permissions</p>
         </div>
 
-        <div className="card p-6">
+        <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold text-foreground">Users ({users.length})</h2>
-            <a href="/en/admin" className="btn-secondary">
+            <h2 className="text-xl font-semibold text-white">Users ({users.length})</h2>
+            <a href="/en/admin" className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-500 transition-colors">
               Back to Dashboard
             </a>
           </div>
@@ -86,19 +86,19 @@ export default function AdminRolesPage() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left py-3 px-4 font-semibold text-foreground">Email</th>
-                  <th className="text-left py-3 px-4 font-semibold text-foreground">Current Role</th>
-                  <th className="text-left py-3 px-4 font-semibold text-foreground">Created</th>
-                  <th className="text-left py-3 px-4 font-semibold text-foreground">Actions</th>
+                <tr className="border-b border-gray-700">
+                  <th className="text-left py-3 px-4 font-semibold text-white">Email</th>
+                  <th className="text-left py-3 px-4 font-semibold text-white">Current Role</th>
+                  <th className="text-left py-3 px-4 font-semibold text-white">Created</th>
+                  <th className="text-left py-3 px-4 font-semibold text-white">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {users.map((user) => (
-                  <tr key={user.id} className="border-b border-border hover:bg-muted/50">
+                  <tr key={user.id} className="border-b border-gray-700 hover:bg-gray-700">
                     <td className="py-4 px-4">
-                      <p className="font-medium text-foreground">{user.email}</p>
-                      <p className="text-sm text-muted-foreground">ID: {user.id.slice(-8)}</p>
+                      <p className="font-medium text-white">{user.email}</p>
+                      <p className="text-sm text-gray-400">ID: {user.id.slice(-8)}</p>
                     </td>
                     <td className="py-4 px-4">
                       <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
@@ -111,12 +111,12 @@ export default function AdminRolesPage() {
                       </span>
                     </td>
                     <td className="py-4 px-4">
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-gray-400">
                         {new Date(user.createdAt).toLocaleDateString()}
                       </p>
                     </td>
                     <td className="py-4 px-4">
-                      <button className="text-primary hover:text-primary/80 text-sm font-medium">
+                      <button className="text-yellow-500 hover:text-yellow-400 text-sm font-medium">
                         Change Role
                       </button>
                     </td>
