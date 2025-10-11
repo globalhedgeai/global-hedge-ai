@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ 
         ok: false, 
         error: "Invalid request data",
-        details: parsed.error.errors
+        details: parsed.error.issues
       }, { status: 400 });
     }
     
@@ -47,13 +47,11 @@ export async function POST(req: NextRequest) {
     }
     
     // Create the reply message
-    const replyMessage = await prisma.message.create({
+    const replyMessage = await prisma.threadMessage.create({
       data: {
         threadId,
         body: message,
-        isFromAdmin: true,
-        senderId: session.user.id,
-        senderEmail: session.user.email
+        sender: 'ADMIN'
       }
     });
     
@@ -75,7 +73,7 @@ export async function POST(req: NextRequest) {
         id: replyMessage.id,
         body: replyMessage.body,
         createdAt: replyMessage.createdAt,
-        isFromAdmin: replyMessage.isFromAdmin
+        isFromAdmin: true
       }
     });
     

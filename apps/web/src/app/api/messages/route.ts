@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ 
         ok: false, 
         error: "Invalid message data",
-        details: parsed.error.errors
+        details: parsed.error.issues
       }, { status: 400 });
     }
     

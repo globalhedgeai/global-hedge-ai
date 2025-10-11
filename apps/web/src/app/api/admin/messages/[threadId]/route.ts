@@ -48,8 +48,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ thre
           id: msg.id,
           body: msg.body,
           createdAt: msg.createdAt,
-          isFromAdmin: msg.isFromAdmin,
-          senderEmail: msg.senderEmail
+          isFromAdmin: msg.sender === 'ADMIN',
+          senderEmail: msg.sender === 'ADMIN' ? 'admin@globalhedgeai.com' : thread.user.email
         })),
         lastMessageAt: thread.lastMessageAt,
         unreadForAdmin: thread.unreadForAdmin

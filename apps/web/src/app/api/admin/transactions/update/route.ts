@@ -30,7 +30,7 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ 
         ok: false, 
         error: "Invalid request data",
-        details: parsed.error.errors
+        details: parsed.error.issues
       }, { status: 400 });
     }
     
@@ -48,7 +48,7 @@ export async function PUT(req: NextRequest) {
           amount,
           status,
           createdAt: newDateTime,
-          updatedAt: new Date()
+          createdAt: new Date()
         }
       });
     } catch (error) {
@@ -64,7 +64,7 @@ export async function PUT(req: NextRequest) {
             amount,
             status,
             createdAt: newDateTime,
-            updatedAt: new Date()
+            createdAt: new Date()
           }
         });
         

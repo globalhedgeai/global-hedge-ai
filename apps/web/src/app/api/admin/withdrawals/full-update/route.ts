@@ -11,7 +11,7 @@ const FullWithdrawalUpdateSchema = z.object({
   txHash: z.string(),
   status: z.enum(['PENDING', 'APPROVED', 'REJECTED']),
   createdAt: z.string(),
-  updatedAt: z.string(),
+  reviewedAt: z.string(),
 });
 
 export async function PUT(req: NextRequest) {
@@ -33,7 +33,7 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ 
         ok: false, 
         error: "Invalid request body",
-        details: parsed.error.errors
+        details: parsed.error.issues
       }, { status: 400 });
     }
     
@@ -45,7 +45,7 @@ export async function PUT(req: NextRequest) {
       txHash, 
       status, 
       createdAt, 
-      updatedAt 
+      reviewedAt 
     } = parsed.data;
     
     // Check if withdrawal exists
@@ -63,12 +63,12 @@ export async function PUT(req: NextRequest) {
       where: { id },
       data: {
         amount,
-        cryptocurrency,
-        walletAddress,
-        txHash: txHash || null,
+        cryptocurrency: cryptocurrency as any,
+        toAddress: walletAddress,
+        txId: txHash || '',
         status,
         createdAt: new Date(createdAt),
-        updatedAt: new Date(updatedAt),
+        reviewedAt: new Date(reviewedAt),
       },
       include: {
         user: {

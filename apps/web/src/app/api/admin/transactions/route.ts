@@ -53,9 +53,8 @@ export async function GET(req: NextRequest) {
         amount: deposit.amount,
         status: deposit.status,
         createdAt: deposit.createdAt,
-        updatedAt: deposit.updatedAt,
-        walletAddress: deposit.walletAddress,
-        transactionHash: deposit.transactionHash
+        walletAddress: deposit.toAddress,
+        transactionHash: deposit.txId
       })),
       ...withdrawals.map(withdrawal => ({
         id: withdrawal.id,
@@ -65,9 +64,8 @@ export async function GET(req: NextRequest) {
         amount: withdrawal.amount,
         status: withdrawal.status,
         createdAt: withdrawal.createdAt,
-        updatedAt: withdrawal.updatedAt,
-        walletAddress: withdrawal.walletAddress,
-        transactionHash: withdrawal.transactionHash
+        walletAddress: withdrawal.toAddress,
+        transactionHash: withdrawal.txId
       }))
     ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     

@@ -27,7 +27,7 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ 
         ok: false, 
         error: "Invalid request data",
-        details: parsed.error.errors
+        details: parsed.error.issues
       }, { status: 400 });
     }
     
@@ -50,13 +50,13 @@ export async function PUT(req: NextRequest) {
       where: { id: userId },
       data: { 
         balance,
-        updatedAt: new Date()
+        createdAt: new Date()
       },
       select: {
         id: true,
         email: true,
         balance: true,
-        updatedAt: true
+        createdAt: true
       }
     });
     

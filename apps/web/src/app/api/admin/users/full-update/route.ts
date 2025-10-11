@@ -11,7 +11,7 @@ const FullUserUpdateSchema = z.object({
   referralCode: z.string().min(1),
   walletAddress: z.string(),
   createdAt: z.string(),
-  updatedAt: z.string(),
+  createdAt: z.string(),
   firstDepositAt: z.string().optional(),
   lastWithdrawalAt: z.string().optional(),
 });
@@ -35,7 +35,7 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ 
         ok: false, 
         error: "Invalid request body",
-        details: parsed.error.errors
+        details: parsed.error.issues
       }, { status: 400 });
     }
     
@@ -47,7 +47,6 @@ export async function PUT(req: NextRequest) {
       referralCode, 
       walletAddress, 
       createdAt, 
-      updatedAt, 
       firstDepositAt, 
       lastWithdrawalAt 
     } = parsed.data;
@@ -93,7 +92,6 @@ export async function PUT(req: NextRequest) {
         referralCode,
         walletAddress: walletAddress || null,
         createdAt: new Date(createdAt),
-        updatedAt: new Date(updatedAt),
         firstDepositAt: firstDepositAt ? new Date(firstDepositAt) : null,
         lastWithdrawalAt: lastWithdrawalAt ? new Date(lastWithdrawalAt) : null,
       },
@@ -105,7 +103,7 @@ export async function PUT(req: NextRequest) {
         referralCode: true,
         walletAddress: true,
         createdAt: true,
-        updatedAt: true,
+        createdAt: true,
         firstDepositAt: true,
         lastWithdrawalAt: true,
       }

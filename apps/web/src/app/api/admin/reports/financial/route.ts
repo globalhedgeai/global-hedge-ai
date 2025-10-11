@@ -61,23 +61,26 @@ export async function GET(req: NextRequest) {
               createdAt: { gte: dayStart, lte: dayEnd }
             }
           }),
-          prisma.deposit.count({
-            where: {
-              createdAt: { gte: dayStart, lte: dayEnd }
-            }
-          }) + prisma.withdrawal.count({
-            where: {
-              createdAt: { gte: dayStart, lte: dayEnd }
-            }
-          })
+          Promise.all([
+            prisma.deposit.count({
+              where: {
+                createdAt: { gte: dayStart, lte: dayEnd }
+              }
+            }),
+            prisma.withdrawal.count({
+              where: {
+                createdAt: { gte: dayStart, lte: dayEnd }
+              }
+            })
+          ]).then(([depositCount, withdrawalCount]) => depositCount + withdrawalCount)
         ]);
         
         reports.push({
           period: date.toLocaleDateString(),
-          totalDeposits: deposits._sum.amount || 0,
-          totalWithdrawals: withdrawals._sum.amount || 0,
-          totalRewards: rewards._sum.amount || 0,
-          netProfit: (deposits._sum.amount || 0) - (withdrawals._sum.amount || 0) - (rewards._sum.amount || 0),
+          totalDeposits: Number(deposits._sum.amount || 0),
+          totalWithdrawals: Number(withdrawals._sum.amount || 0),
+          totalRewards: Number(rewards._sum.amount || 0),
+          netProfit: Number(deposits._sum.amount || 0) - Number(withdrawals._sum.amount || 0) - Number(rewards._sum.amount || 0),
           userCount: users,
           transactionCount: transactions
         });
@@ -122,23 +125,26 @@ export async function GET(req: NextRequest) {
               createdAt: { gte: weekStart, lte: weekEnd }
             }
           }),
-          prisma.deposit.count({
-            where: {
-              createdAt: { gte: weekStart, lte: weekEnd }
-            }
-          }) + prisma.withdrawal.count({
-            where: {
-              createdAt: { gte: weekStart, lte: weekEnd }
-            }
-          })
+          Promise.all([
+            prisma.deposit.count({
+              where: {
+                createdAt: { gte: weekStart, lte: weekEnd }
+              }
+            }),
+            prisma.withdrawal.count({
+              where: {
+                createdAt: { gte: weekStart, lte: weekEnd }
+              }
+            })
+          ]).then(([depositCount, withdrawalCount]) => depositCount + withdrawalCount)
         ]);
         
         reports.push({
           period: `Week of ${weekStart.toLocaleDateString()}`,
-          totalDeposits: deposits._sum.amount || 0,
-          totalWithdrawals: withdrawals._sum.amount || 0,
-          totalRewards: rewards._sum.amount || 0,
-          netProfit: (deposits._sum.amount || 0) - (withdrawals._sum.amount || 0) - (rewards._sum.amount || 0),
+          totalDeposits: Number(deposits._sum.amount || 0),
+          totalWithdrawals: Number(withdrawals._sum.amount || 0),
+          totalRewards: Number(rewards._sum.amount || 0),
+          netProfit: Number(deposits._sum.amount || 0) - Number(withdrawals._sum.amount || 0) - Number(rewards._sum.amount || 0),
           userCount: users,
           transactionCount: transactions
         });
@@ -181,23 +187,26 @@ export async function GET(req: NextRequest) {
               createdAt: { gte: monthStart, lte: monthEnd }
             }
           }),
-          prisma.deposit.count({
-            where: {
-              createdAt: { gte: monthStart, lte: monthEnd }
-            }
-          }) + prisma.withdrawal.count({
-            where: {
-              createdAt: { gte: monthStart, lte: monthEnd }
-            }
-          })
+          Promise.all([
+            prisma.deposit.count({
+              where: {
+                createdAt: { gte: monthStart, lte: monthEnd }
+              }
+            }),
+            prisma.withdrawal.count({
+              where: {
+                createdAt: { gte: monthStart, lte: monthEnd }
+              }
+            })
+          ]).then(([depositCount, withdrawalCount]) => depositCount + withdrawalCount)
         ]);
         
         reports.push({
           period: monthStart.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
-          totalDeposits: deposits._sum.amount || 0,
-          totalWithdrawals: withdrawals._sum.amount || 0,
-          totalRewards: rewards._sum.amount || 0,
-          netProfit: (deposits._sum.amount || 0) - (withdrawals._sum.amount || 0) - (rewards._sum.amount || 0),
+          totalDeposits: Number(deposits._sum.amount || 0),
+          totalWithdrawals: Number(withdrawals._sum.amount || 0),
+          totalRewards: Number(rewards._sum.amount || 0),
+          netProfit: Number(deposits._sum.amount || 0) - Number(withdrawals._sum.amount || 0) - Number(rewards._sum.amount || 0),
           userCount: users,
           transactionCount: transactions
         });
@@ -240,23 +249,26 @@ export async function GET(req: NextRequest) {
               createdAt: { gte: yearStart, lte: yearEnd }
             }
           }),
-          prisma.deposit.count({
-            where: {
-              createdAt: { gte: yearStart, lte: yearEnd }
-            }
-          }) + prisma.withdrawal.count({
-            where: {
-              createdAt: { gte: yearStart, lte: yearEnd }
-            }
-          })
+          Promise.all([
+            prisma.deposit.count({
+              where: {
+                createdAt: { gte: yearStart, lte: yearEnd }
+              }
+            }),
+            prisma.withdrawal.count({
+              where: {
+                createdAt: { gte: yearStart, lte: yearEnd }
+              }
+            })
+          ]).then(([depositCount, withdrawalCount]) => depositCount + withdrawalCount)
         ]);
         
         reports.push({
           period: yearStart.getFullYear().toString(),
-          totalDeposits: deposits._sum.amount || 0,
-          totalWithdrawals: withdrawals._sum.amount || 0,
-          totalRewards: rewards._sum.amount || 0,
-          netProfit: (deposits._sum.amount || 0) - (withdrawals._sum.amount || 0) - (rewards._sum.amount || 0),
+          totalDeposits: Number(deposits._sum.amount || 0),
+          totalWithdrawals: Number(withdrawals._sum.amount || 0),
+          totalRewards: Number(rewards._sum.amount || 0),
+          netProfit: Number(deposits._sum.amount || 0) - Number(withdrawals._sum.amount || 0) - Number(rewards._sum.amount || 0),
           userCount: users,
           transactionCount: transactions
         });

@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ 
         ok: false, 
         error: "Invalid request data",
-        details: parsed.error.errors
+        details: parsed.error.issues
       }, { status: 400 });
     }
     
@@ -92,7 +92,7 @@ export async function POST(req: NextRequest) {
       message: 'Wallet address added successfully',
       wallet: {
         id: Date.now().toString(),
-        cryptocurrency,
+        cryptocurrency: cryptocurrency as any,
         address,
         network: 'TRC20',
         isActive: true,
@@ -128,7 +128,7 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ 
         ok: false, 
         error: "Invalid request data",
-        details: parsed.error.errors
+        details: parsed.error.issues
       }, { status: 400 });
     }
     
@@ -141,7 +141,7 @@ export async function PUT(req: NextRequest) {
       message: 'Wallet address updated successfully',
       wallet: {
         id,
-        cryptocurrency,
+        cryptocurrency: cryptocurrency as any,
         address,
         network: 'TRC20',
         isActive: isActive !== undefined ? isActive : true,
@@ -177,7 +177,7 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ 
         ok: false, 
         error: "Invalid request data",
-        details: parsed.error.errors
+        details: parsed.error.issues
       }, { status: 400 });
     }
     

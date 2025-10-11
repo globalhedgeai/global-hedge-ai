@@ -26,7 +26,7 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ 
         ok: false, 
         error: "Invalid request data",
-        details: parsed.error.errors
+        details: parsed.error.issues
       }, { status: 400 });
     }
     
@@ -67,7 +67,8 @@ export async function PUT(req: NextRequest) {
         where: { id: depositId },
         data: { 
           status: 'APPROVED',
-          updatedAt: new Date()
+          reviewedAt: new Date(),
+          reviewedBy: session.user!.id
         }
       });
       
@@ -77,13 +78,12 @@ export async function PUT(req: NextRequest) {
         data: {
           balance: {
             increment: deposit.amount
-          },
-          updatedAt: new Date()
+          }
         }
       });
     });
     
-    console.log(`Admin ${session.user.email} approved deposit ${depositId} for user ${deposit.user.email}`);
+    console.log(`Admin ${session.user!.email} approved deposit ${depositId} for user ${deposit.user.email}`);
     
     return NextResponse.json({
       ok: true,

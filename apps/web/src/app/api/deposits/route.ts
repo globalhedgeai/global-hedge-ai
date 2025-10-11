@@ -130,7 +130,7 @@ export async function POST(req: NextRequest) {
             where: { userId: user.invitedById },
             update: {
               invitedCount: { increment: 1 },
-              updatedAt: new Date()
+              createdAt: new Date()
             },
             create: {
               userId: user.invitedById,

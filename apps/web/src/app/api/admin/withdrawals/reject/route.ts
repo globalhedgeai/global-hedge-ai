@@ -26,7 +26,7 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ 
         ok: false, 
         error: "Invalid request data",
-        details: parsed.error.errors
+        details: parsed.error.issues
       }, { status: 400 });
     }
     
@@ -64,7 +64,7 @@ export async function PUT(req: NextRequest) {
       where: { id: withdrawalId },
       data: { 
         status: 'REJECTED',
-        updatedAt: new Date()
+        reviewedAt: new Date()
       }
     });
     
