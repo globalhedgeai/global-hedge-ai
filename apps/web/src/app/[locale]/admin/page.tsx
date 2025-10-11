@@ -1,11 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useTranslation } from '@/lib/translations';
 
 export default function AdminDashboardPage() {
-  const { t, locale } = useTranslation();
-  const router = useRouter();
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -110,37 +106,37 @@ export default function AdminDashboardPage() {
     {
       title: 'User Management',
       description: 'Manage users and their roles',
-      href: `/${locale}/admin/users`,
+      href: '/en/admin/users',
       color: 'bg-blue-500'
     },
     {
       title: 'Wallet Management',
       description: 'Manage cryptocurrency wallets',
-      href: `/${locale}/admin/wallet`,
+      href: '/en/admin/wallet',
       color: 'bg-green-500'
     },
     {
       title: 'Messages',
       description: 'Handle user messages',
-      href: `/${locale}/admin/messages`,
+      href: '/en/admin/messages',
       color: 'bg-yellow-500'
     },
     {
       title: 'Reports',
       description: 'Financial reports and analytics',
-      href: `/${locale}/admin/reports`,
+      href: '/en/admin/reports',
       color: 'bg-purple-500'
     },
     {
       title: 'Full Control',
       description: 'Complete admin control',
-      href: `/${locale}/admin/full-control`,
+      href: '/en/admin/full-control',
       color: 'bg-red-500'
     },
     {
       title: 'Performance',
       description: 'Platform performance monitoring',
-      href: `/${locale}/admin/performance`,
+      href: '/en/admin/performance',
       color: 'bg-indigo-500'
     }
   ];

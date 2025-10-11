@@ -3,13 +3,6 @@ import { NextRequest, NextResponse } from 'next/server';
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   
-  // Redirect /admin to /en/admin
-  if (pathname.startsWith('/admin')) {
-    return NextResponse.redirect(
-      new URL(`/en${pathname}`, request.url)
-    );
-  }
-
   // Allow API routes to pass through
   if (pathname.startsWith('/api')) {
     return NextResponse.next();
@@ -21,6 +14,13 @@ export function middleware(request: NextRequest) {
       pathname.startsWith('/uploads') ||
       pathname.includes('.')) {
     return NextResponse.next();
+  }
+
+  // Redirect /admin to /en/admin
+  if (pathname.startsWith('/admin')) {
+    return NextResponse.redirect(
+      new URL(`/en${pathname}`, request.url)
+    );
   }
 
   // For all other routes, redirect to English locale if no locale is present
@@ -39,6 +39,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|sw.js|manifest.json).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|sw.js|manifest.json|icons).*)',
   ],
 };
