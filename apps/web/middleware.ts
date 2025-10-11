@@ -3,6 +3,19 @@ import { NextRequest, NextResponse } from 'next/server';
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   
+  // Allow API routes to pass through
+  if (pathname.startsWith('/api')) {
+    return NextResponse.next();
+  }
+
+  // Allow static files to pass through
+  if (pathname.startsWith('/_next') || 
+      pathname.startsWith('/icons') ||
+      pathname.startsWith('/uploads') ||
+      pathname.includes('.')) {
+    return NextResponse.next();
+  }
+
   // Redirect /admin to /en/admin
   if (pathname === '/admin' || pathname.startsWith('/admin/')) {
     return NextResponse.redirect(

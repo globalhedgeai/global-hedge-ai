@@ -68,7 +68,10 @@ export default function AdminDashboardPage() {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="max-w-md w-full space-y-8 p-8">
-          <div>
+          <div className="text-center">
+            <div className="mx-auto h-16 w-16 bg-yellow-500 rounded-full flex items-center justify-center mb-4">
+              <span className="text-2xl font-bold text-black">A</span>
+            </div>
             <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
               Admin Login Required
             </h2>
@@ -80,7 +83,7 @@ export default function AdminDashboardPage() {
             <button
               onClick={handleLogin}
               disabled={loginLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-black bg-yellow-500 hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 disabled:opacity-50"
+              className="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-black bg-yellow-500 hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 disabled:opacity-50"
             >
               {loginLoading ? 'Signing in...' : 'Login as Admin'}
             </button>
@@ -91,6 +94,11 @@ export default function AdminDashboardPage() {
               <p className="text-sm text-gray-300">
                 Password: Admin123!@#
               </p>
+            </div>
+            <div className="text-center">
+              <a href="/en/admin/login" className="text-yellow-500 hover:text-yellow-400 text-sm">
+                Or go to separate login page
+              </a>
             </div>
           </div>
         </div>
@@ -158,7 +166,7 @@ export default function AdminDashboardPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {adminSections.map((section, index) => (
-            <div key={index} className="bg-gray-800 p-6 rounded-lg border border-gray-700">
+            <div key={index} className="bg-gray-800 p-6 rounded-lg border border-gray-700 hover:border-yellow-500 transition-colors">
               <h3 className="text-lg font-semibold text-white mb-4">{section.title}</h3>
               <p className="text-gray-300 mb-4">{section.description}</p>
               <a 
