@@ -1,12 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
-export async function POST(req: NextRequest) {
+const prisma = new PrismaClient();
+
+async function createAdmin() {
   try {
-    console.log('🔄 Creating admin user via API...');
-    
-    // Allow this endpoint without authentication for initial setup
+    console.log('🔄 Creating admin user...');
     
     // Hash password
     const passwordHash = await bcrypt.hash('Admin123!@#', 12);
@@ -38,23 +37,21 @@ export async function POST(req: NextRequest) {
     const userCount = await prisma.user.count();
     console.log('📊 Total users in database:', userCount);
     
-    return NextResponse.json({
-      ok: true,
-      message: 'Admin user created successfully',
-      admin: {
-        email: admin.email,
-        role: admin.role,
-        id: admin.id
-      },
-      totalUsers: userCount
-    });
-    
   } catch (error) {
     console.error('❌ Error creating admin:', error);
-    return NextResponse.json({
-      ok: false,
-      error: 'Failed to create admin user',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 });
+    throw error;
+  } finally {
+    await prisma.$disconnect();
   }
 }
+
+// Run the script
+createAdmin()
+  .then(() => {
+    console.log('🎉 Script completed successfully!');
+    process.exit(0);
+  })
+  .catch((error) => {
+    console.error('💥 Script failed:', error);
+    process.exit(1);
+  });
