@@ -221,25 +221,25 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6">
         {/* Welcome Header */}
-        <div className="mb-8 animate-fade-in">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary to-yellow-400 rounded-2xl mb-4 shadow-lg">
-              <span className="text-primary-foreground font-bold text-3xl">G</span>
+        <div className="mb-6 md:mb-8 animate-fade-in">
+          <div className="text-center mb-6 md:mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-primary to-yellow-400 rounded-2xl mb-4 shadow-lg">
+              <span className="text-primary-foreground font-bold text-2xl md:text-3xl">G</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold gradient-text mb-4">
+            <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold gradient-text mb-4">
               {isAuthenticated ? t('dashboard.title') : t('landing.title')}
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto">
               {isAuthenticated ? t('dashboard.subtitle') : t('landing.subtitle')}
             </p>
           </div>
           
           {/* Quick Stats Bar */}
           {isAuthenticated && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-              <div className="card text-center hover-lift">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 mb-6 md:mb-8">
+              <div className="card text-center hover-lift p-3 md:p-4">
                 <div className="p-4">
                   <div className="text-2xl font-bold text-primary mb-1">
                     {formatCurrency(userBalance, locale)}
@@ -370,15 +370,15 @@ export default function HomePage() {
         )}
 
         {/* Dashboard Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 animate-fade-in">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 animate-fade-in">
           {widgets.map((widget, index) => (
             <div
               key={widget.id}
               className={`${
-                widget.size === 'small' ? 'md:col-span-1' :
-                widget.size === 'medium' ? 'md:col-span-1' :
-                'md:col-span-2 xl:col-span-3'
-              } ${isCustomizing ? 'cursor-move' : ''}`}
+                widget.size === 'small' ? 'sm:col-span-1' :
+                widget.size === 'medium' ? 'sm:col-span-1' :
+                'sm:col-span-2 xl:col-span-3'
+              } ${isCustomizing ? 'cursor-move' : ''} card hover-lift group p-4 md:p-6`}
             >
               <div className="card hover-lift h-full">
                 <div className="p-6">

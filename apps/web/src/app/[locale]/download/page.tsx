@@ -26,26 +26,38 @@ export default function DownloadAppPage() {
 
     // في الواقع، سيتم تحميل ملف APK الحقيقي
     setTimeout(() => {
-      // إنشاء رابط تحميل APK
-      const link = document.createElement('a');
-      link.href = '/downloads/global-hedge-ai.apk';
-      link.download = 'global-hedge-ai.apk';
-      link.click();
+      try {
+        // إنشاء رابط تحميل APK
+        const link = document.createElement('a');
+        link.href = '/downloads/global-hedge-ai.apk';
+        link.download = 'global-hedge-ai.apk';
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // إظهار رسالة نجاح
+        alert('Download started! The APK file will be saved to your device.');
+      } catch (error) {
+        console.error('Download error:', error);
+        // Fallback: فتح الرابط في نافذة جديدة
+        window.open('/downloads/global-hedge-ai.apk', '_blank');
+      }
     }, 2000);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
         {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+        <div className="text-center mb-8 md:mb-16">
+          <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold text-white mb-4 md:mb-6">
             {t('download.title')}
           </h1>
-          <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-300 mb-6 md:mb-8 max-w-3xl mx-auto">
             {t('download.subtitle')}
           </p>
-          <p className="text-lg text-gray-400 mb-12 max-w-4xl mx-auto">
+          <p className="text-base md:text-lg text-gray-400 mb-8 md:mb-12 max-w-4xl mx-auto">
             {t('download.description')}
           </p>
         </div>

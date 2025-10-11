@@ -158,25 +158,54 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
+      {/* Mobile Header */}
+      <div className="bg-gray-800 border-b border-gray-700 px-4 py-3 md:hidden">
+        <h1 className="text-xl font-bold text-white">Admin Dashboard</h1>
+        <p className="text-gray-300 text-sm">Welcome, {session.user.email}</p>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
+        {/* Desktop Header */}
+        <div className="mb-6 md:mb-8 hidden md:block">
           <h1 className="text-3xl font-bold text-white mb-2">Admin Dashboard</h1>
           <p className="text-gray-300 text-lg">Welcome, {session.user.email}</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Mobile-First Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {adminSections.map((section, index) => (
-            <div key={index} className="bg-gray-800 p-6 rounded-lg border border-gray-700 hover:border-yellow-500 transition-colors">
-              <h3 className="text-lg font-semibold text-white mb-4">{section.title}</h3>
-              <p className="text-gray-300 mb-4">{section.description}</p>
+            <div key={index} className="bg-gray-800 p-4 md:p-6 rounded-lg border border-gray-700 hover:border-yellow-500 transition-all duration-200 hover:shadow-lg">
+              <div className="flex items-center mb-3">
+                <div className={`w-3 h-3 rounded-full ${section.color} mr-3`}></div>
+                <h3 className="text-base md:text-lg font-semibold text-white">{section.title}</h3>
+              </div>
+              <p className="text-gray-300 text-sm md:text-base mb-4">{section.description}</p>
               <a 
                 href={section.href} 
-                className="inline-block bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors"
+                className="inline-block w-full text-center bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors font-medium"
               >
                 Access {section.title}
               </a>
             </div>
           ))}
+        </div>
+
+        {/* Mobile Quick Actions */}
+        <div className="mt-6 md:hidden">
+          <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
+            <h3 className="text-white font-semibold mb-3">Quick Actions</h3>
+            <div className="space-y-2">
+              <a href="/en/admin/users" className="block bg-blue-500 text-white px-4 py-2 rounded text-center">
+                Manage Users
+              </a>
+              <a href="/en/admin/messages" className="block bg-green-500 text-white px-4 py-2 rounded text-center">
+                View Messages
+              </a>
+              <a href="/en/admin/reports" className="block bg-purple-500 text-white px-4 py-2 rounded text-center">
+                Financial Reports
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>

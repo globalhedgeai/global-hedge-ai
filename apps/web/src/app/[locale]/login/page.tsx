@@ -49,22 +49,22 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 animate-fade-in">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-md w-full space-y-6 md:space-y-8 animate-fade-in">
         {/* Header */}
         <div className="text-center">
-          <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-primary to-yellow-400 rounded-2xl flex items-center justify-center shadow-lg">
-              <span className="text-primary-foreground font-bold text-2xl">G</span>
+          <div className="flex justify-center mb-4 md:mb-6">
+            <div className="w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-primary to-yellow-400 rounded-2xl flex items-center justify-center shadow-lg">
+              <span className="text-primary-foreground font-bold text-xl md:text-2xl">G</span>
             </div>
           </div>
-          <h1 className="text-3xl font-bold gradient-text mb-2">{t('auth.login')}</h1>
-          <p className="text-muted-foreground">{t('auth.loginSubtitle')}</p>
+          <h1 className="text-2xl md:text-3xl font-bold gradient-text mb-2">{t('auth.login')}</h1>
+          <p className="text-muted-foreground text-sm md:text-base">{t('auth.loginSubtitle')}</p>
         </div>
 
         {/* Login Form */}
-        <div className="card hover-lift">
-          <form onSubmit={onSubmit} className="space-y-6">
+        <div className="card hover-lift p-4 md:p-6">
+          <form onSubmit={onSubmit} className="space-y-4 md:space-y-6">
             <div className="space-y-4">
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
@@ -78,7 +78,7 @@ export default function LoginPage() {
                   required
                   value={email}
                   onChange={e => setEmail(e.target.value)}
-                  className="input w-full"
+                  className="input w-full py-3 md:py-2 text-base"
                   placeholder={t('auth.emailPlaceholder')}
                 />
               </div>
@@ -95,7 +95,7 @@ export default function LoginPage() {
                   required
                   value={password}
                   onChange={e => setPassword(e.target.value)}
-                  className="input w-full"
+                  className="input w-full py-3 md:py-2 text-base"
                   placeholder={t('auth.passwordPlaceholder')}
                 />
               </div>
