@@ -27,7 +27,14 @@ export async function GET(req: NextRequest) {
 
   try {
     // Try multiple data sources for real market data
-    let candles: any[] = [];
+    let candles: Array<{
+      time: number;
+      open: number;
+      high: number;
+      low: number;
+      close: number;
+      volume: number;
+    }> = [];
     let source = 'unknown';
     
     // Try CoinGecko first (more reliable)

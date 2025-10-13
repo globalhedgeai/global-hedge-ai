@@ -202,7 +202,13 @@ export default function AdminReportsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {reports?.reports?.map((report: any, index: number) => (
+                  {reports?.reports?.map((report: {
+                    period: string;
+                    totalUsers: number;
+                    totalTransactions: number;
+                    totalVolume: number;
+                    totalRevenue: number;
+                  }, index: number) => (
                     <tr key={index} className="border-b border-gray-700 hover:bg-gray-700">
                       <td className="py-4 px-4">
                         <p className="text-white font-medium">{report.period}</p>

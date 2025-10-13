@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 interface Session {
   user: {
@@ -105,9 +106,9 @@ export default function AdminDashboardPage() {
               </p>
             </div>
             <div className="text-center">
-              <a href="/en/admin/login" className="text-yellow-500 hover:text-yellow-400 text-sm">
+              <Link href="/en/admin/login" className="text-yellow-500 hover:text-yellow-400 text-sm">
                 Or go to separate login page
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -222,15 +223,15 @@ export default function AdminDashboardPage() {
           <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
             <h3 className="text-white font-semibold mb-3">Quick Actions</h3>
             <div className="space-y-2">
-              <a href="/en/admin/users" className="block bg-blue-500 text-white px-4 py-2 rounded text-center">
+              <Link href="/en/admin/users" className="block bg-blue-500 text-white px-4 py-2 rounded text-center">
                 Manage Users
-              </a>
-              <a href="/en/admin/messages" className="block bg-green-500 text-white px-4 py-2 rounded text-center">
+              </Link>
+              <Link href="/en/admin/messages" className="block bg-green-500 text-white px-4 py-2 rounded text-center">
                 View Messages
-              </a>
-              <a href="/en/admin/reports" className="block bg-purple-500 text-white px-4 py-2 rounded text-center">
+              </Link>
+              <Link href="/en/admin/reports" className="block bg-purple-500 text-white px-4 py-2 rounded text-center">
                 Financial Reports
-              </a>
+              </Link>
             </div>
           </div>
         </div>

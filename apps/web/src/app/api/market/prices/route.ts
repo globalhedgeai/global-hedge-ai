@@ -5,7 +5,12 @@ export async function GET(req: NextRequest) {
     const symbols = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'ADAUSDT', 'SOLUSDT', 'XRPUSDT', 'DOTUSDT', 'DOGEUSDT', 'AVAXUSDT', 'MATICUSDT'];
     
     // Try to get real prices from multiple sources
-    let prices: any[] = [];
+    let prices: Array<{
+      symbol: string;
+      price: number;
+      change24h: number;
+      volume24h: number;
+    }> = [];
     let source = 'unknown';
     
     // Try CoinGecko first
@@ -81,7 +86,12 @@ export async function GET(req: NextRequest) {
 
         if (binanceResponse.ok) {
           const binanceData = await binanceResponse.json();
-          prices = binanceData.map((ticker: any) => ({
+          prices = binanceData.map((ticker: {
+            symbol: string;
+            price: string;
+            priceChangePercent: string;
+            volume: string;
+          }) => ({
             symbol: ticker.symbol,
             price: parseFloat(ticker.lastPrice),
             change24h: parseFloat(ticker.priceChange),
