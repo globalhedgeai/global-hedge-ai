@@ -1,26 +1,5 @@
 {
-  "buildCommand": "npx prisma generate && npm run build",
-  "outputDirectory": ".next",
   "framework": "nextjs",
   "installCommand": "npm install --legacy-peer-deps",
-  "devCommand": "npm run dev",
-  "env": {
-    "NODE_ENV": "production"
-  },
-  "build": {
-    "env": {
-      "NODE_ENV": "production"
-    }
-  },
-  "functions": {
-    "src/app/api/**/*.ts": {
-      "maxDuration": 30
-    }
-  },
-  "rewrites": [
-    {
-      "source": "/((?!api|_next|icons|uploads|favicon.ico|sw.js|manifest.json|.*\\..*).*)",
-      "destination": "/en/$1"
-    }
-  ]
+  "buildCommand": "npx prisma generate && npm run build"
 }
