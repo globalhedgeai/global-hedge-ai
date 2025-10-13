@@ -4,6 +4,7 @@
 # انسخ هذا الملف إلى apps/web/.env
 
 # Database (PostgreSQL)
+# للتطوير المحلي: postgresql://postgres:postgres@localhost:5432/globalehedge
 # للإنتاج: استخدم Supabase أو Railway
 # مثال: postgresql://user:password@host:5432/database
 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/globalehedge"
@@ -29,9 +30,17 @@ NODE_ENV="development"
 # للإنتاج على Vercel:
 # ====================================
 # أضف هذه المتغيرات في Vercel Dashboard:
-# 1. DATABASE_URL (من Supabase)
+# 1. DATABASE_URL (من Supabase أو Railway)
 # 2. SESSION_SECRET (مفتاح قوي جديد)
 # 3. COMPANY_WALLET_ADDRESS (عنوان محفظتك)
 # 4. NEXT_PUBLIC_BASE_URL (رابط موقعك)
 # 5. NODE_ENV=production
+
+# ====================================
+# ملاحظات مهمة:
+# ====================================
+# - تم تحديث النظام لاستخدام PostgreSQL بدلاً من SQLite
+# - Vercel لا يدعم SQLite في الإنتاج
+# - تأكد من إعداد قاعدة بيانات PostgreSQL قبل النشر
+# - استخدم دليل النشر في VERCEL_DEPLOYMENT_GUIDE.md
 

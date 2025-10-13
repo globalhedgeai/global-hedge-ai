@@ -2,7 +2,7 @@
 
 # انسخ هذا المحتوى إلى ملف .env في مجلد apps/web/
 
-DATABASE_URL="postgresql://neondb_owner:npg_1234567890abcdef@ep-cool-darkness-123456.us-east-2.aws.neon.tech/neondb?sslmode=require"
+DATABASE_URL="file:./dev.db"
 NEXT_PUBLIC_BASE_URL="http://localhost:3000"
 SESSION_SECRET="global-hedge-ai-super-secret-key-2024-development"
 COMPANY_WALLET_ADDRESS="TYourCompanyWalletAddressHere"
