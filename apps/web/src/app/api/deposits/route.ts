@@ -129,8 +129,7 @@ export async function POST(req: NextRequest) {
           await prisma.referralStats.upsert({
             where: { userId: user.invitedById },
             update: {
-              invitedCount: { increment: 1 },
-              createdAt: new Date()
+              invitedCount: { increment: 1 }
             },
             create: {
               userId: user.invitedById,

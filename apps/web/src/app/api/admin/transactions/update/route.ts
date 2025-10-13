@@ -47,8 +47,7 @@ export async function PUT(req: NextRequest) {
         data: {
           amount,
           status,
-          createdAt: newDateTime,
-          createdAt: new Date()
+          createdAt: newDateTime
         }
       });
     } catch (error) {
@@ -63,8 +62,7 @@ export async function PUT(req: NextRequest) {
           data: {
             amount,
             status,
-            createdAt: newDateTime,
-            createdAt: new Date()
+            createdAt: newDateTime
           }
         });
         

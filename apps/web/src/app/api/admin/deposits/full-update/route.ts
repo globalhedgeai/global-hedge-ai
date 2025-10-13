@@ -63,7 +63,7 @@ export async function PUT(req: NextRequest) {
       where: { id },
       data: {
         amount,
-        cryptocurrency: cryptocurrency as any,
+        cryptocurrency: cryptocurrency as 'BTC' | 'ETH' | 'USDT_TRC20' | 'USDT_ERC20',
         toAddress: walletAddress,
         txId: txHash || '',
         status,

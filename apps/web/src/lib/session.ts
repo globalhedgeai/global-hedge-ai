@@ -35,7 +35,7 @@ export async function getServerSession(req: NextRequest): Promise<IronSession | 
   try {
     const res = NextResponse.next();
     const session = await getIronSession(req, res, sessionOptions);
-    return session;
+    return session as IronSession;
   } catch (error) {
     console.error('Error getting session:', error);
     return null;

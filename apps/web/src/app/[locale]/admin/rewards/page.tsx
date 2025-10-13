@@ -1,10 +1,29 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 
+interface Reward {
+  id: string;
+  userId: string;
+  amount: number;
+  type: 'DAILY' | 'RANDOM' | 'REFERRAL';
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  createdAt: string;
+  userEmail?: string;
+}
+
+interface Session {
+  user: {
+    id: string;
+    email: string;
+    role: string;
+  };
+  ok?: boolean;
+}
+
 export default function AdminRewardsPage() {
-  const [rewards, setRewards] = useState<any[]>([]);
+  const [rewards, setRewards] = useState<Reward[]>([]);
   const [loading, setLoading] = useState(true);
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
     checkSession();

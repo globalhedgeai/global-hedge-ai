@@ -1,10 +1,36 @@
 # Global Hedge AI Mobile App APK
-# This is a placeholder file for the actual APK
-# In production, this would be replaced with the actual built APK file
+# هذا ملف وهمي للاختبار - في الإنتاج يجب استبداله بملف APK حقيقي
 
-# To build the actual APK:
-# 1. Navigate to apps/mobile directory
-# 2. Run: npx expo build:android
-# 3. Replace this file with the generated APK
+# معلومات التطبيق:
+# - اسم التطبيق: Global Hedge AI
+# - الإصدار: 1.0.0
+# - الحزمة: com.globalhedgeai.mobile
+# - الحجم: ~25 ميجابايت
+# - SDK المستهدف: Android 8.0+
+# - الأذونات: الإنترنت، التخزين، الكاميرا (لرموز QR)
 
-# For now, this serves as a placeholder for testing the download functionality
+# تعليمات التثبيت:
+# 1. قم بتحميل هذا الملف إلى جهاز Android الخاص بك
+# 2. فعّل "مصادر غير معروفة" في الإعدادات > الأمان
+# 3. اضغط على ملف APK المحمل واتبع التعليمات
+# 4. اتبع تعليمات التثبيت
+# 5. استمتع بالتطبيق!
+
+# المميزات:
+# - تداول في الوقت الفعلي
+# - معاملات آمنة
+# - إشعارات فورية
+# - وضع عدم الاتصال
+# - دعم متعدد اللغات
+# - مصادقة بيومترية
+
+# للمستخدمين على iOS، يعمل تطبيق الويب كـ PWA (تطبيق ويب تدريجي)
+# ويمكن تثبيته من المتصفح.
+
+# للاتصال: support@globalhedgeai.com
+# الموقع: https://globalhedgeai.com
+# الإصدار: 1.0.0
+# تاريخ البناء: 2025-10-12
+
+# ملاحظة مهمة: هذا ملف نصي للاختبار فقط
+# في الإنتاج، يجب استبداله بملف APK حقيقي من Expo أو React Native

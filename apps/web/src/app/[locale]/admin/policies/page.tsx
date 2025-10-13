@@ -1,10 +1,30 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 
+interface Policy {
+  id: string;
+  name: string;
+  description: string;
+  value: number;
+  type: 'PERCENTAGE' | 'FIXED';
+  category: 'DEPOSIT' | 'WITHDRAWAL' | 'COMMISSION' | 'FEE';
+  isActive: boolean;
+  createdAt: string;
+}
+
+interface Session {
+  user: {
+    id: string;
+    email: string;
+    role: string;
+  };
+  ok?: boolean;
+}
+
 export default function AdminPoliciesPage() {
-  const [policies, setPolicies] = useState<any[]>([]);
+  const [policies, setPolicies] = useState<Policy[]>([]);
   const [loading, setLoading] = useState(true);
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
     checkSession();

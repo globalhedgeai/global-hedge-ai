@@ -1,11 +1,32 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 
+interface User {
+  id: string;
+  email: string;
+  role: string;
+  balance: number;
+  referralCode: string;
+  walletAddress: string;
+  createdAt?: string;
+  firstDepositAt?: string;
+  lastWithdrawalAt?: string;
+}
+
+interface Session {
+  user: {
+    id: string;
+    email: string;
+    role: string;
+  };
+  ok?: boolean;
+}
+
 export default function AdminFullControlPage() {
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  const [session, setSession] = useState<any>(null);
-  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [showEditForm, setShowEditForm] = useState(false);
   const [editData, setEditData] = useState({
     email: '',
@@ -63,7 +84,7 @@ export default function AdminFullControlPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          id: selectedUser.id,
+          id: selectedUser?.id,
           ...editData
         }),
       });
@@ -84,7 +105,7 @@ export default function AdminFullControlPage() {
     }
   };
 
-  const startEdit = (user: any) => {
+  const startEdit = (user: User) => {
     setSelectedUser(user);
     setEditData({
       email: user.email,
@@ -181,7 +202,7 @@ export default function AdminFullControlPage() {
                     </td>
                     <td className="py-4 px-4">
                       <p className="text-sm text-gray-400">
-                        {new Date(user.createdAt).toLocaleDateString()}
+                        {new Date(user.createdAt || '').toLocaleDateString()}
                       </p>
                     </td>
                     <td className="py-4 px-4">

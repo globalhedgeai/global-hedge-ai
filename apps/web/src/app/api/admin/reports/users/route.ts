@@ -21,7 +21,6 @@ export async function GET(req: NextRequest) {
         email: true,
         balance: true,
         createdAt: true,
-        lastLoginAt: true,
         deposits: {
           where: { status: 'APPROVED' },
           select: { amount: true }
@@ -47,12 +46,11 @@ export async function GET(req: NextRequest) {
       id: user.id,
       email: user.email,
       balance: user.balance,
-      totalDeposits: user.deposits.reduce((sum, deposit) => sum + deposit.amount, 0),
-      totalWithdrawals: user.withdrawals.reduce((sum, withdrawal) => sum + withdrawal.amount, 0),
-      totalRewards: user.claims.reduce((sum, claim) => sum + claim.amount, 0),
+      totalDeposits: Number(user.deposits.reduce((sum, deposit) => sum + Number(deposit.amount), 0)),
+      totalWithdrawals: Number(user.withdrawals.reduce((sum, withdrawal) => sum + Number(withdrawal.amount), 0)),
+      totalRewards: Number(user.claims.reduce((sum, claim) => sum + Number(claim.amount), 0)),
       referralCount: user.invites.length,
-      createdAt: user.createdAt,
-      lastLoginAt: user.lastLoginAt
+      createdAt: user.createdAt
     }));
     
     return NextResponse.json({

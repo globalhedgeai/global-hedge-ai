@@ -1,8 +1,17 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 
+interface Session {
+  user: {
+    id: string;
+    email: string;
+    role: string;
+  };
+  ok?: boolean;
+}
+
 export default function AdminDashboardPage() {
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [loginLoading, setLoginLoading] = useState(false);
 
@@ -119,28 +128,46 @@ export default function AdminDashboardPage() {
 
   const adminSections = [
     {
+      title: 'Transaction Management',
+      description: 'Approve/reject deposits and withdrawals',
+      href: '/en/admin/transactions',
+      color: 'bg-green-500'
+    },
+    {
       title: 'User Management',
       description: 'Manage users and their roles',
       href: '/en/admin/users',
       color: 'bg-blue-500'
     },
     {
+      title: 'Platform Statistics',
+      description: 'View platform metrics and stats',
+      href: '/en/admin/platform-stats',
+      color: 'bg-purple-500'
+    },
+    {
+      title: 'Statistics Management',
+      description: 'Edit platform statistics',
+      href: '/en/admin/stats-management',
+      color: 'bg-pink-500'
+    },
+    {
       title: 'Wallet Management',
       description: 'Manage cryptocurrency wallets',
       href: '/en/admin/wallet',
-      color: 'bg-green-500'
+      color: 'bg-yellow-500'
     },
     {
       title: 'Messages',
       description: 'Handle user messages',
       href: '/en/admin/messages',
-      color: 'bg-yellow-500'
+      color: 'bg-orange-500'
     },
     {
       title: 'Reports',
       description: 'Financial reports and analytics',
       href: '/en/admin/reports',
-      color: 'bg-purple-500'
+      color: 'bg-indigo-500'
     },
     {
       title: 'Full Control',
@@ -152,7 +179,7 @@ export default function AdminDashboardPage() {
       title: 'Performance',
       description: 'Platform performance monitoring',
       href: '/en/admin/performance',
-      color: 'bg-indigo-500'
+      color: 'bg-teal-500'
     }
   ];
 

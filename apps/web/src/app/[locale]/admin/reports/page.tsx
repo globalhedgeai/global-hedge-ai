@@ -1,12 +1,43 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 
+interface Transaction {
+  id: string;
+  type: string;
+  amount: number;
+  status: string;
+  userId: string;
+  createdAt?: string;
+  userEmail?: string;
+}
+
+interface Report {
+  period: string;
+  users: number;
+  transactions: number;
+  totalDeposits?: number;
+  totalWithdrawals?: number;
+  totalRewards?: number;
+  netProfit?: number;
+  userCount?: number;
+  transactionCount?: number;
+}
+
+interface Session {
+  user: {
+    id: string;
+    email: string;
+    role: string;
+  };
+  ok?: boolean;
+}
+
 export default function AdminReportsPage() {
-  const [reports, setReports] = useState<any>(null);
+  const [reports, setReports] = useState<{ reports: Report[] } | null>(null);
   const [loading, setLoading] = useState(true);
-  const [session, setSession] = useState<any>(null);
-  const [transactions, setTransactions] = useState<any[]>([]);
-  const [selectedTransaction, setSelectedTransaction] = useState<any>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   const [showEditForm, setShowEditForm] = useState(false);
   const [editData, setEditData] = useState({
     date: '',
@@ -74,7 +105,7 @@ export default function AdminReportsPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          transactionId: selectedTransaction.id,
+          transactionId: selectedTransaction?.id,
           ...editData
         }),
       });
@@ -95,9 +126,9 @@ export default function AdminReportsPage() {
     }
   };
 
-  const startEdit = (transaction: any) => {
+  const startEdit = (transaction: Transaction) => {
     setSelectedTransaction(transaction);
-    const date = new Date(transaction.createdAt);
+    const date = new Date(transaction.createdAt || '');
     setEditData({
       date: date.toISOString().split('T')[0],
       time: date.toTimeString().split(' ')[0],
@@ -156,7 +187,7 @@ export default function AdminReportsPage() {
             </div>
           </div>
 
-          {reports?.reports?.length > 0 ? (
+          {reports?.reports && reports.reports.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -171,7 +202,7 @@ export default function AdminReportsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {reports.reports.map((report: any, index: number) => (
+                  {reports?.reports?.map((report: any, index: number) => (
                     <tr key={index} className="border-b border-gray-700 hover:bg-gray-700">
                       <td className="py-4 px-4">
                         <p className="text-white font-medium">{report.period}</p>
@@ -250,7 +281,7 @@ export default function AdminReportsPage() {
                           </span>
                         </td>
                         <td className="py-4 px-4">
-                          <p className="text-white font-medium">{transaction.userEmail}</p>
+                          <p className="text-white font-medium">{transaction.userEmail || `User ${transaction.userId}`}</p>
                           <p className="text-sm text-gray-400">ID: {transaction.userId?.slice(-8)}</p>
                         </td>
                         <td className="py-4 px-4">
@@ -271,10 +302,10 @@ export default function AdminReportsPage() {
                         </td>
                         <td className="py-4 px-4">
                           <p className="text-sm text-gray-400">
-                            {new Date(transaction.createdAt).toLocaleDateString()}
+                            {new Date(transaction.createdAt || '').toLocaleDateString()}
                           </p>
                           <p className="text-xs text-gray-500">
-                            {new Date(transaction.createdAt).toLocaleTimeString()}
+                            {new Date(transaction.createdAt || '').toLocaleTimeString()}
                           </p>
                         </td>
                         <td className="py-4 px-4">

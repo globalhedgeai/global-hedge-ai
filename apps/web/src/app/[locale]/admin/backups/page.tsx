@@ -1,10 +1,27 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 
+interface Backup {
+  id: string;
+  filename: string;
+  size: number;
+  createdAt: string;
+  type: 'FULL' | 'INCREMENTAL';
+}
+
+interface Session {
+  user: {
+    id: string;
+    email: string;
+    role: string;
+  };
+  ok?: boolean;
+}
+
 export default function AdminBackupsPage() {
-  const [backups, setBackups] = useState<any[]>([]);
+  const [backups, setBackups] = useState<Backup[]>([]);
   const [loading, setLoading] = useState(true);
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
     checkSession();

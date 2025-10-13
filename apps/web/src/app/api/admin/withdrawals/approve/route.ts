@@ -85,8 +85,7 @@ export async function PUT(req: NextRequest) {
         data: {
           balance: {
             decrement: withdrawal.amount
-          },
-          reviewedAt: new Date()
+          }
         }
       });
     });

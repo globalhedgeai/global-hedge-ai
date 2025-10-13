@@ -1,11 +1,30 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 
+interface User {
+  id: string;
+  email: string;
+  role: string;
+  balance: number;
+  referralCode: string;
+  walletAddress: string;
+  createdAt: string;
+}
+
+interface Session {
+  user: {
+    id: string;
+    email: string;
+    role: string;
+  };
+  ok?: boolean;
+}
+
 export default function AdminRolesPage() {
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  const [session, setSession] = useState<any>(null);
-  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [showRoleForm, setShowRoleForm] = useState(false);
   const [newRole, setNewRole] = useState('USER');
 
@@ -54,7 +73,7 @@ export default function AdminRolesPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: selectedUser.id,
+          userId: selectedUser?.id || '',
           role: newRole
         }),
       });
@@ -75,7 +94,7 @@ export default function AdminRolesPage() {
     }
   };
 
-  const startRoleChange = (user: any) => {
+  const startRoleChange = (user: User) => {
     setSelectedUser(user);
     setNewRole(user.role);
     setShowRoleForm(true);

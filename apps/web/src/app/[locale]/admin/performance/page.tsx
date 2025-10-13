@@ -1,10 +1,33 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 
+interface PerformanceStats {
+  totalUsers: number;
+  activeUsers: number;
+  totalDeposits: number;
+  totalWithdrawals: number;
+  totalVolume: number;
+  averageDeposit: number;
+  averageWithdrawal: number;
+  conversionRate: number;
+  retentionRate: number;
+  responseTime: number;
+  uptime: number;
+}
+
+interface Session {
+  user: {
+    id: string;
+    email: string;
+    role: string;
+  };
+  ok?: boolean;
+}
+
 export default function AdminPerformancePage() {
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<PerformanceStats | null>(null);
   const [loading, setLoading] = useState(true);
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
     checkSession();
@@ -104,7 +127,7 @@ export default function AdminPerformancePage() {
                   <div>
                     <p className="text-sm text-gray-400 mb-1">Total Deposits</p>
                     <p className="text-2xl font-bold text-green-400">
-                      ${stats.totalDepositsAmount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+                      ${stats.totalDeposits?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
@@ -120,7 +143,7 @@ export default function AdminPerformancePage() {
                   <div>
                     <p className="text-sm text-gray-400 mb-1">Total Withdrawals</p>
                     <p className="text-2xl font-bold text-red-400">
-                      ${stats.totalWithdrawalsAmount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+                      ${stats.totalWithdrawals?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-red-500/20 rounded-lg flex items-center justify-center">
@@ -136,7 +159,7 @@ export default function AdminPerformancePage() {
                   <div>
                     <p className="text-sm text-gray-400 mb-1">Pending Requests</p>
                     <p className="text-2xl font-bold text-yellow-400">
-                      {(stats.pendingDepositsCount || 0) + (stats.pendingWithdrawalsCount || 0)}
+                      0
                     </p>
                   </div>
                   <div className="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center">

@@ -1,12 +1,29 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 
+interface WalletAddress {
+  id: string;
+  cryptocurrency: string;
+  address: string;
+  network: string;
+  createdAt: string;
+}
+
+interface Session {
+  user: {
+    id: string;
+    email: string;
+    role: string;
+  };
+  ok?: boolean;
+}
+
 export default function AdminWalletPage() {
-  const [walletAddresses, setWalletAddresses] = useState<any[]>([]);
+  const [walletAddresses, setWalletAddresses] = useState<WalletAddress[]>([]);
   const [loading, setLoading] = useState(true);
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [editingAddress, setEditingAddress] = useState<any>(null);
+  const [editingAddress, setEditingAddress] = useState<WalletAddress | null>(null);
   const [formData, setFormData] = useState({
     cryptocurrency: 'USDT_TRC20',
     address: '',
@@ -85,7 +102,7 @@ export default function AdminWalletPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          id: editingAddress.id,
+          id: editingAddress?.id || '',
           ...formData
         }),
       });
@@ -132,7 +149,7 @@ export default function AdminWalletPage() {
     }
   };
 
-  const startEdit = (address: any) => {
+  const startEdit = (address: WalletAddress) => {
     setEditingAddress(address);
     setFormData({
       cryptocurrency: address.cryptocurrency,

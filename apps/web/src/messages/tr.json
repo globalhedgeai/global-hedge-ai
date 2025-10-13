@@ -345,6 +345,18 @@
     "description": "Hızlı erişim için telefon uygulamasını indirin",
     "download": "Uygulamayı İndir"
   },
+  "download": {
+    "title": "Global Hedge AI İndir",
+    "subtitle": "En iyi ticaret deneyimi için mobil uygulamayı alın",
+    "description": "Gelişmiş ticaret özelliklerine, gerçek zamanlı bildirimlere ve güvenli işlemlere erişmek için mobil uygulamamızı indirin.",
+    "features": {
+      "title": "Uygulama Özellikleri",
+      "trading": "Gelişmiş Ticaret",
+      "notifications": "Gerçek Zamanlı Uyarılar",
+      "security": "Banka Düzeyinde Güvenlik",
+      "offline": "Çevrimdışı Erişim"
+    }
+  },
   "app": {
     "name": "Global Hedge AI"
   },

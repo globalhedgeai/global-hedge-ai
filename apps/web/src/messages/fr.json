@@ -345,6 +345,18 @@
     "description": "Téléchargez l'application mobile pour un accès rapide",
     "download": "Télécharger l'app"
   },
+  "download": {
+    "title": "Télécharger Global Hedge AI",
+    "subtitle": "Obtenez l'application mobile pour la meilleure expérience de trading",
+    "description": "Téléchargez notre application mobile pour accéder aux fonctionnalités de trading avancées, aux notifications en temps réel et aux transactions sécurisées en déplacement.",
+    "features": {
+      "title": "Fonctionnalités de l'App",
+      "trading": "Trading Avancé",
+      "notifications": "Alertes en Temps Réel",
+      "security": "Sécurité de Niveau Bancaire",
+      "offline": "Accès Hors Ligne"
+    }
+  },
   "app": {
     "name": "Global Hedge AI"
   },

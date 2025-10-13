@@ -49,7 +49,7 @@ export default function CryptoPairsList({
       
       if (data.ok && data.prices) {
         const updatedPairs = CRYPTO_PAIRS.map(pair => {
-          const priceData = data.prices.find((p: any) => p.symbol === pair.symbol);
+          const priceData = data.prices.find((p: { symbol: string; price: number; change24h: number; change24hPercent: number }) => p.symbol === pair.symbol);
           if (priceData) {
             return {
               ...pair,

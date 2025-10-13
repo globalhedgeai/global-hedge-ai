@@ -92,7 +92,7 @@ export async function POST(req: NextRequest) {
       message: 'Wallet address added successfully',
       wallet: {
         id: Date.now().toString(),
-        cryptocurrency: cryptocurrency as any,
+        cryptocurrency: cryptocurrency as 'BTC' | 'ETH' | 'USDT' | 'LTC' | 'ADA' | 'DOT' | 'LINK' | 'UNI' | 'AAVE' | 'COMP',
         address,
         network: 'TRC20',
         isActive: true,
@@ -141,7 +141,7 @@ export async function PUT(req: NextRequest) {
       message: 'Wallet address updated successfully',
       wallet: {
         id,
-        cryptocurrency: cryptocurrency as any,
+        cryptocurrency: cryptocurrency as 'BTC' | 'ETH' | 'USDT' | 'LTC' | 'ADA' | 'DOT' | 'LINK' | 'UNI' | 'AAVE' | 'COMP',
         address,
         network: 'TRC20',
         isActive: isActive !== undefined ? isActive : true,

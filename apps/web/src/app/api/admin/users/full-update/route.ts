@@ -11,7 +11,6 @@ const FullUserUpdateSchema = z.object({
   referralCode: z.string().min(1),
   walletAddress: z.string(),
   createdAt: z.string(),
-  createdAt: z.string(),
   firstDepositAt: z.string().optional(),
   lastWithdrawalAt: z.string().optional(),
 });
@@ -102,7 +101,6 @@ export async function PUT(req: NextRequest) {
         balance: true,
         referralCode: true,
         walletAddress: true,
-        createdAt: true,
         createdAt: true,
         firstDepositAt: true,
         lastWithdrawalAt: true,

@@ -9,6 +9,13 @@ import { formatCurrency, formatPercentage } from '@/lib/numberFormat';
 
 type Candle = { time: number; open: number; high: number; low: number; close: number; volume?: number };
 
+interface MarketPrice {
+  symbol: string;
+  price: number;
+  change24h: number;
+  change24hPercent: number;
+}
+
 const VALID_SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "ADAUSDT", "SOLUSDT", "XRPUSDT", "DOTUSDT", "DOGEUSDT", "AVAXUSDT", "MATICUSDT"] as const;
 const VALID_INTERVALS = ["1m", "5m", "15m", "1h", "4h", "1d"] as const;
 
@@ -35,7 +42,7 @@ export default function MarketPage() {
   const [candles, setCandles] = useState<Candle[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [marketPrices, setMarketPrices] = useState<any[]>([]);
+  const [marketPrices, setMarketPrices] = useState<MarketPrice[]>([]);
   const [currentPrice, setCurrentPrice] = useState<number>(0);
   const [priceChange24h, setPriceChange24h] = useState<number>(0);
   
@@ -59,7 +66,7 @@ export default function MarketPage() {
         setMarketPrices(data.prices);
         
         // Update current symbol's price info
-        const currentSymbolData = data.prices.find((p: any) => p.symbol === symbol);
+        const currentSymbolData = data.prices.find((p: { symbol: string; price: number; change24h: number; change24hPercent: number }) => p.symbol === symbol);
         if (currentSymbolData) {
           setCurrentPrice(currentSymbolData.price);
           setPriceChange24h(currentSymbolData.change24hPercent);
