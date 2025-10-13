@@ -18,7 +18,8 @@
     "db:test": "node scripts/test-production-db.js",
     "db:migrate": "prisma migrate deploy",
     "db:generate": "prisma generate",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "auth:test": "node scripts/test-authentication.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.895.0",
