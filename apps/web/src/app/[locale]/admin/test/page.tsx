@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 interface Session {
   user: {
@@ -102,24 +103,24 @@ export default function AdminTestPage() {
         <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
           <h2 className="text-xl font-semibold text-white mb-4">Admin Links</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <a href="/en/admin" className="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors text-center">
+            <Link href="/en/admin" className="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors text-center">
               Admin Dashboard
-            </a>
-            <a href="/en/admin/users" className="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors text-center">
+            </Link>
+            <Link href="/en/admin/users" className="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors text-center">
               Users Management
-            </a>
-            <a href="/en/admin/wallet" className="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors text-center">
+            </Link>
+            <Link href="/en/admin/wallet" className="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors text-center">
               Wallet Management
-            </a>
-            <a href="/en/admin/messages" className="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors text-center">
+            </Link>
+            <Link href="/en/admin/messages" className="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors text-center">
               Messages
-            </a>
-            <a href="/en/admin/reports" className="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors text-center">
+            </Link>
+            <Link href="/en/admin/reports" className="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors text-center">
               Reports
-            </a>
-            <a href="/en/admin/full-control" className="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors text-center">
+            </Link>
+            <Link href="/en/admin/full-control" className="bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors text-center">
               Full Control
-            </a>
+            </Link>
           </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 interface WalletAddress {
   id: string;
@@ -175,9 +176,9 @@ export default function AdminWalletPage() {
         <div className="text-center">
           <h2 className="text-2xl font-bold text-white mb-4">Access Denied</h2>
           <p className="text-gray-300">You need admin privileges to access this page.</p>
-          <a href="/en/admin" className="inline-block bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors mt-4">
+          <Link href="/en/admin" className="inline-block bg-yellow-500 text-black px-4 py-2 rounded-md hover:bg-yellow-400 transition-colors mt-4">
             Go to Admin Dashboard
-          </a>
+          </Link>
         </div>
       </div>
     );
@@ -201,9 +202,9 @@ export default function AdminWalletPage() {
               >
                 Add Wallet Address
               </button>
-              <a href="/en/admin" className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-500 transition-colors">
-                Back to Dashboard
-              </a>
+            <Link href="/en/admin" className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-500 transition-colors">
+              Back to Dashboard
+            </Link>
             </div>
           </div>
 
