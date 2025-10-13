@@ -1,4 +1,4 @@
-// Login Screen for Global Hedge AI Mobile App
+// Login Screen for Global Hedge AI Mobile App - Enhanced Design
 
 import React, { useState } from 'react';
 import {
@@ -12,12 +12,15 @@ import {
   Platform,
   ScrollView,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from '../hooks/useTranslation';
 import { LoginCredentials } from '../types';
 import { ApiService } from '../services/api';
 import { COLORS, SPACING, BORDER_RADIUS, VALIDATION_RULES } from '../constants';
+
+const { width, height } = Dimensions.get('window');
 
 interface LoginScreenProps {
   onLoginSuccess: (user: any) => void;
@@ -88,44 +91,54 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess, onNavigateToR
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          {/* Header */}
+          {/* Enhanced Header */}
           <View style={styles.header}>
             <View style={styles.logoContainer}>
-              <Text style={styles.logoText}>G</Text>
+              <Text style={styles.logoText}>GH</Text>
             </View>
             <Text style={styles.title}>{t('app.name')}</Text>
             <Text style={styles.subtitle}>{t('app.tagline')}</Text>
           </View>
 
-          {/* Login Form */}
+          {/* Enhanced Login Form */}
           <View style={styles.form}>
             <View style={styles.inputContainer}>
               <Text style={styles.inputLabel}>{t('auth.email')}</Text>
-              <TextInput
-                style={[styles.input, errors.email && styles.inputError]}
-                placeholder={t('auth.emailPlaceholder')}
-                placeholderTextColor={COLORS.textSecondary}
-                value={credentials.email}
-                onChangeText={(value) => updateField('email', value)}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoCorrect={false}
-              />
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  style={[styles.input, errors.email && styles.inputError]}
+                  placeholder={t('auth.emailPlaceholder')}
+                  placeholderTextColor={COLORS.textSecondary}
+                  value={credentials.email}
+                  onChangeText={(value) => updateField('email', value)}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+                <View style={styles.inputIcon}>
+                  <Text style={styles.iconText}>📧</Text>
+                </View>
+              </View>
               {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
             </View>
 
             <View style={styles.inputContainer}>
               <Text style={styles.inputLabel}>{t('auth.password')}</Text>
-              <TextInput
-                style={[styles.input, errors.password && styles.inputError]}
-                placeholder={t('auth.passwordPlaceholder')}
-                placeholderTextColor={COLORS.textSecondary}
-                value={credentials.password}
-                onChangeText={(value) => updateField('password', value)}
-                secureTextEntry
-                autoCapitalize="none"
-                autoCorrect={false}
-              />
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  style={[styles.input, errors.password && styles.inputError]}
+                  placeholder={t('auth.passwordPlaceholder')}
+                  placeholderTextColor={COLORS.textSecondary}
+                  value={credentials.password}
+                  onChangeText={(value) => updateField('password', value)}
+                  secureTextEntry
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+                <View style={styles.inputIcon}>
+                  <Text style={styles.iconText}>🔒</Text>
+                </View>
+              </View>
               {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
             </View>
 
@@ -135,9 +148,12 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess, onNavigateToR
               disabled={isLoading}
             >
               {isLoading ? (
-                <ActivityIndicator color={COLORS.background} />
+                <ActivityIndicator color={COLORS.background} size="small" />
               ) : (
-                <Text style={styles.loginButtonText}>{t('auth.login')}</Text>
+                <View style={styles.loginButtonContent}>
+                  <Text style={styles.loginButtonText}>{t('auth.login')}</Text>
+                  <Text style={styles.loginButtonIcon}>→</Text>
+                </View>
               )}
             </TouchableOpacity>
 
@@ -146,12 +162,18 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess, onNavigateToR
             </TouchableOpacity>
           </View>
 
-          {/* Register Link */}
+          {/* Enhanced Register Link */}
           <View style={styles.registerContainer}>
             <Text style={styles.registerText}>ليس لديك حساب؟ </Text>
             <TouchableOpacity onPress={onNavigateToRegister}>
               <Text style={styles.registerLink}>{t('auth.register')}</Text>
             </TouchableOpacity>
+          </View>
+
+          {/* Security Notice */}
+          <View style={styles.securityNotice}>
+            <Text style={styles.securityIcon}>🛡️</Text>
+            <Text style={styles.securityText}>بياناتك محمية بأعلى معايير الأمان</Text>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -170,36 +192,44 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     paddingHorizontal: SPACING.lg,
+    paddingBottom: SPACING.xl,
   },
   header: {
     alignItems: 'center',
-    marginTop: SPACING.xxl,
+    marginTop: height * 0.08,
     marginBottom: SPACING.xxl,
   },
   logoContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: BORDER_RADIUS.round,
+    width: 100,
+    height: 100,
+    borderRadius: BORDER_RADIUS.xl,
     backgroundColor: COLORS.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: SPACING.md,
+    marginBottom: SPACING.lg,
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
   logoText: {
-    fontSize: 32,
+    fontSize: 36,
     fontWeight: 'bold',
     color: COLORS.background,
   },
   title: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
     color: COLORS.text,
     marginBottom: SPACING.sm,
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
     color: COLORS.textSecondary,
     textAlign: 'center',
+    lineHeight: 22,
   },
   form: {
     marginBottom: SPACING.xl,
@@ -213,52 +243,93 @@ const styles = StyleSheet.create({
     color: COLORS.text,
     marginBottom: SPACING.sm,
   },
+  inputWrapper: {
+    position: 'relative',
+  },
   input: {
     backgroundColor: COLORS.surface,
     borderWidth: 1,
     borderColor: COLORS.border,
-    borderRadius: BORDER_RADIUS.md,
-    paddingHorizontal: SPACING.md,
-    paddingVertical: SPACING.md,
+    borderRadius: BORDER_RADIUS.lg,
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.lg,
+    paddingRight: 50,
     fontSize: 16,
     color: COLORS.text,
+    minHeight: 56,
+  },
+  inputIcon: {
+    position: 'absolute',
+    right: SPACING.md,
+    top: '50%',
+    transform: [{ translateY: -12 }],
+  },
+  iconText: {
+    fontSize: 20,
+    color: COLORS.textSecondary,
   },
   inputError: {
     borderColor: COLORS.error,
+    borderWidth: 2,
   },
   errorText: {
     color: COLORS.error,
     fontSize: 14,
     marginTop: SPACING.xs,
+    marginLeft: SPACING.xs,
   },
   loginButton: {
     backgroundColor: COLORS.primary,
-    borderRadius: BORDER_RADIUS.md,
-    paddingVertical: SPACING.md,
+    borderRadius: BORDER_RADIUS.lg,
+    paddingVertical: SPACING.lg,
     alignItems: 'center',
-    marginTop: SPACING.lg,
+    marginTop: SPACING.xl,
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
   },
   loginButtonDisabled: {
     opacity: 0.6,
+    shadowOpacity: 0,
+    elevation: 0,
+  },
+  loginButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   loginButtonText: {
+    color: COLORS.background,
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginRight: SPACING.sm,
+  },
+  loginButtonIcon: {
     color: COLORS.background,
     fontSize: 18,
     fontWeight: 'bold',
   },
   forgotPassword: {
     alignItems: 'center',
-    marginTop: SPACING.md,
+    marginTop: SPACING.lg,
   },
   forgotPasswordText: {
     color: COLORS.primary,
     fontSize: 16,
+    fontWeight: '500',
   },
   registerContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: SPACING.xl,
+    backgroundColor: COLORS.surface,
+    paddingVertical: SPACING.lg,
+    paddingHorizontal: SPACING.lg,
+    borderRadius: BORDER_RADIUS.lg,
+    borderWidth: 1,
+    borderColor: COLORS.border,
   },
   registerText: {
     color: COLORS.textSecondary,
@@ -268,6 +339,28 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
     fontSize: 16,
     fontWeight: 'bold',
+    marginLeft: 4,
+  },
+  securityNotice: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: SPACING.xl,
+    backgroundColor: COLORS.surface,
+    paddingVertical: SPACING.md,
+    paddingHorizontal: SPACING.lg,
+    borderRadius: BORDER_RADIUS.md,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
+  securityIcon: {
+    fontSize: 16,
+    marginRight: SPACING.sm,
+  },
+  securityText: {
+    color: COLORS.textSecondary,
+    fontSize: 14,
+    fontWeight: '500',
   },
 });
 

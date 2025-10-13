@@ -1,4 +1,4 @@
-// Home Screen for Global Hedge AI Mobile App
+// Home Screen for Global Hedge AI Mobile App - Enhanced Design
 
 import React, { useState, useEffect } from 'react';
 import {
@@ -9,12 +9,15 @@ import {
   TouchableOpacity,
   RefreshControl,
   Alert,
+  Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { User, DailyReward, RandomReward } from '../types';
 import { COLORS, SPACING, BORDER_RADIUS } from '../constants';
 import ApiService from '../services/api';
 import { useTranslation } from '../hooks/useTranslation';
+
+const { width } = Dimensions.get('window');
 
 interface HomeScreenProps {
   user: User;
@@ -112,98 +115,149 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
       <ScrollView
         style={styles.scrollView}
         refreshControl={
-          <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
+          <RefreshControl 
+            refreshing={isRefreshing} 
+            onRefresh={handleRefresh}
+            tintColor={COLORS.primary}
+            colors={[COLORS.primary]}
+          />
         }
+        showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
+        {/* Enhanced Header */}
         <View style={styles.header}>
-          <View>
+          <View style={styles.headerContent}>
             <Text style={styles.greeting}>مرحباً،</Text>
             <Text style={styles.userName}>{user.email}</Text>
+            <View style={styles.statusIndicator}>
+              <View style={styles.statusDot} />
+              <Text style={styles.statusText}>متصل</Text>
+            </View>
           </View>
           <TouchableOpacity style={styles.profileButton} onPress={onNavigateToSettings}>
             <Text style={styles.profileIcon}>⚙️</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Balance Card */}
+        {/* Enhanced Balance Card */}
         <View style={styles.balanceCard}>
-          <Text style={styles.balanceLabel}>{t('home.currentBalance')}</Text>
-          <Text style={styles.balanceAmount}>{user.balance.toFixed(2)} USDT</Text>
+          <View style={styles.balanceHeader}>
+            <Text style={styles.balanceLabel}>{t('home.currentBalance')}</Text>
+            <TouchableOpacity style={styles.refreshButton}>
+              <Text style={styles.refreshIcon}>🔄</Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.balanceAmount}>{user.balance.toFixed(2)}</Text>
+          <Text style={styles.balanceCurrency}>USDT</Text>
           <Text style={styles.balanceSubtext}>{t('home.balanceAvailable')}</Text>
+          
+          {/* Balance Actions */}
+          <View style={styles.balanceActions}>
+            <TouchableOpacity style={styles.balanceActionButton} onPress={onNavigateToDeposit}>
+              <Text style={styles.balanceActionIcon}>📈</Text>
+              <Text style={styles.balanceActionText}>إيداع</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.balanceActionButton} onPress={onNavigateToWithdraw}>
+              <Text style={styles.balanceActionIcon}>📉</Text>
+              <Text style={styles.balanceActionText}>سحب</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
-        {/* Quick Actions */}
+        {/* Enhanced Quick Actions */}
         <View style={styles.quickActions}>
           <Text style={styles.sectionTitle}>{t('home.quickActions')}</Text>
           <View style={styles.actionsGrid}>
             <TouchableOpacity style={styles.actionButton} onPress={onNavigateToDeposit}>
-              <Text style={styles.actionIcon}>💰</Text>
+              <View style={styles.actionIconContainer}>
+                <Text style={styles.actionIcon}>💰</Text>
+              </View>
               <Text style={styles.actionText}>{t('home.deposit')}</Text>
             </TouchableOpacity>
             
             <TouchableOpacity style={styles.actionButton} onPress={onNavigateToWithdraw}>
-              <Text style={styles.actionIcon}>💸</Text>
+              <View style={styles.actionIconContainer}>
+                <Text style={styles.actionIcon}>💸</Text>
+              </View>
               <Text style={styles.actionText}>{t('home.withdraw')}</Text>
             </TouchableOpacity>
             
             <TouchableOpacity style={styles.actionButton} onPress={onNavigateToTransactions}>
-              <Text style={styles.actionIcon}>📊</Text>
+              <View style={styles.actionIconContainer}>
+                <Text style={styles.actionIcon}>📊</Text>
+              </View>
               <Text style={styles.actionText}>{t('home.transactions')}</Text>
             </TouchableOpacity>
             
             <TouchableOpacity style={styles.actionButton} onPress={onNavigateToMessages}>
-              <Text style={styles.actionIcon}>💬</Text>
+              <View style={styles.actionIconContainer}>
+                <Text style={styles.actionIcon}>💬</Text>
+              </View>
               <Text style={styles.actionText}>{t('home.messages')}</Text>
             </TouchableOpacity>
             
             <TouchableOpacity style={styles.actionButton} onPress={onNavigateToMarket}>
-              <Text style={styles.actionIcon}>📈</Text>
+              <View style={styles.actionIconContainer}>
+                <Text style={styles.actionIcon}>📈</Text>
+              </View>
               <Text style={styles.actionText}>{t('home.market')}</Text>
             </TouchableOpacity>
             
             <TouchableOpacity style={styles.actionButton} onPress={onNavigateToReferrals}>
-              <Text style={styles.actionIcon}>👥</Text>
+              <View style={styles.actionIconContainer}>
+                <Text style={styles.actionIcon}>👥</Text>
+              </View>
               <Text style={styles.actionText}>{t('home.referrals')}</Text>
             </TouchableOpacity>
             
             <TouchableOpacity style={styles.actionButton} onPress={onNavigateToAccount}>
-              <Text style={styles.actionIcon}>👤</Text>
+              <View style={styles.actionIconContainer}>
+                <Text style={styles.actionIcon}>👤</Text>
+              </View>
               <Text style={styles.actionText}>{t('home.account')}</Text>
             </TouchableOpacity>
             
             <TouchableOpacity style={styles.actionButton} onPress={onNavigateToReports}>
-              <Text style={styles.actionIcon}>📋</Text>
+              <View style={styles.actionIconContainer}>
+                <Text style={styles.actionIcon}>📋</Text>
+              </View>
               <Text style={styles.actionText}>{t('home.reports')}</Text>
             </TouchableOpacity>
             
             <TouchableOpacity style={styles.actionButton} onPress={onNavigateToInfo}>
-              <Text style={styles.actionIcon}>ℹ️</Text>
+              <View style={styles.actionIconContainer}>
+                <Text style={styles.actionIcon}>ℹ️</Text>
+              </View>
               <Text style={styles.actionText}>{t('home.info')}</Text>
             </TouchableOpacity>
             
             {user.role === 'ADMIN' && (
               <TouchableOpacity style={styles.actionButton} onPress={onNavigateToAdmin}>
-                <Text style={styles.actionIcon}>👑</Text>
+                <View style={styles.actionIconContainer}>
+                  <Text style={styles.actionIcon}>👑</Text>
+                </View>
                 <Text style={styles.actionText}>{t('home.admin')}</Text>
               </TouchableOpacity>
             )}
           </View>
         </View>
 
-        {/* Rewards Section */}
+        {/* Enhanced Rewards Section */}
         <View style={styles.rewardsSection}>
           <Text style={styles.sectionTitle}>{t('home.rewards')}</Text>
           
           {/* Daily Reward */}
           <View style={styles.rewardCard}>
             <View style={styles.rewardHeader}>
-              <Text style={styles.rewardTitle}>المكافأة اليومية</Text>
-              <Text style={styles.rewardAmount}>+{dailyReward?.amount || 0} USDT</Text>
+              <View style={styles.rewardTitleContainer}>
+                <Text style={styles.rewardTitle}>المكافأة اليومية</Text>
+                <Text style={styles.rewardSubtitle}>مكافأة يومية مجانية</Text>
+              </View>
+              <View style={styles.rewardAmountContainer}>
+                <Text style={styles.rewardAmount}>+{dailyReward?.amount || 0}</Text>
+                <Text style={styles.rewardCurrency}>USDT</Text>
+              </View>
             </View>
-            <Text style={styles.rewardDescription}>
-              احصل على مكافأة يومية مجانية
-            </Text>
             <TouchableOpacity
               style={[
                 styles.claimButton,
@@ -224,12 +278,15 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
           {/* Random Reward */}
           <View style={styles.rewardCard}>
             <View style={styles.rewardHeader}>
-              <Text style={styles.rewardTitle}>المكافأة العشوائية</Text>
-              <Text style={styles.rewardAmount}>+{randomReward?.amount || 0} USDT</Text>
+              <View style={styles.rewardTitleContainer}>
+                <Text style={styles.rewardTitle}>المكافأة العشوائية</Text>
+                <Text style={styles.rewardSubtitle}>مكافأة عشوائية تصل إلى 2 USDT</Text>
+              </View>
+              <View style={styles.rewardAmountContainer}>
+                <Text style={styles.rewardAmount}>+{randomReward?.amount || 0}</Text>
+                <Text style={styles.rewardCurrency}>USDT</Text>
+              </View>
             </View>
-            <Text style={styles.rewardDescription}>
-              مكافأة عشوائية تصل إلى 2 USDT
-            </Text>
             <TouchableOpacity
               style={[
                 styles.claimButton,
@@ -248,14 +305,22 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
           </View>
         </View>
 
-        {/* Referral Section */}
+        {/* Enhanced Referral Section */}
         <View style={styles.referralSection}>
           <Text style={styles.sectionTitle}>كود الدعوة</Text>
           <View style={styles.referralCard}>
-            <Text style={styles.referralCode}>{user.referralCode}</Text>
+            <View style={styles.referralCodeContainer}>
+              <Text style={styles.referralCode}>{user.referralCode}</Text>
+              <TouchableOpacity style={styles.copyButton}>
+                <Text style={styles.copyIcon}>📋</Text>
+              </TouchableOpacity>
+            </View>
             <Text style={styles.referralDescription}>
               شارك كود الدعوة مع أصدقائك واحصل على مكافآت إضافية
             </Text>
+            <TouchableOpacity style={styles.shareButton}>
+              <Text style={styles.shareButtonText}>مشاركة الكود</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
@@ -276,61 +341,149 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: SPACING.lg,
-    paddingVertical: SPACING.md,
+    paddingVertical: SPACING.lg,
+    backgroundColor: COLORS.surface,
+    marginHorizontal: SPACING.lg,
+    marginTop: SPACING.md,
+    borderRadius: BORDER_RADIUS.lg,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
+  headerContent: {
+    flex: 1,
   },
   greeting: {
-    fontSize: 16,
+    fontSize: 14,
     color: COLORS.textSecondary,
+    marginBottom: 2,
   },
   userName: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: COLORS.text,
+    marginBottom: 4,
+  },
+  statusIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  statusDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: COLORS.success,
+    marginRight: 6,
+  },
+  statusText: {
+    fontSize: 12,
+    color: COLORS.success,
+    fontWeight: '500',
   },
   profileButton: {
-    width: 40,
-    height: 40,
+    width: 44,
+    height: 44,
     borderRadius: BORDER_RADIUS.round,
-    backgroundColor: COLORS.surface,
+    backgroundColor: COLORS.primary,
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4,
   },
   profileIcon: {
     fontSize: 20,
+    color: COLORS.background,
   },
   balanceCard: {
     backgroundColor: COLORS.primary,
     marginHorizontal: SPACING.lg,
     marginBottom: SPACING.lg,
-    padding: SPACING.lg,
-    borderRadius: BORDER_RADIUS.lg,
+    padding: SPACING.xl,
+    borderRadius: BORDER_RADIUS.xl,
     alignItems: 'center',
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  balanceHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: SPACING.md,
   },
   balanceLabel: {
     fontSize: 14,
     color: COLORS.background,
-    opacity: 0.8,
+    opacity: 0.9,
+    fontWeight: '500',
+  },
+  refreshButton: {
+    width: 32,
+    height: 32,
+    borderRadius: BORDER_RADIUS.round,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  refreshIcon: {
+    fontSize: 16,
+    color: COLORS.background,
   },
   balanceAmount: {
-    fontSize: 32,
+    fontSize: 36,
     fontWeight: 'bold',
     color: COLORS.background,
-    marginVertical: SPACING.sm,
+    marginBottom: 4,
+  },
+  balanceCurrency: {
+    fontSize: 16,
+    color: COLORS.background,
+    opacity: 0.9,
+    fontWeight: '600',
+    marginBottom: SPACING.sm,
   },
   balanceSubtext: {
     fontSize: 12,
     color: COLORS.background,
     opacity: 0.8,
+    marginBottom: SPACING.lg,
+  },
+  balanceActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+  },
+  balanceActionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.sm,
+    borderRadius: BORDER_RADIUS.md,
+  },
+  balanceActionIcon: {
+    fontSize: 16,
+    marginRight: 6,
+  },
+  balanceActionText: {
+    fontSize: 14,
+    color: COLORS.background,
+    fontWeight: '600',
   },
   quickActions: {
     paddingHorizontal: SPACING.lg,
     marginBottom: SPACING.lg,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     color: COLORS.text,
-    marginBottom: SPACING.md,
+    marginBottom: SPACING.lg,
   },
   actionsGrid: {
     flexDirection: 'row',
@@ -338,21 +491,38 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   actionButton: {
-    width: '48%',
+    width: (width - SPACING.lg * 2 - SPACING.md) / 2,
     backgroundColor: COLORS.surface,
     padding: SPACING.lg,
-    borderRadius: BORDER_RADIUS.md,
+    borderRadius: BORDER_RADIUS.lg,
     alignItems: 'center',
     marginBottom: SPACING.md,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  actionIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: BORDER_RADIUS.round,
+    backgroundColor: COLORS.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: SPACING.sm,
   },
   actionIcon: {
     fontSize: 24,
-    marginBottom: SPACING.sm,
+    color: COLORS.background,
   },
   actionText: {
     fontSize: 14,
     fontWeight: '600',
     color: COLORS.text,
+    textAlign: 'center',
   },
   rewardsSection: {
     paddingHorizontal: SPACING.lg,
@@ -361,43 +531,69 @@ const styles = StyleSheet.create({
   rewardCard: {
     backgroundColor: COLORS.surface,
     padding: SPACING.lg,
-    borderRadius: BORDER_RADIUS.md,
+    borderRadius: BORDER_RADIUS.lg,
     marginBottom: SPACING.md,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   rewardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: SPACING.sm,
+    marginBottom: SPACING.md,
+  },
+  rewardTitleContainer: {
+    flex: 1,
   },
   rewardTitle: {
     fontSize: 16,
     fontWeight: 'bold',
     color: COLORS.text,
+    marginBottom: 2,
+  },
+  rewardSubtitle: {
+    fontSize: 12,
+    color: COLORS.textSecondary,
+  },
+  rewardAmountContainer: {
+    alignItems: 'flex-end',
   },
   rewardAmount: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     color: COLORS.success,
   },
-  rewardDescription: {
-    fontSize: 14,
-    color: COLORS.textSecondary,
-    marginBottom: SPACING.md,
+  rewardCurrency: {
+    fontSize: 12,
+    color: COLORS.success,
+    fontWeight: '600',
   },
   claimButton: {
     backgroundColor: COLORS.primary,
-    paddingVertical: SPACING.sm,
-    paddingHorizontal: SPACING.md,
-    borderRadius: BORDER_RADIUS.sm,
+    paddingVertical: SPACING.md,
+    paddingHorizontal: SPACING.lg,
+    borderRadius: BORDER_RADIUS.md,
     alignItems: 'center',
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4,
   },
   claimButtonDisabled: {
     backgroundColor: COLORS.border,
+    shadowOpacity: 0,
+    elevation: 0,
   },
   claimButtonText: {
     color: COLORS.background,
     fontWeight: 'bold',
+    fontSize: 14,
   },
   claimButtonTextDisabled: {
     color: COLORS.textSecondary,
@@ -409,19 +605,59 @@ const styles = StyleSheet.create({
   referralCard: {
     backgroundColor: COLORS.surface,
     padding: SPACING.lg,
-    borderRadius: BORDER_RADIUS.md,
+    borderRadius: BORDER_RADIUS.lg,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  referralCodeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.background,
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.md,
+    borderRadius: BORDER_RADIUS.md,
+    marginBottom: SPACING.md,
+    borderWidth: 1,
+    borderColor: COLORS.border,
   },
   referralCode: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     color: COLORS.primary,
-    marginBottom: SPACING.sm,
+    marginRight: SPACING.sm,
+  },
+  copyButton: {
+    padding: SPACING.sm,
+  },
+  copyIcon: {
+    fontSize: 16,
+    color: COLORS.textSecondary,
   },
   referralDescription: {
     fontSize: 14,
     color: COLORS.textSecondary,
     textAlign: 'center',
+    marginBottom: SPACING.lg,
+    lineHeight: 20,
+  },
+  shareButton: {
+    backgroundColor: COLORS.secondary,
+    paddingVertical: SPACING.md,
+    paddingHorizontal: SPACING.xl,
+    borderRadius: BORDER_RADIUS.md,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
+  shareButtonText: {
+    color: COLORS.text,
+    fontWeight: '600',
+    fontSize: 14,
   },
 });
 
