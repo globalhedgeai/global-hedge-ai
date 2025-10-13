@@ -16,5 +16,11 @@
     "src/app/api/**/*.ts": {
       "maxDuration": 30
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/((?!api|_next|icons|uploads|favicon.ico|sw.js|manifest.json|.*\\..*).*)",
+      "destination": "/en/$1"
+    }
+  ]
 }
