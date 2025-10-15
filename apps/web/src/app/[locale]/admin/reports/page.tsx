@@ -14,14 +14,10 @@ interface Transaction {
 
 interface Report {
   period: string;
-  users: number;
-  transactions: number;
-  totalDeposits?: number;
-  totalWithdrawals?: number;
-  totalRewards?: number;
-  netProfit?: number;
-  userCount?: number;
-  transactionCount?: number;
+  totalUsers: number;
+  totalTransactions: number;
+  totalVolume: number;
+  totalRevenue: number;
 }
 
 interface Session {
