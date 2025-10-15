@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { useTranslation, useLanguage } from '@/lib/translations';
 import DailyRewardCard from '@/components/DailyRewardCard';
 import RandomRewardCard from '@/components/RandomRewardCard';
-import InteractiveHelpGuide from '@/components/InteractiveHelpGuide';
 import { formatNumber, formatCurrency } from '@/lib/numberFormat';
 
 interface DashboardWidget {
@@ -60,12 +59,12 @@ export default function HomePage() {
       clearTimeout(timeoutId);
       window.removeEventListener('authStateChanged', handleAuthChange);
     };
-  }, [isAuthenticated]);
+  }, [isAuthenticated, initializeWidgets]);
 
   // تحديث العناوين عند تغيير اللغة
   useEffect(() => {
     initializeWidgets();
-  }, [locale, isAuthenticated]);
+  }, [locale, isAuthenticated, initializeWidgets]);
 
   async function checkAuthentication() {
     try {
@@ -74,7 +73,7 @@ export default function HomePage() {
         const data = await response.json();
         setIsAuthenticated(!!data.user);
       }
-    } catch (error) {
+    } catch {
       setIsAuthenticated(false);
     }
   }

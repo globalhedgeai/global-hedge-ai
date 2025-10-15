@@ -19,7 +19,7 @@ interface MessageThread {
 }
 
 export default function MessagesPage() {
-  const { t, locale } = useTranslation();
+  const { locale } = useTranslation();
   const [thread, setThread] = useState<MessageThread | null>(null);
   const [newMessage, setNewMessage] = useState('');
   const [isSending, setIsSending] = useState(false);

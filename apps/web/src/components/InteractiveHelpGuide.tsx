@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useTranslation, useLanguage } from '@/lib/translations';
+import { useTranslation } from '@/lib/translations';
 
 interface HelpStep {
   id: string;
@@ -151,7 +151,6 @@ const HELP_GUIDES: HelpGuide[] = [
 
 export default function InteractiveHelpGuide() {
   const { t } = useTranslation();
-  const { locale } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [currentGuide, setCurrentGuide] = useState<HelpGuide | null>(null);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);

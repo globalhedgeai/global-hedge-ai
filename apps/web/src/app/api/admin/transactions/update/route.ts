@@ -50,7 +50,7 @@ export async function PUT(req: NextRequest) {
           createdAt: newDateTime
         }
       });
-    } catch (error) {
+    } catch {
       // Deposit not found, try withdrawal
     }
     
@@ -79,7 +79,7 @@ export async function PUT(req: NextRequest) {
             createdAt: updatedWithdrawal.createdAt
           }
         });
-      } catch (error) {
+      } catch {
         return NextResponse.json({ 
           ok: false, 
           error: "Transaction not found" 

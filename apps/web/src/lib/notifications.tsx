@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from '@/lib/translations';
 
 export interface Notification {
   id: string;
@@ -91,7 +90,6 @@ export default notificationService;
 export function useNotifications() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [permission, setPermission] = useState<NotificationPermission>('default');
-  const { t } = useTranslation();
 
   useEffect(() => {
     // Check current permission
@@ -165,8 +163,6 @@ export function NotificationToast({ notification, onClose }: {
   notification: Notification; 
   onClose: () => void;
 }) {
-  const { t } = useTranslation();
-
   useEffect(() => {
     const timer = setTimeout(() => {
       onClose();

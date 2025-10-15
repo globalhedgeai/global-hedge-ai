@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 
 interface User {
@@ -31,9 +31,9 @@ export default function AdminRolesPage() {
 
   useEffect(() => {
     checkSession();
-  }, []);
+  }, [checkSession]);
 
-  const checkSession = async () => {
+  const checkSession = useCallback(async () => {
     try {
       const response = await fetch('/api/me');
       const data = await response.json();
@@ -48,7 +48,7 @@ export default function AdminRolesPage() {
       console.error('Error checking session:', error);
       setLoading(false);
     }
-  };
+  }, []);
 
   const fetchUsers = async () => {
     try {

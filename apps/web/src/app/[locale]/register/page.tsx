@@ -46,7 +46,7 @@ export default function RegisterPage() {
       } else {
         setMsg(j.error || t('errors.generic'));
       }
-    } catch (error) {
+    } catch {
       setMsg(t('errors.generic'));
     } finally {
       setIsLoading(false);

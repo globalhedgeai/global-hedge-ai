@@ -41,7 +41,7 @@ export default function LoginPage() {
       } else {
         setMsg(j.error || t('auth.invalidCredentials'));
       }
-    } catch (error) {
+    } catch {
       setMsg(t('errors.generic'));
     } finally {
       setIsLoading(false);

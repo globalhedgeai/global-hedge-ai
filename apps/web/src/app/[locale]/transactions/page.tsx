@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { useTranslation, useLanguage } from '@/lib/translations';
+import { useTranslation } from '@/lib/translations';
 import AuthGuard from '@/components/AuthGuard';
 
 interface Transaction {
@@ -19,7 +19,6 @@ interface Transaction {
 
 export default function TransactionsPage() {
   const { t } = useTranslation();
-  const { locale } = useLanguage();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

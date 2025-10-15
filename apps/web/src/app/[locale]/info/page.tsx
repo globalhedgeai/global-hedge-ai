@@ -1,21 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useTranslation, useLanguage } from '@/lib/translations';
+import { useTranslation } from '@/lib/translations';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { 
   ChartBarIcon, 
   UsersIcon, 
   ShieldCheckIcon, 
   CurrencyDollarIcon,
-  StarIcon,
   CheckCircleIcon,
-  ArrowRightIcon,
   GiftIcon,
-  UserGroupIcon,
-  BanknotesIcon,
-  LockClosedIcon
+  UserGroupIcon
 } from '@heroicons/react/24/outline';
 
 export default function InfoPage() {

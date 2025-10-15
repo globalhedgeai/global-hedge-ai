@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 
 interface Policy {
@@ -23,15 +23,11 @@ interface Session {
 }
 
 export default function AdminPoliciesPage() {
-  const [policies, setPolicies] = useState<Policy[]>([]);
+  const [, setPolicies] = useState<Policy[]>([]);
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState<Session | null>(null);
 
-  useEffect(() => {
-    checkSession();
-  }, []);
-
-  const checkSession = async () => {
+  const checkSession = useCallback(async () => {
     try {
       const response = await fetch('/api/me');
       const data = await response.json();
@@ -46,7 +42,11 @@ export default function AdminPoliciesPage() {
       console.error('Error checking session:', error);
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    checkSession();
+  }, [checkSession]);
 
   const fetchPolicies = async () => {
     try {

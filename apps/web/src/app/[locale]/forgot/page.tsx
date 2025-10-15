@@ -1,16 +1,14 @@
 'use client';
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useTranslation, useLanguage } from '@/lib/translations';
 import Link from 'next/link';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
-  const [msg, setMsg] = useState<string | null>(null);
+  const [, setMsg] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isEmailSent, setIsEmailSent] = useState(false);
-  const router = useRouter();
   const { t } = useTranslation();
   const { locale } = useLanguage();
 
@@ -32,7 +30,7 @@ export default function ForgotPasswordPage() {
       } else {
         setMsg(j.error || t('errors.generic'));
       }
-    } catch (error) {
+    } catch {
       setMsg(t('errors.generic'));
     } finally {
       setIsLoading(false);

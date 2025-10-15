@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 
 interface PlatformStats {
@@ -34,9 +34,9 @@ export default function AdminStatsManagementPage() {
 
   useEffect(() => {
     checkSession();
-  }, []);
+  }, [checkSession]);
 
-  const checkSession = async () => {
+  const checkSession = useCallback(async () => {
     try {
       const response = await fetch('/api/me');
       const data = await response.json();
@@ -51,7 +51,7 @@ export default function AdminStatsManagementPage() {
       console.error('Error checking session:', error);
       setLoading(false);
     }
-  };
+  }, []);
 
   const fetchStats = async () => {
     try {

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 
 interface User {
@@ -40,11 +40,7 @@ export default function AdminFullControlPage() {
     lastWithdrawalAt: ''
   });
 
-  useEffect(() => {
-    checkSession();
-  }, []);
-
-  const checkSession = async () => {
+  const checkSession = useCallback(async () => {
     try {
       const response = await fetch('/api/me');
       const data = await response.json();
@@ -59,7 +55,11 @@ export default function AdminFullControlPage() {
       console.error('Error checking session:', error);
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    checkSession();
+  }, [checkSession]);
 
   const fetchUsers = async () => {
     try {

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "@/lib/session";
-import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 
 const AddWalletSchema = z.object({

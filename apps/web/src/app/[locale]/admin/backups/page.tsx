@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 
 interface Backup {
@@ -20,15 +20,11 @@ interface Session {
 }
 
 export default function AdminBackupsPage() {
-  const [backups, setBackups] = useState<Backup[]>([]);
+  const [, setBackups] = useState<Backup[]>([]);
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState<Session | null>(null);
 
-  useEffect(() => {
-    checkSession();
-  }, []);
-
-  const checkSession = async () => {
+  const checkSession = useCallback(async () => {
     try {
       const response = await fetch('/api/me');
       const data = await response.json();
@@ -43,7 +39,11 @@ export default function AdminBackupsPage() {
       console.error('Error checking session:', error);
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    checkSession();
+  }, [checkSession]);
 
   const fetchBackups = async () => {
     try {

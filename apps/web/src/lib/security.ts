@@ -9,7 +9,6 @@ export async function securityMiddleware(req: NextRequest): Promise<NextResponse
   }
 
   // Rate Limiting (basic implementation)
-  const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
   const userAgent = req.headers.get('user-agent') || '';
   
   // Block suspicious user agents
@@ -46,7 +45,7 @@ export async function securityMiddleware(req: NextRequest): Promise<NextResponse
   return response;
 }
 
-export async function handleOptions(req: NextRequest): Promise<NextResponse> {
+export async function handleOptions(): Promise<NextResponse> {
   return new NextResponse(null, {
     status: 200,
     headers: {

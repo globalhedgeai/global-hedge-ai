@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { useTranslation } from '@/lib/translations';
+import Image from 'next/image';
 
 interface FileUploadProps {
   onUpload: (file: File) => void;
@@ -74,7 +75,7 @@ export default function FileUpload({
         setError(result.error || t('fileUpload.uploadFailed'));
         setPreview(null);
       }
-    } catch (err) {
+    } catch {
       setError(t('fileUpload.uploadFailed'));
       setPreview(null);
     } finally {
@@ -113,9 +114,11 @@ export default function FileUpload({
 
         {preview ? (
           <div className="space-y-3">
-            <img
+            <Image
               src={preview}
               alt="Preview"
+              width={128}
+              height={128}
               className="max-h-32 mx-auto rounded-lg object-cover"
             />
             <div className="flex items-center justify-center gap-2">

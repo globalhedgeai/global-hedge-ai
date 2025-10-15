@@ -45,7 +45,7 @@ export default function ReferralsPage() {
       } else {
         setError(data.error || t('errors.generic'));
       }
-    } catch (err) {
+    } catch {
       setError(t('errors.networkError'));
     } finally {
       setLoading(false);
@@ -86,13 +86,6 @@ export default function ReferralsPage() {
     return null;
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat(locale === 'ar' ? 'ar-SA' : 'en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-    }).format(amount);
-  };
 
   if (loading) {
     return (

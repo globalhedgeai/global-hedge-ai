@@ -35,8 +35,7 @@ export default function FinancialReportsPage() {
   const [report, setReport] = useState<FinancialReport | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedPeriod, setSelectedPeriod] = useState<'1d' | '1w' | '1m' | '3m' | '6m' | '1y'>('1m');
-  const isRTL = locale === 'ar';
+  const [, setSelectedPeriod] = useState<'1d' | '1w' | '1m' | '3m' | '6m' | '1y'>('1m');
 
   useEffect(() => {
     fetchFinancialReport();
@@ -55,7 +54,7 @@ export default function FinancialReportsPage() {
       } else {
         setError(data.error || t('errors.generic'));
       }
-    } catch (err) {
+    } catch {
       setError(t('errors.networkError'));
     } finally {
       setLoading(false);
@@ -237,7 +236,7 @@ export default function FinancialReportsPage() {
             <div className="p-6">
               <h3 className="text-lg font-semibold text-foreground mb-4">{t('reports.monthlyPerformance')}</h3>
               <div className="space-y-4">
-                {report.monthlyData.map((month, index) => (
+                {report.monthlyData.map((month) => (
                   <div key={month.month} className="space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium text-foreground">{month.month}</span>
@@ -262,7 +261,7 @@ export default function FinancialReportsPage() {
             <div className="p-6">
               <h3 className="text-lg font-semibold text-foreground mb-4">{t('reports.dailyPerformance')}</h3>
               <div className="space-y-3">
-                {report.dailyData.slice(-7).map((day, index) => (
+                {report.dailyData.slice(-7).map((day) => (
                   <div key={day.date} className="flex items-center justify-between">
                     <span className="text-sm text-muted-foreground">{day.date}</span>
                     <div className="flex items-center gap-4">

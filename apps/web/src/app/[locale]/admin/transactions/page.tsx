@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 
 interface Transaction {
@@ -32,9 +32,9 @@ export default function AdminTransactionsPage() {
 
   useEffect(() => {
     checkSession();
-  }, []);
+  }, [checkSession]);
 
-  const checkSession = async () => {
+  const checkSession = useCallback(async () => {
     try {
       const response = await fetch('/api/me');
       const data = await response.json();
@@ -49,7 +49,7 @@ export default function AdminTransactionsPage() {
       console.error('Error checking session:', error);
       setLoading(false);
     }
-  };
+  }, []);
 
   const fetchTransactions = async () => {
     try {

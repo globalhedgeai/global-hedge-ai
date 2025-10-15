@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import MarketToolbar from "@/components/MarketToolbar";
 import CandlesChart from "@/components/CandlesChart";
 import CryptoPairsList from "@/components/CryptoPairsList";
-import { useTranslation, useLanguage } from '@/lib/translations';
+import { useTranslation } from '@/lib/translations';
 import { formatCurrency, formatPercentage } from '@/lib/numberFormat';
 
 type Candle = { time: number; open: number; high: number; low: number; close: number; volume?: number };
@@ -42,7 +42,7 @@ export default function MarketPage() {
   const [candles, setCandles] = useState<Candle[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [marketPrices, setMarketPrices] = useState<MarketPrice[]>([]);
+  const [, setMarketPrices] = useState<MarketPrice[]>([]);
   const [currentPrice, setCurrentPrice] = useState<number>(0);
   const [priceChange24h, setPriceChange24h] = useState<number>(0);
   

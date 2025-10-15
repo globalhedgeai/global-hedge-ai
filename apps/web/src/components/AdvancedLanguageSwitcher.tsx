@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 // إنشاء سياق اللغة
 const LanguageContext = createContext<{
@@ -37,7 +37,6 @@ export type Locale = typeof SUPPORTED_LOCALES[number]['code'];
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>('ar'); // تغيير القيمة الافتراضية إلى العربية
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
   const pathname = usePathname();
 
   // تحميل اللغة من الرابط أو المحفوظة عند البدء
