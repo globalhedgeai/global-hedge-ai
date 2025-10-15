@@ -29,10 +29,6 @@ export default function AdminRolesPage() {
   const [showRoleForm, setShowRoleForm] = useState(false);
   const [newRole, setNewRole] = useState('USER');
 
-  useEffect(() => {
-    checkSession();
-  }, [checkSession]);
-
   const checkSession = useCallback(async () => {
     try {
       const response = await fetch('/api/me');
@@ -49,6 +45,10 @@ export default function AdminRolesPage() {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    checkSession();
+  }, [checkSession]);
 
   const fetchUsers = async () => {
     try {
