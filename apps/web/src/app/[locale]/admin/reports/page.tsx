@@ -212,29 +212,29 @@ export default function AdminReportsPage() {
                       </td>
                       <td className="py-4 px-4">
                         <p className="text-green-400 font-medium">
-                          ${report.totalDeposits?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+                          ${report.totalVolume?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                         </p>
                       </td>
                       <td className="py-4 px-4">
                         <p className="text-red-400 font-medium">
-                          ${report.totalWithdrawals?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+                          ${report.totalRevenue?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                         </p>
                       </td>
                       <td className="py-4 px-4">
                         <p className="text-blue-400 font-medium">
-                          ${report.totalRewards?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+                          ${report.totalTransactions?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                         </p>
                       </td>
                       <td className="py-4 px-4">
-                        <p className={`font-medium ${report.netProfit >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                          ${report.netProfit?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+                        <p className={`font-medium ${report.totalRevenue >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                          ${report.totalRevenue?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
                         </p>
                       </td>
                       <td className="py-4 px-4">
-                        <p className="text-white">{report.userCount || 0}</p>
+                        <p className="text-white">{report.totalUsers || 0}</p>
                       </td>
                       <td className="py-4 px-4">
-                        <p className="text-white">{report.transactionCount || 0}</p>
+                        <p className="text-white">{report.totalTransactions || 0}</p>
                       </td>
                     </tr>
                   ))}

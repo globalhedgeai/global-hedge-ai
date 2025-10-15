@@ -51,7 +51,7 @@ export async function GET(req: NextRequest) {
               symbol,
               price: coinData.usd,
               change24h: coinData.usd_24h_change || 0,
-              change24hPercent: coinData.usd_24h_change || 0,
+              volume24h: coinData.usd_24h_vol || 0,
             };
           }
           
@@ -59,7 +59,7 @@ export async function GET(req: NextRequest) {
             symbol,
             price: getFallbackPrice(symbol),
             change24h: (Math.random() - 0.5) * 100,
-            change24hPercent: (Math.random() - 0.5) * 5,
+            volume24h: Math.random() * 1000000,
           };
         });
         
@@ -93,9 +93,9 @@ export async function GET(req: NextRequest) {
             volume: string;
           }) => ({
             symbol: ticker.symbol,
-            price: parseFloat(ticker.lastPrice),
-            change24h: parseFloat(ticker.priceChange),
-            change24hPercent: parseFloat(ticker.priceChangePercent),
+            price: parseFloat(ticker.price),
+            change24h: parseFloat(ticker.priceChangePercent),
+            volume24h: parseFloat(ticker.volume),
           }));
           source = 'binance';
           console.log(`✅ Fetched ${prices.length} prices from Binance`);
@@ -112,7 +112,7 @@ export async function GET(req: NextRequest) {
         symbol,
         price: getFallbackPrice(symbol),
         change24h: (Math.random() - 0.5) * 200,
-        change24hPercent: (Math.random() - 0.5) * 10,
+        volume24h: Math.random() * 1000000,
       }));
       source = 'mock';
     }
