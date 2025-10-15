@@ -5,6 +5,19 @@ import PWAInstaller from "@/components/PWAInstaller";
 import InstallPrompt from "@/components/InstallPrompt";
 import { getSessionUser } from '@/lib/auth';
 import { LanguageProvider } from '@/components/AdvancedLanguageSwitcher';
+import { Inter, JetBrains_Mono } from 'next/font/google';
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-jetbrains-mono',
+  display: 'swap',
+});
 
 export const metadata = {
   title: 'Global Hedge AI',
@@ -46,8 +59,8 @@ export default async function RootLayout({
   await getSessionUser(new Request(url));
 
   return (
-    <html lang="ar" dir="rtl">
-      <body>
+    <html lang="ar" dir="rtl" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+      <body className="font-sans antialiased">
         <LanguageProvider>
           <PWAInstaller />
           <AuthHeader />
