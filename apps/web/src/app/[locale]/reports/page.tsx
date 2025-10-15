@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useTranslation, useLanguage } from '@/lib/translations';
 import AuthGuard from '@/components/AuthGuard';
 
@@ -35,13 +35,9 @@ export default function FinancialReportsPage() {
   const [report, setReport] = useState<FinancialReport | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [, setSelectedPeriod] = useState<'1d' | '1w' | '1m' | '3m' | '6m' | '1y'>('1m');
+  const [selectedPeriod, setSelectedPeriod] = useState<'1d' | '1w' | '1m' | '3m' | '6m' | '1y'>('1m');
 
-  useEffect(() => {
-    fetchFinancialReport();
-  }, [selectedPeriod]);
-
-  async function fetchFinancialReport() {
+  const fetchFinancialReport = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -59,7 +55,11 @@ export default function FinancialReportsPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [selectedPeriod, t]);
+
+  useEffect(() => {
+    fetchFinancialReport();
+  }, [fetchFinancialReport]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat(locale === 'ar' ? 'ar-SA' : 'en-US', {

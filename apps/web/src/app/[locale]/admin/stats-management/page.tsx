@@ -32,10 +32,6 @@ export default function AdminStatsManagementPage() {
     customMessage: ''
   });
 
-  useEffect(() => {
-    checkSession();
-  }, [checkSession]);
-
   const checkSession = useCallback(async () => {
     try {
       const response = await fetch('/api/me');
@@ -52,6 +48,10 @@ export default function AdminStatsManagementPage() {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    checkSession();
+  }, [checkSession]);
 
   const fetchStats = async () => {
     try {

@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useTranslation, useLanguage } from '@/lib/translations';
 import DailyRewardCard from '@/components/DailyRewardCard';
@@ -27,96 +27,7 @@ export default function HomePage() {
   const [isCustomizing, setIsCustomizing] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  useEffect(() => {
-    // تحسين الأداء بإضافة debounce
-    const timeoutId = setTimeout(() => {
-    // Check authentication status
-    checkAuthentication();
-    
-    // Load platform stats
-    fetchPlatformStats();
-
-    // Load user balance only if authenticated
-    if (isAuthenticated) {
-      fetchUserBalance();
-    }
-
-    // Initialize widgets based on authentication status
-    initializeWidgets();
-    }, 100);
-
-    // Listen for auth state changes
-    const handleAuthChange = () => {
-      checkAuthentication();
-      // Also refresh balance when auth state changes
-      if (isAuthenticated) {
-        fetchUserBalance();
-      }
-    };
-    window.addEventListener('authStateChanged', handleAuthChange);
-    
-    return () => {
-      clearTimeout(timeoutId);
-      window.removeEventListener('authStateChanged', handleAuthChange);
-    };
-  }, [isAuthenticated, initializeWidgets]);
-
-  // تحديث العناوين عند تغيير اللغة
-  useEffect(() => {
-    initializeWidgets();
-  }, [locale, isAuthenticated, initializeWidgets]);
-
-  async function checkAuthentication() {
-    try {
-      const response = await fetch('/api/me');
-      if (response.ok) {
-        const data = await response.json();
-        setIsAuthenticated(!!data.user);
-      }
-    } catch {
-      setIsAuthenticated(false);
-    }
-  }
-
-  async function fetchPlatformStats() {
-    try {
-      const response = await fetch('/api/admin/platform-stats');
-      if (response.ok) {
-        const data = await response.json();
-        setStats({
-          totalUsers: data.totalUsers,
-          totalVolume: data.totalVolume,
-          activeTrades: data.activeTrades
-        });
-      }
-    } catch (error) {
-      console.error('Error fetching platform stats:', error);
-      // Fallback to default stats
-      setStats({
-        totalUsers: 15420,
-        totalVolume: 2840000,
-        activeTrades: 1247
-      });
-    }
-  }
-
-  async function fetchUserBalance() {
-    try {
-      const response = await fetch('/api/me');
-      const data = await response.json();
-      if (data?.user?.balance !== undefined) {
-        // Convert Decimal to number if needed
-        const balance = typeof data.user.balance === 'object' && data.user.balance.toNumber 
-          ? data.user.balance.toNumber() 
-          : Number(data.user.balance) || 0;
-        setUserBalance(balance);
-      }
-    } catch (error) {
-      console.error('Failed to fetch user balance:', error);
-    }
-  }
-
-  function initializeWidgets() {
+  const initializeWidgets = useCallback(() => {
     if (isAuthenticated) {
       // Widgets for authenticated users
       const authenticatedWidgets: DashboardWidget[] = [
@@ -204,6 +115,95 @@ export default function HomePage() {
         }
       ];
       setWidgets(landingWidgets);
+    }
+  }, [isAuthenticated, t, stats, userBalance]);
+
+  useEffect(() => {
+    // تحسين الأداء بإضافة debounce
+    const timeoutId = setTimeout(() => {
+    // Check authentication status
+    checkAuthentication();
+    
+    // Load platform stats
+    fetchPlatformStats();
+
+    // Load user balance only if authenticated
+    if (isAuthenticated) {
+      fetchUserBalance();
+    }
+
+    // Initialize widgets based on authentication status
+    initializeWidgets();
+    }, 100);
+
+    // Listen for auth state changes
+    const handleAuthChange = () => {
+      checkAuthentication();
+      // Also refresh balance when auth state changes
+      if (isAuthenticated) {
+        fetchUserBalance();
+      }
+    };
+    window.addEventListener('authStateChanged', handleAuthChange);
+    
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('authStateChanged', handleAuthChange);
+    };
+  }, [isAuthenticated, initializeWidgets]);
+
+  // تحديث العناوين عند تغيير اللغة
+  useEffect(() => {
+    initializeWidgets();
+  }, [locale, isAuthenticated, initializeWidgets]);
+
+  async function checkAuthentication() {
+    try {
+      const response = await fetch('/api/me');
+      if (response.ok) {
+        const data = await response.json();
+        setIsAuthenticated(!!data.user);
+      }
+    } catch {
+      setIsAuthenticated(false);
+    }
+  }
+
+  async function fetchPlatformStats() {
+    try {
+      const response = await fetch('/api/admin/platform-stats');
+      if (response.ok) {
+        const data = await response.json();
+        setStats({
+          totalUsers: data.totalUsers,
+          totalVolume: data.totalVolume,
+          activeTrades: data.activeTrades
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching platform stats:', error);
+      // Fallback to default stats
+      setStats({
+        totalUsers: 15420,
+        totalVolume: 2840000,
+        activeTrades: 1247
+      });
+    }
+  }
+
+  async function fetchUserBalance() {
+    try {
+      const response = await fetch('/api/me');
+      const data = await response.json();
+      if (data?.user?.balance !== undefined) {
+        // Convert Decimal to number if needed
+        const balance = typeof data.user.balance === 'object' && data.user.balance.toNumber 
+          ? data.user.balance.toNumber() 
+          : Number(data.user.balance) || 0;
+        setUserBalance(balance);
+      }
+    } catch (error) {
+      console.error('Failed to fetch user balance:', error);
     }
   }
 

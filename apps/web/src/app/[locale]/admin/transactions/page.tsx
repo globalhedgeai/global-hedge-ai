@@ -30,10 +30,6 @@ export default function AdminTransactionsPage() {
   const [filter, setFilter] = useState<'all' | 'deposits' | 'withdrawals'>('all');
   const [statusFilter, setStatusFilter] = useState<'all' | 'PENDING' | 'APPROVED' | 'REJECTED'>('all');
 
-  useEffect(() => {
-    checkSession();
-  }, [checkSession]);
-
   const checkSession = useCallback(async () => {
     try {
       const response = await fetch('/api/me');
@@ -50,6 +46,10 @@ export default function AdminTransactionsPage() {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    checkSession();
+  }, [checkSession]);
 
   const fetchTransactions = async () => {
     try {

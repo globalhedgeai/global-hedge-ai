@@ -31,10 +31,6 @@ export default function AdminWalletPage() {
     network: 'TRC20'
   });
 
-  useEffect(() => {
-    checkSession();
-  }, [checkSession]);
-
   const checkSession = useCallback(async () => {
     try {
       const response = await fetch('/api/me');
@@ -51,6 +47,10 @@ export default function AdminWalletPage() {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    checkSession();
+  }, [checkSession]);
 
   const fetchWalletAddresses = async () => {
     try {

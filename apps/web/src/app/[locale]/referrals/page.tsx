@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useTranslation, useLanguage } from '@/lib/translations';
 import AuthGuard from '@/components/AuthGuard';
 import Link from 'next/link';
@@ -28,11 +28,7 @@ export default function ReferralsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchReferralStats();
-  }, []);
-
-  const fetchReferralStats = async () => {
+  const fetchReferralStats = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -50,7 +46,11 @@ export default function ReferralsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [t]);
+
+  useEffect(() => {
+    fetchReferralStats();
+  }, [fetchReferralStats]);
 
   const copyReferralCode = async () => {
     if (stats?.referralCode) {

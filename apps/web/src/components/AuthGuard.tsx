@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslation, useLanguage } from '@/lib/translations';
 
@@ -53,22 +53,7 @@ export default function AuthGuard({ children, redirectTo = '/login' }: AuthGuard
   const { t } = useTranslation();
   const { locale } = useLanguage();
 
-  useEffect(() => {
-    // التحقق من التخزين المؤقت أولاً - بدون أي تأخير
-    const authCache = getAuthCache();
-    
-    if (authCache && Date.now() - authCache.timestamp < AUTH_CACHE_TTL && authCache.isAuthenticated) {
-      // إذا كان المستخدم مصادق عليه في التخزين المؤقت - لا نفعل أي شيء
-      setIsAuthenticated(true);
-      setIsLoading(false);
-      return;
-    }
-
-    // فقط إذا لم يكن هناك تخزين مؤقت صالح
-    checkAuth();
-  }, []);
-
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     try {
       const response = await fetch('/api/me', {
         cache: 'no-store'
@@ -93,7 +78,22 @@ export default function AuthGuard({ children, redirectTo = '/login' }: AuthGuard
       setIsLoading(false);
       router.push(`/${locale}${redirectTo}`);
     }
-  };
+  }, [locale, redirectTo, router]);
+
+  useEffect(() => {
+    // التحقق من التخزين المؤقت أولاً - بدون أي تأخير
+    const authCache = getAuthCache();
+    
+    if (authCache && Date.now() - authCache.timestamp < AUTH_CACHE_TTL && authCache.isAuthenticated) {
+      // إذا كان المستخدم مصادق عليه في التخزين المؤقت - لا نفعل أي شيء
+      setIsAuthenticated(true);
+      setIsLoading(false);
+      return;
+    }
+
+    // فقط إذا لم يكن هناك تخزين مؤقت صالح
+    checkAuth();
+  }, [checkAuth]);
 
   if (isLoading) {
     return (

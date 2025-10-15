@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
-  const [, setMsg] = useState<string | null>(null);
+  const [msg, setMsg] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isEmailSent, setIsEmailSent] = useState(false);
   const { t } = useTranslation();
