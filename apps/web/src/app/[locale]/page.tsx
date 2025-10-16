@@ -152,58 +152,58 @@ export default function HomePage() {
           <div className="relative overflow-hidden bg-gradient-to-br from-background via-background to-primary/10">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-50"></div>
             
-            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 lg:py-48">
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
               <div className="text-center">
                 {/* Logo */}
-                <div className="inline-flex items-center justify-center w-32 h-32 bg-gradient-to-br from-primary to-yellow-400 rounded-3xl mb-8 shadow-2xl">
-                  <span className="text-primary-foreground font-bold text-5xl">G</span>
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary to-yellow-400 rounded-2xl mb-6 shadow-xl">
+                  <span className="text-primary-foreground font-bold text-3xl">G</span>
                 </div>
                 
                 {/* Main Title */}
-                <h1 className="text-6xl md:text-8xl font-bold gradient-text mb-8 leading-tight">
+                <h1 className="text-4xl md:text-5xl font-bold gradient-text mb-6 leading-tight">
                   {t('landing.title')}
                 </h1>
                 
                 {/* Subtitle */}
-                <p className="text-2xl md:text-3xl text-muted-foreground mb-16 max-w-4xl mx-auto leading-relaxed">
+                <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
                   {t('landing.subtitle')}
                 </p>
                 
                 {/* CTA Buttons */}
-                <div className="flex flex-col sm:flex-row gap-8 justify-center mb-20">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
                   <Link
                     href={`/${locale}/register`}
-                    className="btn-primary text-2xl px-16 py-8 text-xl font-bold shadow-2xl hover:shadow-primary/25 transition-all duration-300 transform hover:scale-105"
+                    className="btn-primary text-lg px-8 py-4 font-semibold shadow-lg hover:shadow-primary/25 transition-all duration-300 transform hover:scale-105"
                   >
                     🚀 {t('landing.getStarted')}
                   </Link>
                   <Link
                     href={`/${locale}/login`}
-                    className="btn-secondary text-2xl px-16 py-8 text-xl font-bold shadow-xl hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+                    className="btn-secondary text-lg px-8 py-4 font-semibold shadow-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105"
                   >
                     🔐 {t('landing.login')}
                   </Link>
                 </div>
 
                 {/* Trust Indicators */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-12 max-w-5xl mx-auto">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
                   <div className="text-center">
-                    <div className="text-6xl font-bold text-primary mb-4">
+                    <div className="text-4xl font-bold text-primary mb-2">
                       {formatNumber(stats.totalUsers)}
                     </div>
-                    <div className="text-xl text-muted-foreground font-semibold">{t('dashboard.totalUsers')}</div>
+                    <div className="text-lg text-muted-foreground font-medium">{t('dashboard.totalUsers')}</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-6xl font-bold text-success mb-4">
+                    <div className="text-4xl font-bold text-success mb-2">
                       {formatCurrency(stats.totalVolume)}
                     </div>
-                    <div className="text-xl text-muted-foreground font-semibold">{t('dashboard.totalVolume')}</div>
+                    <div className="text-lg text-muted-foreground font-medium">{t('dashboard.totalVolume')}</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-6xl font-bold text-info mb-4">
+                    <div className="text-4xl font-bold text-info mb-2">
                       {formatNumber(stats.activeTrades)}
                     </div>
-                    <div className="text-xl text-muted-foreground font-semibold">{t('dashboard.activeTrades')}</div>
+                    <div className="text-lg text-muted-foreground font-medium">{t('dashboard.activeTrades')}</div>
                   </div>
                 </div>
               </div>
@@ -211,69 +211,69 @@ export default function HomePage() {
           </div>
 
           {/* Features Section */}
-          <div className="py-32 bg-card/30">
+          <div className="py-16 bg-card/30">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="text-center mb-20">
-                <h2 className="text-5xl md:text-7xl font-bold gradient-text mb-8">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold gradient-text mb-4">
                   {t('landing.features')}
                 </h2>
-                <p className="text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+                <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
                   {t('landing.featuresSubtitle')}
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-                <div className="card hover-lift text-center p-12">
-                  <div className="w-28 h-28 bg-gradient-to-br from-primary/20 to-yellow-400/20 rounded-3xl flex items-center justify-center mx-auto mb-8">
-                    <div className="text-primary text-5xl">🤖</div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="card hover-lift text-center p-6">
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-yellow-400/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <div className="text-primary text-3xl">🤖</div>
                   </div>
-                  <h3 className="text-2xl font-bold text-foreground mb-6">{t('landing.feature1')}</h3>
-                  <p className="text-lg text-muted-foreground leading-relaxed">{t('landing.feature1Desc')}</p>
+                  <h3 className="text-xl font-semibold text-foreground mb-3">{t('landing.feature1')}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{t('landing.feature1Desc')}</p>
                 </div>
-                <div className="card hover-lift text-center p-12">
-                  <div className="w-28 h-28 bg-gradient-to-br from-success/20 to-green-400/20 rounded-3xl flex items-center justify-center mx-auto mb-8">
-                    <div className="text-success text-5xl">🔒</div>
+                <div className="card hover-lift text-center p-6">
+                  <div className="w-16 h-16 bg-gradient-to-br from-success/20 to-green-400/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <div className="text-success text-3xl">🔒</div>
                   </div>
-                  <h3 className="text-2xl font-bold text-foreground mb-6">{t('landing.feature2')}</h3>
-                  <p className="text-lg text-muted-foreground leading-relaxed">{t('landing.feature2Desc')}</p>
+                  <h3 className="text-xl font-semibold text-foreground mb-3">{t('landing.feature2')}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{t('landing.feature2Desc')}</p>
                 </div>
-                <div className="card hover-lift text-center p-12">
-                  <div className="w-28 h-28 bg-gradient-to-br from-warning/20 to-yellow-400/20 rounded-3xl flex items-center justify-center mx-auto mb-8">
-                    <div className="text-warning text-5xl">⚡</div>
+                <div className="card hover-lift text-center p-6">
+                  <div className="w-16 h-16 bg-gradient-to-br from-warning/20 to-yellow-400/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <div className="text-warning text-3xl">⚡</div>
                   </div>
-                  <h3 className="text-2xl font-bold text-foreground mb-6">{t('landing.feature3')}</h3>
-                  <p className="text-lg text-muted-foreground leading-relaxed">{t('landing.feature3Desc')}</p>
+                  <h3 className="text-xl font-semibold text-foreground mb-3">{t('landing.feature3')}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{t('landing.feature3Desc')}</p>
                 </div>
-                <div className="card hover-lift text-center p-12">
-                  <div className="w-28 h-28 bg-gradient-to-br from-info/20 to-blue-400/20 rounded-3xl flex items-center justify-center mx-auto mb-8">
-                    <div className="text-info text-5xl">📊</div>
+                <div className="card hover-lift text-center p-6">
+                  <div className="w-16 h-16 bg-gradient-to-br from-info/20 to-blue-400/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <div className="text-info text-3xl">📊</div>
                   </div>
-                  <h3 className="text-2xl font-bold text-foreground mb-6">{t('landing.feature4')}</h3>
-                  <p className="text-lg text-muted-foreground leading-relaxed">{t('landing.feature4Desc')}</p>
+                  <h3 className="text-xl font-semibold text-foreground mb-3">{t('landing.feature4')}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{t('landing.feature4Desc')}</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* CTA Section */}
-          <div className="py-32 bg-gradient-to-r from-primary/10 to-yellow-400/10">
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-              <h2 className="text-5xl md:text-7xl font-bold gradient-text mb-8">
+          <div className="py-16 bg-gradient-to-r from-primary/10 to-yellow-400/10">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+              <h2 className="text-3xl md:text-4xl font-bold gradient-text mb-4">
                 {t('landing.ctaTitle')}
               </h2>
-              <p className="text-2xl text-muted-foreground mb-16 max-w-3xl mx-auto leading-relaxed">
+              <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
                 {t('landing.ctaSubtitle')}
               </p>
-              <div className="flex flex-col sm:flex-row gap-8 justify-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   href={`/${locale}/register`}
-                  className="btn-primary text-2xl px-16 py-8 text-xl font-bold shadow-2xl hover:shadow-primary/25 transition-all duration-300 transform hover:scale-105"
+                  className="btn-primary text-lg px-8 py-4 font-semibold shadow-lg hover:shadow-primary/25 transition-all duration-300 transform hover:scale-105"
                 >
                   🚀 {t('landing.startTrading')}
                 </Link>
                 <Link
                   href={`/${locale}/info`}
-                  className="btn-secondary text-2xl px-16 py-8 text-xl font-bold shadow-xl hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+                  className="btn-secondary text-lg px-8 py-4 font-semibold shadow-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105"
                 >
                   ℹ️ {t('landing.learnMore')}
                 </Link>
