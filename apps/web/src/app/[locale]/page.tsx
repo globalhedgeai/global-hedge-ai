@@ -68,204 +68,233 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+    <div className="min-h-screen bg-gray-900">
       {isAuthenticated ? (
         /* Authenticated User Dashboard */
-        <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="max-w-6xl mx-auto px-4 py-8">
           {/* Header */}
           <div className="text-center mb-12">
-            <div className="w-20 h-20 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-2xl">
-              <span className="text-3xl font-bold text-black">G</span>
+            <div className="w-16 h-16 bg-yellow-400 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+              <span className="text-2xl font-bold text-black">G</span>
             </div>
-            <h1 className="text-4xl font-bold text-white mb-4">
-              {t('dashboard.title')}
+            <h1 className="text-3xl font-bold text-white mb-2">
+              Dashboard
             </h1>
-            <p className="text-gray-400 text-lg">
-              {t('dashboard.subtitle')}
+            <p className="text-gray-300">
+              Welcome to the smart investment platform
             </p>
           </div>
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-gray-800 border border-gray-700 rounded-xl p-6 text-center hover:border-yellow-400 transition-all duration-300">
-              <div className="text-3xl mb-3">💰</div>
-              <div className="text-3xl font-bold text-yellow-400 mb-2">
+            <div className="bg-gray-800 rounded-lg p-6 text-center">
+              <div className="text-2xl mb-2">💰</div>
+              <div className="text-2xl font-bold text-yellow-400 mb-1">
                 {formatCurrency(userBalance)}
               </div>
-              <div className="text-sm text-gray-400">{t('common.balance')}</div>
+              <div className="text-sm text-gray-300">Balance</div>
             </div>
-            <div className="bg-gray-800 border border-gray-700 rounded-xl p-6 text-center hover:border-green-400 transition-all duration-300">
-              <div className="text-3xl mb-3">👥</div>
-              <div className="text-3xl font-bold text-green-400 mb-2">
+            <div className="bg-gray-800 rounded-lg p-6 text-center">
+              <div className="text-2xl mb-2">👥</div>
+              <div className="text-2xl font-bold text-green-400 mb-1">
                 {formatNumber(stats.totalUsers)}
               </div>
-              <div className="text-sm text-gray-400">{t('dashboard.totalUsers')}</div>
+              <div className="text-sm text-gray-300">Total Users</div>
             </div>
-            <div className="bg-gray-800 border border-gray-700 rounded-xl p-6 text-center hover:border-blue-400 transition-all duration-300">
-              <div className="text-3xl mb-3">📈</div>
-              <div className="text-3xl font-bold text-blue-400 mb-2">
+            <div className="bg-gray-800 rounded-lg p-6 text-center">
+              <div className="text-2xl mb-2">📈</div>
+              <div className="text-2xl font-bold text-blue-400 mb-1">
                 {formatCurrency(stats.totalVolume)}
               </div>
-              <div className="text-sm text-gray-400">{t('dashboard.totalVolume')}</div>
+              <div className="text-sm text-gray-300">Total Volume</div>
             </div>
           </div>
 
           {/* Content Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
+            <div className="bg-gray-800 rounded-lg p-6">
               <DailyRewardCard />
             </div>
-            <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
+            <div className="bg-gray-800 rounded-lg p-6">
               <RandomRewardCard />
             </div>
-            <div className="bg-gray-800 border border-gray-700 rounded-xl p-6">
-              <h3 className="text-xl font-semibold text-white mb-4">{t('dashboard.quickActions')}</h3>
+            <div className="bg-gray-800 rounded-lg p-6">
+              <h3 className="text-lg font-semibold text-white mb-4">Quick Actions</h3>
               <div className="space-y-3">
                 <Link href={`/${locale}/deposit`} className="w-full bg-yellow-400 hover:bg-yellow-500 text-black py-3 px-4 rounded-lg text-center block font-semibold transition-colors">
-                  💰 {t('navigation.deposit')}
+                  💰 Deposit
                 </Link>
                 <Link href={`/${locale}/withdraw`} className="w-full bg-gray-700 hover:bg-gray-600 text-white py-3 px-4 rounded-lg text-center block font-semibold transition-colors">
-                  💸 {t('navigation.withdraw')}
+                  💸 Withdraw
                 </Link>
                 <Link href={`/${locale}/market`} className="w-full bg-gray-700 hover:bg-gray-600 text-white py-3 px-4 rounded-lg text-center block font-semibold transition-colors">
-                  📈 {t('navigation.market')}
+                  📈 Market
                 </Link>
               </div>
             </div>
           </div>
         </div>
       ) : (
-        /* Professional Landing Page */
-        <div className="min-h-screen">
-          {/* Hero Section */}
-          <div className="relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/10 to-transparent"></div>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-              <div className="text-center">
-                {/* Logo */}
-                <div className="flex justify-center mb-8">
-                  <div className="w-24 h-24 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-3xl flex items-center justify-center shadow-2xl">
-                    <span className="text-4xl font-bold text-black">G</span>
-                  </div>
-                </div>
-                
-                {/* Main Title */}
-                <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
-                  {t('landing.title')}
-                </h1>
-                
-                {/* Subtitle */}
-                <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
-                  {t('landing.subtitle')}
-                </p>
-                
-                {/* CTA Buttons */}
-                <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
+        /* Clean and Organized Landing Page */
+        <div className="min-h-screen bg-gray-900">
+          {/* Header */}
+          <div className="bg-gray-800 border-b border-gray-700">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex justify-between items-center py-4">
+                <div className="flex items-center space-x-4">
                   <Link
                     href={`/${locale}/register`}
-                    className="bg-yellow-400 hover:bg-yellow-500 text-black py-4 px-12 rounded-xl font-bold text-xl transition-all duration-300 shadow-2xl hover:shadow-yellow-400/25 transform hover:scale-105"
+                    className="bg-yellow-400 hover:bg-yellow-500 text-black px-6 py-2 rounded-lg font-semibold transition-colors"
                   >
-                    🚀 {t('landing.getStarted')}
+                    Create Account
                   </Link>
                   <Link
                     href={`/${locale}/login`}
-                    className="bg-gray-800 hover:bg-gray-700 text-white py-4 px-12 rounded-xl font-bold text-xl transition-all duration-300 border-2 border-gray-600 hover:border-yellow-400 shadow-2xl"
+                    className="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors"
                   >
-                    🔐 {t('landing.login')}
+                    Login
                   </Link>
                 </div>
+                
+                <div className="flex items-center space-x-6">
+                  <Link href={`/${locale}/market`} className="text-gray-300 hover:text-white transition-colors">
+                    Market
+                  </Link>
+                  <Link href={`/${locale}/info`} className="text-gray-300 hover:text-white transition-colors">
+                    About Platform
+                  </Link>
+                  <Link href={`/${locale}`} className="text-gray-300 hover:text-white transition-colors">
+                    Home
+                  </Link>
+                </div>
+                
+                <div className="flex items-center space-x-2">
+                  <span className="text-yellow-400 font-bold text-lg">Global Hedge AI</span>
+                  <div className="w-8 h-8 bg-yellow-400 rounded flex items-center justify-center">
+                    <span className="text-black font-bold text-sm">G</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-                {/* Trust Indicators */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-4xl mx-auto">
-                  <div className="bg-gray-800 border border-gray-700 rounded-2xl p-8 text-center hover:border-yellow-400 transition-all duration-300">
-                    <div className="text-4xl font-bold text-yellow-400 mb-3">
-                      {formatNumber(stats.totalUsers)}
-                    </div>
-                    <div className="text-lg text-gray-300 font-medium">{t('dashboard.totalUsers')}</div>
-                  </div>
-                  <div className="bg-gray-800 border border-gray-700 rounded-2xl p-8 text-center hover:border-green-400 transition-all duration-300">
-                    <div className="text-4xl font-bold text-green-400 mb-3">
-                      {formatCurrency(stats.totalVolume)}
-                    </div>
-                    <div className="text-lg text-gray-300 font-medium">{t('dashboard.totalVolume')}</div>
-                  </div>
-                  <div className="bg-gray-800 border border-gray-700 rounded-2xl p-8 text-center hover:border-blue-400 transition-all duration-300">
-                    <div className="text-4xl font-bold text-blue-400 mb-3">
-                      {formatNumber(stats.activeTrades)}
-                    </div>
-                    <div className="text-lg text-gray-300 font-medium">{t('dashboard.activeTrades')}</div>
-                  </div>
+          {/* Hero Section */}
+          <div className="py-20">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+              <div className="w-16 h-16 bg-yellow-400 rounded-lg mx-auto mb-6 flex items-center justify-center">
+                <span className="text-black font-bold text-2xl">G</span>
+              </div>
+              
+              <h1 className="text-5xl md:text-6xl font-bold text-white mb-4">
+                Global Hedge AI
+              </h1>
+              
+              <p className="text-xl text-gray-300 mb-12">
+                Leading Trading and Cloud Mining Platform
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link
+                  href={`/${locale}/login`}
+                  className="bg-gray-700 hover:bg-gray-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center"
+                >
+                  <span className="mr-2">G</span> Login
+                </Link>
+                <Link
+                  href={`/${locale}/register`}
+                  className="bg-yellow-400 hover:bg-yellow-500 text-black px-8 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center"
+                >
+                  <span className="mr-2">+</span> Create Account
+                </Link>
+                <Link
+                  href={`/${locale}/info`}
+                  className="bg-gray-700 hover:bg-gray-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center"
+                >
+                  <span className="mr-2">i</span> About Platform
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Platform Statistics */}
+          <div className="py-16 bg-gray-800">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+              <h2 className="text-3xl font-bold text-white text-center mb-12">Platform Statistics</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="bg-gray-700 rounded-lg p-6 text-center">
+                  <div className="text-4xl font-bold text-blue-400 mb-2">0</div>
+                  <div className="text-gray-300">home.activeTrades</div>
+                </div>
+                <div className="bg-gray-700 rounded-lg p-6 text-center">
+                  <div className="text-4xl font-bold text-yellow-400 mb-2">$0.00M</div>
+                  <div className="text-gray-300">home.totalVolume</div>
+                </div>
+                <div className="bg-gray-700 rounded-lg p-6 text-center">
+                  <div className="text-4xl font-bold text-green-400 mb-2">0</div>
+                  <div className="text-gray-300">home.totalUsers</div>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Features Section */}
-          <div className="py-20 bg-gray-800/50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="text-center mb-16">
-                <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                  {t('landing.features')}
-                </h2>
-                <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-                  {t('landing.featuresSubtitle')}
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div className="bg-gray-800 border border-gray-700 rounded-2xl p-8 text-center hover:border-yellow-400 transition-all duration-300 hover:transform hover:scale-105 hover:shadow-2xl">
-                  <div className="w-20 h-20 bg-gradient-to-br from-yellow-400/20 to-yellow-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <span className="text-yellow-400 text-4xl">🤖</span>
+          <div className="py-16">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+              <h2 className="text-3xl font-bold text-white text-center mb-12">Features</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="bg-gray-800 rounded-lg p-6 text-center">
+                  <div className="w-12 h-12 bg-gray-700 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                    <span className="text-yellow-400 text-xl">📊</span>
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-4">{t('landing.feature1Title')}</h3>
-                  <p className="text-gray-300 leading-relaxed text-lg">{t('landing.feature1Desc')}</p>
+                  <h3 className="text-lg font-semibold text-white mb-2">Detailed Reports</h3>
+                  <p className="text-gray-400 text-sm">Track your investment performance with comprehensive reports</p>
                 </div>
-                <div className="bg-gray-800 border border-gray-700 rounded-2xl p-8 text-center hover:border-green-400 transition-all duration-300 hover:transform hover:scale-105 hover:shadow-2xl">
-                  <div className="w-20 h-20 bg-gradient-to-br from-green-400/20 to-green-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <span className="text-green-400 text-4xl">🔒</span>
+                <div className="bg-gray-800 rounded-lg p-6 text-center">
+                  <div className="w-12 h-12 bg-gray-700 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                    <span className="text-yellow-400 text-xl">💰</span>
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-4">{t('landing.feature2Title')}</h3>
-                  <p className="text-gray-300 leading-relaxed text-lg">{t('landing.feature2Desc')}</p>
+                  <h3 className="text-lg font-semibold text-white mb-2">Daily Rewards</h3>
+                  <p className="text-gray-400 text-sm">Get daily and random rewards to increase your profits</p>
                 </div>
-                <div className="bg-gray-800 border border-gray-700 rounded-2xl p-8 text-center hover:border-yellow-400 transition-all duration-300 hover:transform hover:scale-105 hover:shadow-2xl">
-                  <div className="w-20 h-20 bg-gradient-to-br from-yellow-400/20 to-yellow-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <span className="text-yellow-400 text-4xl">⚡</span>
+                <div className="bg-gray-800 rounded-lg p-6 text-center">
+                  <div className="w-12 h-12 bg-gray-700 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                    <span className="text-yellow-400 text-xl">🔒</span>
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-4">{t('landing.feature3Title')}</h3>
-                  <p className="text-gray-300 leading-relaxed text-lg">{t('landing.feature3Desc')}</p>
+                  <h3 className="text-lg font-semibold text-white mb-2">Advanced Security</h3>
+                  <p className="text-gray-400 text-sm">Multi-layer protection for your funds and personal data</p>
                 </div>
-                <div className="bg-gray-800 border border-gray-700 rounded-2xl p-8 text-center hover:border-blue-400 transition-all duration-300 hover:transform hover:scale-105 hover:shadow-2xl">
-                  <div className="w-20 h-20 bg-gradient-to-br from-blue-400/20 to-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <span className="text-blue-400 text-4xl">📊</span>
+                <div className="bg-gray-800 rounded-lg p-6 text-center">
+                  <div className="w-12 h-12 bg-gray-700 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                    <span className="text-yellow-400 text-xl">📈</span>
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-4">{t('landing.feature4Title')}</h3>
-                  <p className="text-gray-300 leading-relaxed text-lg">{t('landing.feature4Desc')}</p>
+                  <h3 className="text-lg font-semibold text-white mb-2">Smart Trading</h3>
+                  <p className="text-gray-400 text-sm">Use artificial intelligence to make informed trading decisions</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* CTA Section */}
-          <div className="py-20 bg-gradient-to-r from-yellow-400/10 to-transparent">
+          <div className="py-16 bg-gray-800">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                {t('landing.ctaTitle')}
+              <h2 className="text-4xl font-bold text-white mb-4">
+                Ready to Start Your Investment Journey?
               </h2>
-              <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed">
-                {t('landing.ctaSubtitle')}
+              <p className="text-xl text-gray-300 mb-8">
+                Join us today and start building your future wealth
               </p>
-              <div className="flex flex-col sm:flex-row gap-6 justify-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   href={`/${locale}/register`}
-                  className="bg-yellow-400 hover:bg-yellow-500 text-black py-4 px-12 rounded-xl font-bold text-xl transition-all duration-300 shadow-2xl hover:shadow-yellow-400/25 transform hover:scale-105"
+                  className="bg-yellow-400 hover:bg-yellow-500 text-black px-8 py-3 rounded-lg font-semibold transition-colors"
                 >
-                  🚀 {t('landing.startTrading')}
+                  Start Trading
                 </Link>
                 <Link
                   href={`/${locale}/info`}
-                  className="bg-gray-800 hover:bg-gray-700 text-white py-4 px-12 rounded-xl font-bold text-xl transition-all duration-300 border-2 border-gray-600 hover:border-yellow-400 shadow-2xl"
+                  className="bg-gray-700 hover:bg-gray-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center"
                 >
-                  ℹ️ {t('landing.learnMore')}
+                  <span className="mr-2">i</span> Learn More
                 </Link>
               </div>
             </div>
