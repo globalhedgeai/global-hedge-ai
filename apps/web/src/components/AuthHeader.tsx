@@ -43,25 +43,25 @@ export default function AuthHeader() {
     <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-b border-border shadow-xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          {/* Logo */}
+              {/* Logo */}
           <Link href={`/${locale}`} className="flex items-center gap-3 group">
             <div className="w-12 h-12 bg-gradient-to-br from-primary to-yellow-400 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-primary/25 transition-all duration-300">
               <span className="text-primary-foreground font-bold text-xl">G</span>
             </div>
-            <div className="hidden sm:block">
-              <span className="text-2xl font-bold gradient-text">Global Hedge AI</span>
-              <div className="text-xs text-muted-foreground -mt-1">Leading Trading Platform</div>
-            </div>
-          </Link>
-
+                <div className="hidden sm:block">
+                  <span className="text-xl font-bold gradient-text">Global Hedge AI</span>
+                  <div className="text-xs text-muted-foreground -mt-1">Leading Trading Platform</div>
+                </div>
+              </Link>
+              
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-2">
             <Link href={`/${locale}`} className="px-4 py-2 rounded-xl text-foreground hover:text-primary hover:bg-accent/50 transition-all duration-200 font-medium">
-              🏠 {t('navigation.home')}
-            </Link>
+                  🏠 {t('navigation.home')}
+                </Link>
             <Link href={`/${locale}/market`} className="px-4 py-2 rounded-xl text-foreground hover:text-primary hover:bg-accent/50 transition-all duration-200 font-medium">
-              📈 {t('navigation.market')}
-            </Link>
+                  📈 {t('navigation.market')}
+                </Link>
             <Link href={`/${locale}/info`} className="px-4 py-2 rounded-xl text-foreground hover:text-primary hover:bg-accent/50 transition-all duration-200 font-medium">
               ℹ️ {t('navigation.about')}
             </Link>
@@ -103,24 +103,24 @@ export default function AuthHeader() {
                 {user.role === 'ADMIN' && (
                   <Link href={`/${locale}/admin`} className="btn-secondary px-4 py-2 text-sm font-semibold">
                     ⚙️ {t('navigation.admin')}
-                  </Link>
+                    </Link>
                 )}
 
                 {/* User Profile */}
                 <div className="flex items-center gap-3 px-4 py-2 rounded-xl bg-accent/30 hover:bg-accent/50 transition-all duration-200">
                   <div className="w-10 h-10 bg-gradient-to-br from-primary to-yellow-400 rounded-xl flex items-center justify-center shadow-lg">
                     <span className="text-primary-foreground font-bold text-lg">
-                      {user.email.charAt(0).toUpperCase()}
-                    </span>
+                    {user.email.charAt(0).toUpperCase()}
+                  </span>
                   </div>
                   <div className="hidden sm:block">
                     <div className="text-sm font-semibold text-foreground">{user.email}</div>
                     <div className="text-xs text-muted-foreground capitalize">{user.role}</div>
                   </div>
-                </div>
-
+              </div>
+              
                 {/* Logout */}
-                <button
+              <button
                   onClick={async () => {
                     await fetch('/api/auth/logout', { method: 'POST' });
                     clearAuthCache();
@@ -130,9 +130,9 @@ export default function AuthHeader() {
                   className="btn-secondary px-4 py-2 text-sm font-semibold hover:bg-error/10 hover:text-error hover:border-error/20 transition-all duration-200"
                 >
                   🚪 {t('auth.logout')}
-                </button>
-              </div>
-            ) : (
+              </button>
+          </div>
+        ) : (
               /* Non-Authenticated User Menu */
               <div className="flex items-center gap-3">
                 <Link href={`/${locale}/login`} className="btn-secondary px-6 py-3 text-sm font-semibold">
@@ -141,7 +141,7 @@ export default function AuthHeader() {
                 <Link href={`/${locale}/register`} className="btn-primary px-6 py-3 text-sm font-semibold shadow-lg hover:shadow-primary/25 transition-all duration-300">
                   🚀 {t('auth.register')}
                 </Link>
-              </div>
+            </div>
             )}
 
             {/* Mobile Menu Button */}
@@ -155,7 +155,7 @@ export default function AuthHeader() {
             </button>
           </div>
         </div>
-
+        
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="lg:hidden border-t border-border py-6">
@@ -189,36 +189,36 @@ export default function AuthHeader() {
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     💰 {t('navigation.deposit')}
-                  </Link>
-                  <Link 
-                    href={`/${locale}/withdraw`} 
+              </Link>
+              <Link 
+                href={`/${locale}/withdraw`} 
                     className="px-4 py-3 rounded-xl text-foreground hover:text-primary hover:bg-accent/50 transition-all duration-200 font-medium"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    💸 {t('navigation.withdraw')}
-                  </Link>
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                💸 {t('navigation.withdraw')}
+              </Link>
                   {user.role === 'USER' && (
-                    <Link 
-                      href={`/${locale}/messages`} 
+              <Link 
+                href={`/${locale}/messages`} 
                       className="px-4 py-3 rounded-xl text-foreground hover:text-primary hover:bg-accent/50 transition-all duration-200 font-medium flex items-center gap-2"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
+                onClick={() => setMobileMenuOpen(false)}
+              >
                       💬 {t('navigation.messages')}
-                      {unreadCount > 0 && (
+                {unreadCount > 0 && (
                         <span className="bg-error text-error-foreground text-xs px-2 py-1 rounded-full font-bold">
-                          {unreadCount}
-                        </span>
-                      )}
-                    </Link>
+                    {unreadCount}
+                  </span>
+                )}
+              </Link>
                   )}
                   {user.role === 'ADMIN' && (
-                    <Link 
+              <Link 
                       href={`/${locale}/admin`} 
                       className="px-4 py-3 rounded-xl text-foreground hover:text-primary hover:bg-accent/50 transition-all duration-200 font-medium"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
+                onClick={() => setMobileMenuOpen(false)}
+              >
                       ⚙️ {t('navigation.admin')}
-                    </Link>
+              </Link>
                   )}
                 </>
               )}
