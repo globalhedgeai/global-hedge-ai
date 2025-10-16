@@ -185,7 +185,7 @@ async function getCurrentPrice(symbol: string): Promise<number> {
     const data = await response.json();
     
     if (data.ok && data.prices) {
-      const priceData = data.prices.find((p: any) => p.symbol === symbol);
+      const priceData = data.prices.find((p: { symbol: string; price: number }) => p.symbol === symbol);
       if (priceData) {
         return priceData.price;
       }

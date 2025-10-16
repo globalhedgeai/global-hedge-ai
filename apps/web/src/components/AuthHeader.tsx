@@ -4,7 +4,6 @@ import Link from 'next/link';
 import type { SessionUser } from '@/lib/session';
 import { useTranslation, useLanguage } from '@/lib/translations';
 import AdvancedLanguageSwitcher from './AdvancedLanguageSwitcher';
-import { NotificationCenter } from '@/lib/notifications';
 import { clearAuthCache } from './AuthGuard';
 
 export default function AuthHeader() {

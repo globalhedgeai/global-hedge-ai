@@ -41,11 +41,11 @@ export default function AdminPerformancePage() {
       } else {
         setLoading(false);
       }
-    } catch (error) {
-      setLoading(false);
-      // إعادة التوجيه إلى الصفحة الرئيسية في حالة الخطأ
-      window.location.href = '/';
-    }
+        } catch {
+          setLoading(false);
+          // إعادة التوجيه إلى الصفحة الرئيسية في حالة الخطأ
+          window.location.href = '/';
+        }
   }, []);
 
   useEffect(() => {

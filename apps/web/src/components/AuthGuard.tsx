@@ -72,17 +72,17 @@ export default function AuthGuard({ children, redirectTo = '/login' }: AuthGuard
       if (!authResult) {
         router.push(`/${locale}${redirectTo}`);
       }
-    } catch (error) {
-      // معالجة أفضل للأخطاء
-      setIsAuthenticated(false);
-      setIsLoading(false);
-      
-      // فقط إعادة التوجيه إذا لم يكن هناك تخزين مؤقت صالح
-      const authCache = getAuthCache();
-      if (!authCache || Date.now() - authCache.timestamp > AUTH_CACHE_TTL) {
-        router.push(`/${locale}${redirectTo}`);
-      }
-    }
+        } catch {
+          // معالجة أفضل للأخطاء
+          setIsAuthenticated(false);
+          setIsLoading(false);
+          
+          // فقط إعادة التوجيه إذا لم يكن هناك تخزين مؤقت صالح
+          const authCache = getAuthCache();
+          if (!authCache || Date.now() - authCache.timestamp > AUTH_CACHE_TTL) {
+            router.push(`/${locale}${redirectTo}`);
+          }
+        }
   }, [locale, redirectTo, router]);
 
   useEffect(() => {

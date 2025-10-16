@@ -102,9 +102,9 @@ export function useTranslation() {
         } else {
           return key;
         }
-      } catch (error) {
-        return key;
-      }
+          } catch {
+            return key;
+          }
     };
   }, [locale]);
   

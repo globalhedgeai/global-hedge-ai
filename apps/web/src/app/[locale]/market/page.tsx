@@ -43,7 +43,6 @@ export default function MarketPage() {
   const [candles, setCandles] = useState<Candle[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [marketPrices, setMarketPrices] = useState<MarketPrice[]>([]);
   const [currentPrice, setCurrentPrice] = useState<number>(0);
   const [priceChange24h, setPriceChange24h] = useState<number>(0);
   const [volume24h, setVolume24h] = useState<number>(0);
@@ -65,8 +64,6 @@ export default function MarketPage() {
       const data = await response.json();
       
       if (data.ok) {
-        setMarketPrices(data.prices);
-        
         // Update current symbol's price info
         const currentSymbolData = data.prices.find((p: MarketPrice) => p.symbol === symbol);
         if (currentSymbolData) {
