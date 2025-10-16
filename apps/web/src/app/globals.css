@@ -53,6 +53,54 @@ body {
   margin-right: auto;
 }
 
+/* Professional Card Styling */
+.bg-card {
+  background-color: #1e2329 !important;
+  border: 1px solid #2b3139 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
+.bg-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
+  border-color: #f0b90b !important;
+  transform: translateY(-2px) scale(1.01) !important;
+}
+
+/* Professional Button Styling */
+.bg-primary {
+  background: linear-gradient(135deg, #f0b90b 0%, #fbbf24 100%) !important;
+  color: #000000 !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 2px 8px rgba(240, 185, 11, 0.3) !important;
+}
+
+.bg-primary:hover {
+  transform: translateY(-1px) scale(1.01) !important;
+  box-shadow: 0 4px 16px rgba(240, 185, 11, 0.4) !important;
+}
+
+.bg-secondary {
+  background: #2b3139 !important;
+  color: #ffffff !important;
+  border: 1px solid #2b3139 !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+.bg-secondary:hover {
+  background: #3a4149 !important;
+  border-color: #f0b90b !important;
+  transform: translateY(-1px) scale(1.01) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+}
+
 /* CSS Variables */
 :root {
   --background: #0b0e11;

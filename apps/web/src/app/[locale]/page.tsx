@@ -246,8 +246,8 @@ export default function HomePage() {
         /* Professional Landing Page for Non-Authenticated Users */
         <div className="min-h-screen bg-background">
           {/* Hero Section */}
-          <div className="relative bg-gradient-to-br from-background via-background to-primary/5">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <div className="relative bg-gradient-to-br from-background via-background to-primary/5 py-20">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center">
                 {/* Logo */}
                 <div className="flex justify-center mb-8">
@@ -284,19 +284,19 @@ export default function HomePage() {
 
                 {/* Trust Indicators */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
-                  <div className="text-center">
+                  <div className="bg-card border border-border rounded-xl p-6 text-center hover:shadow-xl transition-shadow">
                     <div className="text-3xl font-bold text-primary mb-2">
                       {formatNumber(stats.totalUsers)}
                     </div>
                     <div className="text-sm text-muted-foreground font-medium">{t('dashboard.totalUsers')}</div>
                   </div>
-                  <div className="text-center">
+                  <div className="bg-card border border-border rounded-xl p-6 text-center hover:shadow-xl transition-shadow">
                     <div className="text-3xl font-bold text-success mb-2">
                       {formatCurrency(stats.totalVolume)}
                     </div>
                     <div className="text-sm text-muted-foreground font-medium">{t('dashboard.totalVolume')}</div>
                   </div>
-                  <div className="text-center">
+                  <div className="bg-card border border-border rounded-xl p-6 text-center hover:shadow-xl transition-shadow">
                     <div className="text-3xl font-bold text-info mb-2">
                       {formatNumber(stats.activeTrades)}
                     </div>
@@ -319,7 +319,7 @@ export default function HomePage() {
                 </p>
               </div>
 
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="bg-card border border-border rounded-xl p-6 text-center hover:shadow-xl transition-shadow">
                   <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <span className="text-primary text-2xl">🤖</span>
