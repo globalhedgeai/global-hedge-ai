@@ -18,15 +18,8 @@ interface TranslationsCache {
   es: TranslationObject;
 }
 
-// استيراد ملفات الترجمة مع معالجة شاملة للأخطاء
-let translationsCache: TranslationsCache | null = null;
-
-// دالة تحميل الترجمات مع التخزين المؤقت ومعالجة الأخطاء
+// دالة تحميل الترجمات مع معالجة الأخطاء
 function loadTranslations(): TranslationsCache {
-  if (translationsCache) {
-    return translationsCache;
-  }
-
   let arTranslations: TranslationObject = {};
   let enTranslations: TranslationObject = {};
   let trTranslations: TranslationObject = {};
@@ -36,7 +29,6 @@ function loadTranslations(): TranslationsCache {
   try {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     arTranslations = require('@/messages/ar.json') as TranslationObject;
-    console.log('✅ Arabic translations loaded successfully');
   } catch (e) {
     console.error('❌ Failed to load Arabic translations:', e);
   }
@@ -44,7 +36,6 @@ function loadTranslations(): TranslationsCache {
   try {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     enTranslations = require('@/messages/en.json') as TranslationObject;
-    console.log('✅ English translations loaded successfully');
   } catch (e) {
     console.error('❌ Failed to load English translations:', e);
   }
@@ -52,7 +43,6 @@ function loadTranslations(): TranslationsCache {
   try {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     trTranslations = require('@/messages/tr.json') as TranslationObject;
-    console.log('✅ Turkish translations loaded successfully');
   } catch (e) {
     console.error('❌ Failed to load Turkish translations:', e);
   }
@@ -60,7 +50,6 @@ function loadTranslations(): TranslationsCache {
   try {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     frTranslations = require('@/messages/fr.json') as TranslationObject;
-    console.log('✅ French translations loaded successfully');
   } catch (e) {
     console.error('❌ Failed to load French translations:', e);
   }
@@ -68,23 +57,20 @@ function loadTranslations(): TranslationsCache {
   try {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     esTranslations = require('@/messages/es.json') as TranslationObject;
-    console.log('✅ Spanish translations loaded successfully');
   } catch (e) {
     console.error('❌ Failed to load Spanish translations:', e);
   }
 
-  translationsCache = {
+  return {
     ar: arTranslations,
     en: enTranslations,
     tr: trTranslations,
     fr: frTranslations,
     es: esTranslations,
   };
-
-  console.log('🎉 All translations loaded successfully');
-  return translationsCache;
 }
 
+// تصدير الترجمات
 export const translations = loadTranslations();
 
 // Hook للترجمة المحسن مع معالجة شاملة للأخطاء وتحسين الأداء
