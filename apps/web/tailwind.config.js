@@ -45,6 +45,19 @@ module.exports = {
         warning: '#f0b90b',
         error: '#f84960',
         info: '#1890ff',
+        // Additional colors for better coverage
+        yellow: {
+          400: '#fbbf24',
+        },
+        green: {
+          400: '#4ade80',
+        },
+        red: {
+          500: '#ef4444',
+        },
+        blue: {
+          500: '#3b82f6',
+        },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
@@ -55,6 +68,7 @@ module.exports = {
         'slide-in': 'slideIn 0.3s ease-out',
         'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'shimmer': 'shimmer 1.5s infinite',
+        'spin': 'spin 1s linear infinite',
       },
       keyframes: {
         fadeIn: {
@@ -68,6 +82,10 @@ module.exports = {
         shimmer: {
           '0%': { backgroundPosition: '-200px 0' },
           '100%': { backgroundPosition: 'calc(200px + 100%) 0' },
+        },
+        spin: {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' },
         },
       },
       boxShadow: {
@@ -85,6 +103,17 @@ module.exports = {
         '18': '4.5rem',
         '88': '22rem',
         '128': '32rem',
+      },
+      // Add missing utilities
+      backdropBlur: {
+        'md': '10px',
+      },
+      backgroundImage: {
+        'gradient-to-br': 'linear-gradient(to bottom right, var(--tw-gradient-stops))',
+      },
+      gradientColorStops: {
+        'primary': '#f0b90b',
+        'yellow-400': '#fbbf24',
       },
     },
   },
