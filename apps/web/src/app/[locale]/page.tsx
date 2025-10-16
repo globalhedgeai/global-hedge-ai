@@ -244,7 +244,7 @@ export default function HomePage() {
         </div>
       ) : (
         /* Professional Landing Page for Non-Authenticated Users */
-        <div className="min-h-screen">
+        <div className="min-h-screen bg-background">
           {/* Hero Section */}
           <div className="relative bg-gradient-to-br from-background via-background to-primary/5">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -254,32 +254,32 @@ export default function HomePage() {
                   <div className="w-20 h-20 bg-gradient-to-r from-primary to-yellow-400 rounded-2xl flex items-center justify-center shadow-2xl">
                     <span className="text-3xl font-bold text-primary-foreground">G</span>
                   </div>
-      </div>
-      
+                </div>
+                
                 {/* Main Title */}
-                <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight text-center">
+                <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
                   {t('landing.title')}
                 </h1>
                 
                 {/* Subtitle */}
-                <p className="text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed text-center">
+                <p className="text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
                   {t('landing.subtitle')}
                 </p>
                 
                 {/* CTA Buttons */}
                 <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-        <Link
-          href={`/${locale}/register`}
+                  <Link
+                    href={`/${locale}/register`}
                     className="bg-primary hover:bg-primary/90 text-primary-foreground py-4 px-8 rounded-xl font-semibold text-lg transition-colors shadow-lg hover:shadow-xl"
-        >
+                  >
                     🚀 {t('landing.getStarted')}
-        </Link>
-        <Link
-          href={`/${locale}/login`}
+                  </Link>
+                  <Link
+                    href={`/${locale}/login`}
                     className="bg-secondary hover:bg-secondary/90 text-secondary-foreground py-4 px-8 rounded-xl font-semibold text-lg transition-colors border border-border"
-        >
+                  >
                     🔐 {t('landing.login')}
-        </Link>
+                  </Link>
                 </div>
 
                 {/* Trust Indicators */}
@@ -304,8 +304,8 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
-      </div>
-    </div>
+            </div>
+          </div>
 
           {/* Features Section */}
           <div className="py-20 bg-card/30">
@@ -361,20 +361,20 @@ export default function HomePage() {
               <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto leading-relaxed">
                 {t('landing.ctaSubtitle')}
               </p>
-      <div className="flex flex-col sm:flex-row gap-4 justify-center">
-        <Link
-          href={`/${locale}/register`}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link
+                  href={`/${locale}/register`}
                   className="bg-primary hover:bg-primary/90 text-primary-foreground py-4 px-8 rounded-xl font-semibold text-lg transition-colors shadow-lg hover:shadow-xl"
-        >
+                >
                   🚀 {t('landing.startTrading')}
-        </Link>
-        <Link
-          href={`/${locale}/info`}
+                </Link>
+                <Link
+                  href={`/${locale}/info`}
                   className="bg-secondary hover:bg-secondary/90 text-secondary-foreground py-4 px-8 rounded-xl font-semibold text-lg transition-colors border border-border"
-        >
+                >
                   ℹ️ {t('landing.learnMore')}
-        </Link>
-      </div>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
