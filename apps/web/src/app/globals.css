@@ -68,6 +68,53 @@ body {
   transform: translateY(-2px) scale(1.01) !important;
 }
 
+/* Ensure grid layout works properly */
+.grid {
+  display: grid !important;
+}
+
+.grid-cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+}
+
+.grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+.grid-cols-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+}
+
+.gap-6 {
+  gap: 1.5rem !important;
+}
+
+/* Ensure proper spacing */
+.p-6 {
+  padding: 1.5rem !important;
+}
+
+.mb-4 {
+  margin-bottom: 1rem !important;
+}
+
+.mb-3 {
+  margin-bottom: 0.75rem !important;
+}
+
+.mb-12 {
+  margin-bottom: 3rem !important;
+}
+
+.mx-auto {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
 /* Professional Button Styling */
 .bg-primary {
   background: linear-gradient(135deg, #f0b90b 0%, #fbbf24 100%) !important;

@@ -43,18 +43,18 @@ export default function AuthHeader() {
     <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-md border-b border-border shadow-xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-              {/* Logo */}
+          {/* Left Side - Logo */}
           <Link href={`/${locale}`} className="flex items-center gap-3 group">
             <div className="w-12 h-12 bg-gradient-to-br from-primary to-yellow-400 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-primary/25 transition-all duration-300">
               <span className="text-primary-foreground font-bold text-xl">G</span>
             </div>
-                <div className="hidden sm:block">
-                  <span className="text-xl font-bold gradient-text">Global Hedge AI</span>
-                  <div className="text-xs text-muted-foreground -mt-1">Leading Trading Platform</div>
-                </div>
-              </Link>
+            <div className="hidden sm:block">
+              <span className="text-xl font-bold gradient-text">Global Hedge AI</span>
+              <div className="text-xs text-muted-foreground -mt-1">Leading Trading Platform</div>
+            </div>
+          </Link>
               
-          {/* Desktop Navigation */}
+          {/* Center - Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-2">
             <Link href={`/${locale}`} className="px-4 py-2 rounded-xl text-foreground hover:text-primary hover:bg-accent/50 transition-all duration-200 font-medium">
                   🏠 {t('navigation.home')}
