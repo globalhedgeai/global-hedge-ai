@@ -213,33 +213,33 @@ export default function HomePage() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div className="bg-gray-800 border border-gray-700 rounded-2xl p-8 text-center hover:border-yellow-400 transition-all duration-300 hover:transform hover:scale-105">
-                  <div className="w-16 h-16 bg-yellow-400/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <span className="text-yellow-400 text-3xl">🤖</span>
+                <div className="bg-gray-800 border border-gray-700 rounded-2xl p-8 text-center hover:border-yellow-400 transition-all duration-300 hover:transform hover:scale-105 hover:shadow-2xl">
+                  <div className="w-20 h-20 bg-gradient-to-br from-yellow-400/20 to-yellow-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <span className="text-yellow-400 text-4xl">🤖</span>
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-4">{t('landing.feature1Title')}</h3>
-                  <p className="text-gray-300 leading-relaxed">{t('landing.feature1Desc')}</p>
+                  <h3 className="text-2xl font-bold text-white mb-4">{t('landing.feature1Title')}</h3>
+                  <p className="text-gray-300 leading-relaxed text-lg">{t('landing.feature1Desc')}</p>
                 </div>
-                <div className="bg-gray-800 border border-gray-700 rounded-2xl p-8 text-center hover:border-green-400 transition-all duration-300 hover:transform hover:scale-105">
-                  <div className="w-16 h-16 bg-green-400/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <span className="text-green-400 text-3xl">🔒</span>
+                <div className="bg-gray-800 border border-gray-700 rounded-2xl p-8 text-center hover:border-green-400 transition-all duration-300 hover:transform hover:scale-105 hover:shadow-2xl">
+                  <div className="w-20 h-20 bg-gradient-to-br from-green-400/20 to-green-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <span className="text-green-400 text-4xl">🔒</span>
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-4">{t('landing.feature2Title')}</h3>
-                  <p className="text-gray-300 leading-relaxed">{t('landing.feature2Desc')}</p>
+                  <h3 className="text-2xl font-bold text-white mb-4">{t('landing.feature2Title')}</h3>
+                  <p className="text-gray-300 leading-relaxed text-lg">{t('landing.feature2Desc')}</p>
                 </div>
-                <div className="bg-gray-800 border border-gray-700 rounded-2xl p-8 text-center hover:border-yellow-400 transition-all duration-300 hover:transform hover:scale-105">
-                  <div className="w-16 h-16 bg-yellow-400/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <span className="text-yellow-400 text-3xl">⚡</span>
+                <div className="bg-gray-800 border border-gray-700 rounded-2xl p-8 text-center hover:border-yellow-400 transition-all duration-300 hover:transform hover:scale-105 hover:shadow-2xl">
+                  <div className="w-20 h-20 bg-gradient-to-br from-yellow-400/20 to-yellow-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <span className="text-yellow-400 text-4xl">⚡</span>
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-4">{t('landing.feature3Title')}</h3>
-                  <p className="text-gray-300 leading-relaxed">{t('landing.feature3Desc')}</p>
+                  <h3 className="text-2xl font-bold text-white mb-4">{t('landing.feature3Title')}</h3>
+                  <p className="text-gray-300 leading-relaxed text-lg">{t('landing.feature3Desc')}</p>
                 </div>
-                <div className="bg-gray-800 border border-gray-700 rounded-2xl p-8 text-center hover:border-blue-400 transition-all duration-300 hover:transform hover:scale-105">
-                  <div className="w-16 h-16 bg-blue-400/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <span className="text-blue-400 text-3xl">📊</span>
+                <div className="bg-gray-800 border border-gray-700 rounded-2xl p-8 text-center hover:border-blue-400 transition-all duration-300 hover:transform hover:scale-105 hover:shadow-2xl">
+                  <div className="w-20 h-20 bg-gradient-to-br from-blue-400/20 to-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <span className="text-blue-400 text-4xl">📊</span>
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-4">{t('landing.feature4Title')}</h3>
-                  <p className="text-gray-300 leading-relaxed">{t('landing.feature4Desc')}</p>
+                  <h3 className="text-2xl font-bold text-white mb-4">{t('landing.feature4Title')}</h3>
+                  <p className="text-gray-300 leading-relaxed text-lg">{t('landing.feature4Desc')}</p>
                 </div>
               </div>
             </div>
