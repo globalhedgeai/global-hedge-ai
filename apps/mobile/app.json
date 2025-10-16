@@ -35,7 +35,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "your-project-id"
+        "projectId": "global-hedge-ai-mobile-app"
       }
     },
     "plugins": [

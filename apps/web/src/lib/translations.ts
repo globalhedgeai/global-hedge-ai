@@ -18,60 +18,21 @@ interface TranslationsCache {
   es: TranslationObject;
 }
 
-// دالة تحميل الترجمات مع معالجة الأخطاء
-function loadTranslations(): TranslationsCache {
-  let arTranslations: TranslationObject = {};
-  let enTranslations: TranslationObject = {};
-  let trTranslations: TranslationObject = {};
-  let frTranslations: TranslationObject = {};
-  let esTranslations: TranslationObject = {};
+// استيراد ملفات الترجمة مباشرة
+import arTranslations from '@/messages/ar.json';
+import enTranslations from '@/messages/en.json';
+import trTranslations from '@/messages/tr.json';
+import frTranslations from '@/messages/fr.json';
+import esTranslations from '@/messages/es.json';
 
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    arTranslations = require('@/messages/ar.json') as TranslationObject;
-  } catch (e) {
-    console.error('❌ Failed to load Arabic translations:', e);
-  }
-
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    enTranslations = require('@/messages/en.json') as TranslationObject;
-  } catch (e) {
-    console.error('❌ Failed to load English translations:', e);
-  }
-
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    trTranslations = require('@/messages/tr.json') as TranslationObject;
-  } catch (e) {
-    console.error('❌ Failed to load Turkish translations:', e);
-  }
-
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    frTranslations = require('@/messages/fr.json') as TranslationObject;
-  } catch (e) {
-    console.error('❌ Failed to load French translations:', e);
-  }
-
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    esTranslations = require('@/messages/es.json') as TranslationObject;
-  } catch (e) {
-    console.error('❌ Failed to load Spanish translations:', e);
-  }
-
-  return {
-    ar: arTranslations,
-    en: enTranslations,
-    tr: trTranslations,
-    fr: frTranslations,
-    es: esTranslations,
-  };
-}
-
-// تصدير الترجمات
-export const translations = loadTranslations();
+// تصدير الترجمات مباشرة
+export const translations: TranslationsCache = {
+  ar: arTranslations as TranslationObject,
+  en: enTranslations as TranslationObject,
+  tr: trTranslations as TranslationObject,
+  fr: frTranslations as TranslationObject,
+  es: esTranslations as TranslationObject,
+};
 
 // Hook للترجمة المحسن مع معالجة شاملة للأخطاء وتحسين الأداء
 export function useTranslation() {
@@ -82,14 +43,30 @@ export function useTranslation() {
       try {
         // التحقق من وجود المفتاح
         if (!key || typeof key !== 'string') {
-          console.warn('⚠️ Invalid translation key:', key);
           return key || 'INVALID_KEY';
         }
 
         // الحصول على ترجمات اللغة المختارة
         const localeTranslations = translations[locale as keyof typeof translations];
         if (!localeTranslations) {
-          console.warn(`⚠️ No translations found for locale: ${locale}`);
+          // Fallback إلى الإنجليزية إذا لم توجد الترجمة
+          const fallbackTranslations = translations.en;
+          if (fallbackTranslations) {
+            const keys = key.split('.');
+            let translation: string | TranslationObject = fallbackTranslations;
+            
+            for (const k of keys) {
+              if (translation && typeof translation === 'object' && k in translation) {
+                translation = translation[k];
+              } else {
+                return key;
+              }
+            }
+            
+            if (typeof translation === 'string') {
+              return translation;
+            }
+          }
           return key;
         }
         
@@ -101,7 +78,21 @@ export function useTranslation() {
           if (translation && typeof translation === 'object' && k in translation) {
             translation = translation[k];
           } else {
-            console.warn(`⚠️ No translation found for key: ${key} in locale: ${locale}`);
+            // Fallback إلى الإنجليزية
+            const fallbackTranslations = translations.en;
+            if (fallbackTranslations) {
+              let fallbackTranslation: string | TranslationObject = fallbackTranslations;
+              for (const fallbackKey of keys) {
+                if (fallbackTranslation && typeof fallbackTranslation === 'object' && fallbackKey in fallbackTranslation) {
+                  fallbackTranslation = fallbackTranslation[fallbackKey];
+                } else {
+                  return key;
+                }
+              }
+              if (typeof fallbackTranslation === 'string') {
+                return fallbackTranslation;
+              }
+            }
             return key;
           }
         }
@@ -109,11 +100,9 @@ export function useTranslation() {
         if (typeof translation === 'string') {
           return translation;
         } else {
-          console.warn(`⚠️ Translation for key: ${key} is not a string in locale: ${locale}`);
           return key;
         }
       } catch (error) {
-        console.error(`❌ Error in translation for key: ${key} in locale: ${locale}`, error);
         return key;
       }
     };

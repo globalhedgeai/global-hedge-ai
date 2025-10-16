@@ -43,6 +43,11 @@ export default function FinancialReportsPage() {
       setError(null);
 
       const response = await fetch(`/api/financial-reports?period=${selectedPeriod}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
 
       if (data.ok) {
@@ -50,8 +55,13 @@ export default function FinancialReportsPage() {
       } else {
         setError(data.error || t('errors.generic'));
       }
-    } catch {
-      setError(t('errors.networkError'));
+    } catch (error) {
+      // معالجة أفضل للأخطاء
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError(t('errors.networkError'));
+      }
     } finally {
       setLoading(false);
     }

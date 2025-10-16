@@ -73,10 +73,15 @@ export default function AuthGuard({ children, redirectTo = '/login' }: AuthGuard
         router.push(`/${locale}${redirectTo}`);
       }
     } catch (error) {
-      console.error('Auth check failed:', error);
+      // معالجة أفضل للأخطاء
       setIsAuthenticated(false);
       setIsLoading(false);
-      router.push(`/${locale}${redirectTo}`);
+      
+      // فقط إعادة التوجيه إذا لم يكن هناك تخزين مؤقت صالح
+      const authCache = getAuthCache();
+      if (!authCache || Date.now() - authCache.timestamp > AUTH_CACHE_TTL) {
+        router.push(`/${locale}${redirectTo}`);
+      }
     }
   }, [locale, redirectTo, router]);
 

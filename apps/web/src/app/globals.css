@@ -195,8 +195,51 @@ body {
     font-size: 16px;
   }
   
+  /* تحسين التخطيط للشاشات الصغيرة */
+  .max-w-7xl {
+    max-width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* تحسين الأزرار للشاشات الصغيرة */
+  .btn-primary, .btn-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  /* تحسين البطاقات للشاشات الصغيرة */
+  .card {
+    margin: 0.5rem;
+    border-radius: 8px;
+  }
+  
+  /* إخفاء شريط التمرير على الهاتف */
   ::-webkit-scrollbar {
     display: none;
+  }
+}
+
+/* تحسين للشاشات الصغيرة جداً */
+@media (max-width: 480px) {
+  body {
+    font-size: 13px;
+  }
+  
+  .btn-primary, .btn-secondary {
+    min-height: 48px;
+    padding: 16px 20px;
+    font-size: 16px;
+  }
+  
+  .card {
+    padding: 12px;
+    margin: 0.25rem;
+  }
+  
+  .input {
+    min-height: 48px;
+    font-size: 16px;
   }
 }
 

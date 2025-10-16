@@ -42,8 +42,9 @@ export default function AdminPerformancePage() {
         setLoading(false);
       }
     } catch (error) {
-      console.error('Error checking session:', error);
       setLoading(false);
+      // إعادة التوجيه إلى الصفحة الرئيسية في حالة الخطأ
+      window.location.href = '/';
     }
   }, []);
 
