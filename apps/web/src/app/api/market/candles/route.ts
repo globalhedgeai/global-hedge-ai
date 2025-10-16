@@ -37,98 +37,75 @@ export async function GET(req: NextRequest) {
     }> = [];
     let source = 'unknown';
     
-    // Try CoinGecko first (more reliable)
+    // Try Binance first (most reliable for crypto candles)
     try {
-      console.log('🔄 Trying CoinGecko API...');
-      const coinGeckoUrl = `https://api.coingecko.com/api/v3/coins/${getCoinGeckoId(symbol)}/market_chart?vs_currency=usd&days=30&interval=${getCoinGeckoInterval(interval)}`;
+      console.log('🔄 Fetching candles from Binance...');
+      const binanceUrl = `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=${limit}`;
       
-      const cgResponse = await fetch(coinGeckoUrl, {
+      const binanceResponse = await fetch(binanceUrl, {
         headers: {
           'Accept': 'application/json',
           'User-Agent': 'GlobalHedgeAI/1.0',
         },
-        signal: AbortSignal.timeout(8000),
+        signal: AbortSignal.timeout(5000),
       });
 
-      if (cgResponse.ok) {
-        const cgData = await cgResponse.json();
-        candles = cgData.prices.map((price: [number, number], index: number) => ({
-          time: price[0], // timestamp in milliseconds
-          open: index > 0 ? cgData.prices[index - 1][1] : price[1],
-          high: price[1] * (1 + Math.random() * 0.02), // Add some volatility
-          low: price[1] * (1 - Math.random() * 0.02),
-          close: price[1],
-          volume: cgData.total_volumes[index]?.[1] || Math.random() * 1000,
+      if (binanceResponse.ok) {
+        const binanceData = await binanceResponse.json();
+        candles = binanceData.map((kline: string[]) => ({
+          time: parseInt(kline[0]), // Open time (milliseconds)
+          open: parseFloat(kline[1]), // Open price
+          high: parseFloat(kline[2]), // High price
+          low: parseFloat(kline[3]), // Low price
+          close: parseFloat(kline[4]), // Close price
+          volume: parseFloat(kline[5]), // Volume
         }));
-        source = 'coingecko';
-        console.log(`✅ Fetched ${candles.length} candles from CoinGecko`);
+        source = 'binance';
+        console.log(`✅ Fetched ${candles.length} candles from Binance`);
       }
-    } catch (cgError) {
-      console.log('❌ CoinGecko failed:', cgError);
+    } catch (binanceError) {
+      console.log('❌ Binance failed:', binanceError);
     }
 
-    // If CoinGecko failed, try Binance
+    // If Binance failed, try CoinGecko
     if (candles.length === 0) {
       try {
-        console.log('🔄 Trying Binance API...');
-        const binanceUrl = `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=${limit}`;
+        console.log('🔄 Fetching candles from CoinGecko...');
+        const coinGeckoUrl = `https://api.coingecko.com/api/v3/coins/${getCoinGeckoId(symbol)}/market_chart?vs_currency=usd&days=${getCoinGeckoDays(interval)}&interval=${getCoinGeckoInterval(interval)}`;
         
-        const binanceResponse = await fetch(binanceUrl, {
+        const cgResponse = await fetch(coinGeckoUrl, {
           headers: {
             'Accept': 'application/json',
             'User-Agent': 'GlobalHedgeAI/1.0',
           },
-          signal: AbortSignal.timeout(8000),
+          signal: AbortSignal.timeout(5000),
         });
 
-        if (binanceResponse.ok) {
-          const binanceData = await binanceResponse.json();
-          candles = binanceData.map((kline: string[]) => ({
-            time: parseInt(kline[0]), // Open time (milliseconds)
-            open: parseFloat(kline[1]), // Open price
-            high: parseFloat(kline[2]), // High price
-            low: parseFloat(kline[3]), // Low price
-            close: parseFloat(kline[4]), // Close price
-            volume: parseFloat(kline[5]), // Volume
+        if (cgResponse.ok) {
+          const cgData = await cgResponse.json();
+          candles = cgData.prices.map((price: [number, number], index: number) => ({
+            time: price[0], // timestamp in milliseconds
+            open: index > 0 ? cgData.prices[index - 1][1] : price[1],
+            high: price[1] * (1 + Math.random() * 0.02), // Add some volatility
+            low: price[1] * (1 - Math.random() * 0.02),
+            close: price[1],
+            volume: cgData.total_volumes[index]?.[1] || Math.random() * 1000,
           }));
-          source = 'binance';
-          console.log(`✅ Fetched ${candles.length} candles from Binance`);
+          source = 'coingecko';
+          console.log(`✅ Fetched ${candles.length} candles from CoinGecko`);
         }
-      } catch (binanceError) {
-        console.log('❌ Binance failed:', binanceError);
+      } catch (cgError) {
+        console.log('❌ CoinGecko failed:', cgError);
       }
     }
 
-    // If both failed, try CoinMarketCap
+    // If both failed, generate realistic candles based on current market price
     if (candles.length === 0) {
-      try {
-        console.log('🔄 Trying CoinMarketCap API...');
-        const cmcUrl = `https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=${symbol.replace('USDT', '')}`;
-        
-        const cmcResponse = await fetch(cmcUrl, {
-          headers: {
-            'Accept': 'application/json',
-            'X-CMC_PRO_API_KEY': process.env.COINMARKETCAP_API_KEY || '',
-          },
-          signal: AbortSignal.timeout(8000),
-        });
-
-        if (cmcResponse.ok) {
-          const cmcData = await cmcResponse.json();
-          const price = cmcData.data[symbol.replace('USDT', '')]?.quote?.USD?.price || 45000;
-          
-          // Generate realistic candles based on real price
-          candles = generateRealisticCandles(symbol, interval, limit, price);
-          source = 'coinmarketcap';
-          console.log(`✅ Generated realistic candles from CoinMarketCap price: $${price}`);
-        }
-      } catch (cmcError) {
-        console.log('❌ CoinMarketCap failed:', cmcError);
-      }
-    }
-
-    if (candles.length === 0) {
-      throw new Error('All API sources failed');
+      console.log('🔄 Generating realistic candles...');
+      const currentPrice = await getCurrentPrice(symbol);
+      candles = generateRealisticCandles(symbol, interval, limit, currentPrice);
+      source = 'realistic';
+      console.log(`✅ Generated ${candles.length} realistic candles`);
     }
 
     return NextResponse.json({
@@ -142,9 +119,9 @@ export async function GET(req: NextRequest) {
     });
 
   } catch (error) {
-    console.error('❌ Error fetching real market data:', error);
+    console.error('❌ Error fetching market data:', error);
     
-    // Fallback to mock data if Binance API fails
+    // Fallback to mock data
     console.log('🔄 Using fallback mock data...');
     const mockCandles = generateMockCandles(symbol, interval, limit);
     
@@ -188,6 +165,36 @@ function getCoinGeckoInterval(interval: string): string {
     '1d': 'daily',
   };
   return mapping[interval] || 'hourly';
+}
+
+function getCoinGeckoDays(interval: string): string {
+  const mapping: Record<string, string> = {
+    '1m': '1',
+    '5m': '1',
+    '15m': '1',
+    '1h': '7',
+    '4h': '30',
+    '1d': '365',
+  };
+  return mapping[interval] || '7';
+}
+
+async function getCurrentPrice(symbol: string): Promise<number> {
+  try {
+    const response = await fetch('/api/market/prices');
+    const data = await response.json();
+    
+    if (data.ok && data.prices) {
+      const priceData = data.prices.find((p: any) => p.symbol === symbol);
+      if (priceData) {
+        return priceData.price;
+      }
+    }
+  } catch (error) {
+    console.log('Failed to get current price:', error);
+  }
+  
+  return getBasePrice(symbol);
 }
 
 function generateRealisticCandles(symbol: string, interval: string, limit: number, basePrice: number) {
@@ -295,16 +302,16 @@ function generateMockCandles(symbol: string, interval: string, limit: number) {
 
 function getBasePrice(symbol: string): number {
   const prices: Record<string, number> = {
-    'BTCUSDT': 45000,
-    'ETHUSDT': 3000,
-    'BNBUSDT': 300,
-    'ADAUSDT': 0.5,
-    'SOLUSDT': 100,
-    'XRPUSDT': 0.6,
-    'DOTUSDT': 7,
-    'DOGEUSDT': 0.08,
-    'AVAXUSDT': 25,
-    'MATICUSDT': 0.8,
+    'BTCUSDT': 43250.00,
+    'ETHUSDT': 2650.00,
+    'BNBUSDT': 315.00,
+    'ADAUSDT': 0.52,
+    'SOLUSDT': 98.50,
+    'XRPUSDT': 0.58,
+    'DOTUSDT': 6.85,
+    'DOGEUSDT': 0.082,
+    'AVAXUSDT': 24.50,
+    'MATICUSDT': 0.78,
   };
   return prices[symbol] || 100;
 }
