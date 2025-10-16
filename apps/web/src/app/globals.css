@@ -38,27 +38,63 @@ body {
   --info: #3b82f6;
 }
 
-/* Simple and Clean Cards */
+/* Professional Clean Design */
 .bg-gray-800 {
   background-color: #1f2937 !important;
   border: 1px solid #374151 !important;
-  border-radius: 6px !important;
-  transition: all 0.2s ease !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
 }
 
 .bg-gray-800:hover {
   background-color: #374151 !important;
+  border-color: #fbbf24 !important;
 }
 
 .bg-gray-700 {
   background-color: #374151 !important;
   border: 1px solid #4b5563 !important;
-  border-radius: 6px !important;
-  transition: all 0.2s ease !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
 }
 
 .bg-gray-700:hover {
   background-color: #4b5563 !important;
+  border-color: #fbbf24 !important;
+}
+
+/* Professional Buttons */
+.bg-yellow-400 {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+  color: #000000 !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3) !important;
+}
+
+.bg-yellow-400:hover {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 20px rgba(251, 191, 36, 0.4) !important;
+}
+
+.bg-gray-700 {
+  background: #374151 !important;
+  color: #ffffff !important;
+  border: 1px solid #4b5563 !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+.bg-gray-700:hover {
+  background: #4b5563 !important;
+  border-color: #fbbf24 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3) !important;
 }
 
 /* Professional Buttons */
